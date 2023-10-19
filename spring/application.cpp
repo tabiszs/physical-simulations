@@ -4,6 +4,7 @@
 #include "ShaderHolder.h"
 #include "utils.h"
 #include "imGuiBuilder.h"
+#include <implot.h>
 
 Application::Application()
 {
@@ -41,6 +42,8 @@ void Application::Menu()
 
 	bool open = true;
 	ImGui::ShowDemoWindow(&open);
+
+	ImPlot::ShowDemoWindow();
 }
 
 void Application::Update()
@@ -69,6 +72,7 @@ void Application::CleanUp()
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
+	ImPlot::DestroyContext();
 
 	glfwDestroyWindow(window->getWindow());
 	glfwTerminate();
