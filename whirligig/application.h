@@ -17,6 +17,7 @@
 #include "light.h"
 #include "window.h"
 #include "device.h"
+#include "SpringSimulator.h"
 
 
 using namespace std;
@@ -36,6 +37,8 @@ private:
 	void Render();	
 	void Swap();
 
+	void SelectFunction(const int& type, FunctionParameters& fun);
+
 	int width = 1200;
 	int height = 800;
 	const char* title = "Phisics Simulations in Virtual Environment - Spring";
@@ -50,4 +53,7 @@ private:
 	shared_ptr<Window> window;
 	shared_ptr<Device> device;
 	shared_ptr<Scene> scene;
+	SpringSimulator ss = SpringSimulator();
+	bool start = false;
+	int speed = 1;
 };

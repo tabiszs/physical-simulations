@@ -102,6 +102,9 @@
     <ClCompile Include="Implot\implot_items.cpp">
       <Filter>Source Files\Implot</Filter>
     </ClCompile>
+    <ClCompile Include="SpringSimulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -172,6 +175,9 @@
     </ClInclude>
     <ClInclude Include="Implot\implot_internal.h">
       <Filter>Header Files\Implot</Filter>
+    </ClInclude>
+    <ClInclude Include="SpringSimulator.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
