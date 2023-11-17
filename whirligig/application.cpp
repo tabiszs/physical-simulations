@@ -18,9 +18,9 @@ Application::Application()
 	scene = unique_ptr<Scene>(new Scene(camera, light, viewFrustum));
 	scene->SetDevice(device);
 	window->ImportScene(scene);
-	auto box = make_shared<Cube>();
-	box->LoadMeshTo(device);
-	scene->box = box;
+	auto cube = make_shared<Cube>();
+	cube->LoadMeshTo(device);
+	scene->cube = cube;
 	auto plane = make_shared<Plane>();
 	plane->LoadMeshTo(device);
 	scene->plane = plane;
@@ -54,6 +54,8 @@ void Application::Menu()
 	// Controlls
 	if (ImGui::Button("Start")) {
 		start = true;
+		time = glfwGetTime();
+		dt = 0;
 	}
 	if (ImGui::Button("Stop")) {
 		start = false;
@@ -110,11 +112,21 @@ void Application::SelectFunction(const int& type, FunctionParameters& fun)
 
 void Application::Update()
 {
-	device->CleanColor(backgroundColor);	
+	device->CleanColor(backgroundColor);
+
 	if (start) {
-		for (int i = 0; i < speed; ++i) {
-			ss.Update();
+		auto time2 = glfwGetTime();
+		dt += time2 - time;
+		time = time2;
+
+		while (dt > step)
+		{
+			scene->cube->Update();
+			dt -= step;
 		}
+		//for (int i = 0; i < speed; ++i) {
+		//	ss.Update();
+		//}		
 	}
 	
 	scene->Update();

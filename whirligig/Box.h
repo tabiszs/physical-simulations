@@ -77,28 +77,49 @@ public:
         shader = ShaderHolder::Get().cubeShader;
 
         // poczatkowe ustawienie 
-        quaternion = glm::quat({ 0, 0, glm::radians(45.0f) }) * quaternion; // obrot o 45st wokol osi z // przyklad z katami eulera
+        quaternion = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }) * quaternion; // obrot o 45st wokol osi z // przyklad z katami eulera
         quaternion = glm::angleAxis(std::atan2f(1, std::sqrt(2)), glm::vec3(-1.0f, 0.0f, 0.0f)) * quaternion; // obrot o atan(sqrt(2)) // przyklad - os & kat
+   
+        W = { 0,0,0 };
+        UpdateProperties();
+    }
+
+    void UpdateProperties()
+    {
+        mass = density * (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
+        mass_center = density * 0.5f * glm::vec3((xMax * xMax - xMin * xMin), (yMax * yMax - yMin * yMin), (zMax * zMax - zMin * zMin)) / mass;
+
+        float X2 = 1.0f / 3 * (xMax * xMax * xMax - xMin * xMin * xMin);
+        float Y2 = 1.0f / 3 * (yMax * yMax * yMax - yMin * yMin * yMin);
+        float Z2 = 1.0f / 3 * (zMax * zMax * zMax - zMin * zMin * zMin);
+        float XY = 0.5f * (xMax * xMax - xMin * xMin) * 0.5f * (yMax * yMax - yMin * yMin);
+        float XZ = 0.5f * (xMax * xMax - xMin * xMin) * 0.5f * (zMax * zMax - zMin * zMin);
+        float YZ = 0.5f * (yMax * yMax - yMin * yMin) * 0.5f * (zMax * zMax - zMin * zMin);
+
+        inertia_tensor = density * glm::transpose(glm::mat3(
+            Y2 + Z2, -XY, -XZ,
+            -XY, X2 + Z2, -YZ,
+            -XZ, -YZ, X2 + Y2
+        ));
+        inv_inertia_tensor = glm::inverse(inertia_tensor);
+
+        auto r = mass_center - glm::vec3(0.0f, 0.0f, 0.0f);
+        auto f = mass * g;
+        n = glm::cross(r, f);
+        N = glm::conjugate(quaternion) * n;
+
+        auto IxWt = N + glm::cross((inertia_tensor * W), W);
+        Wt = inv_inertia_tensor * IxWt;
+
+        
     }
 
     void Update()
     {
-        mass = density * (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
-        mass_center = density * 0.5 * (xMax * xMax - xMin * xMin) * (yMax * yMax - yMin * yMin) * (zMax * zMax - zMin * zMin)/mass;
-        
-        float X2 = 1. / 3 * (xMax * xMax * xMax - xMin * xMin * xMin);
-        float Y2 = 1. / 3 * (yMax * yMax * yMax - yMin * yMin * yMin);
-        float Z2 = 1. / 3 * (zMax * zMax * zMax - zMin * zMin * zMin);
-        float XY = 0.5 * (xMax * xMax - xMin * xMin) * 0.5 * (yMax * yMax - yMin * yMin);
-        float XZ = 0.5 * (xMax * xMax - xMin * xMin) * 0.5 * (zMax * zMax - zMin * zMin);
-        float YZ = 0.5 * (yMax * yMax - yMin * yMin) * 0.5 * (zMax * zMax - zMin * zMin);
 
-        interia_tensor = density * glm::transpose(glm::mat3(
-            Y2+Z2, -XY, -XZ,
-            -XY, X2+Z2, -YZ,
-            -XZ, -YZ, X2+Y2
-        ));
 
+        auto rotQ = glm::angleAxis(glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        quaternion = rotQ * quaternion;
     }
 
     void LoadMeshTo(std::shared_ptr<Device> device);
@@ -107,13 +128,13 @@ public:
 
     glm::mat4 ModelMatrix() { 
         auto to = glm::toMat4(quaternion);
-        auto ea = glm::eulerAngles(quaternion);
         return glm::toMat4(quaternion) * Mat::identity();
     }
 
-    glm::mat3 interia_tensor; // wzgledem poczatku ukladu wspolrzednych
+    glm::mat3 inertia_tensor, inv_inertia_tensor; // wzgledem poczatku ukladu wspolrzednych
     float density = 1.0f;
-    float mass, mass_center;
+    float mass;
+    glm::vec3 mass_center;
     glm::quat quaternion = glm::quat(1, 0, 0, 0); // (cos(0), 0,0,0) // brak obrotu 
    
 
@@ -123,7 +144,8 @@ private:
     float maxSize = 1.0f;
     float minSize = 0.0f;
     float xMin, yMin, zMin, xMax, yMax, zMax;
-    glm::mat4 initial_rotation = Mat::rotationX(std::atan2f(1, std::sqrt(2))) * Mat::rotationZ(glm::radians(45.0f));
+    glm::vec3 n, N, W, Wt;
+    glm::vec3 g = { 0, -9.81, 0 };
 };
 
 

@@ -14,7 +14,7 @@ void Scene::UpdateViewFrustrum(int width, int height)
 void Scene::DrawOn(std::shared_ptr<Device> device)
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	box->DrawModelOn(device);
+	cube->DrawModelOn(device);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	plane->DrawModelOn(device);
 }
@@ -25,11 +25,11 @@ void Scene::Update()
 
 	//if (box->need_update)
 	{
-		shader = box->shader;
+		shader = cube->shader;
 		shader->use();
-		shader->set4Float("objectColor", box->color);
-		shader->setMatrix4F("modelMtx", box->ModelMatrix());
-		box->need_update = false;
+		shader->set4Float("objectColor", cube->color);
+		shader->setMatrix4F("modelMtx", cube->ModelMatrix());
+		cube->need_update = false;
 	}
 
 	//if (plane->need_update)
@@ -45,9 +45,9 @@ void Scene::Update()
 	{
 		UpdateProjViewMtx();
 
-		shader = box->shader;
+		shader = cube->shader;
 		shader->use();
-		box->shader->setMatrix4F("projViewMtx", m_viewProjMtx);
+		cube->shader->setMatrix4F("projViewMtx", m_viewProjMtx);
 
 		shader = plane->shader;
 		shader->use();

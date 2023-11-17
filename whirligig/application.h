@@ -56,4 +56,7 @@ private:
 	SpringSimulator ss = SpringSimulator();
 	bool start = false;
 	int speed = 1;
+	double time = 0;
+	double dt = 0;
+	double step = 0.01;
 };

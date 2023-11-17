@@ -26,7 +26,7 @@ public:
 	void DrawOn(std::shared_ptr<Device> device);
 	void Update();
 	
-	shared_ptr<Cube> box;
+	shared_ptr<Cube> cube;
 	shared_ptr<Plane> plane;
 	shared_ptr<Light> light;
 	shared_ptr<FpsCamera> camera;
