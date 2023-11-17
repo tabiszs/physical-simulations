@@ -1562,7 +1562,7 @@ void ShowPlotContextMenu(ImPlotPlot& plot) {
     if ((ImGui::BeginMenu("Settings"))) {
         if (ImGui::MenuItem("Equal", nullptr, ImHasFlag(plot.Flags, ImPlotFlags_Equal)))
             ImFlipFlag(plot.Flags, ImPlotFlags_Equal);
-        if (ImGui::MenuItem("Box Select",nullptr,!ImHasFlag(plot.Flags, ImPlotFlags_NoBoxSelect)))
+        if (ImGui::MenuItem("Cube Select",nullptr,!ImHasFlag(plot.Flags, ImPlotFlags_NoBoxSelect)))
             ImFlipFlag(plot.Flags, ImPlotFlags_NoBoxSelect);
         BeginDisabledControls(plot.TitleOffset == -1);
         if (ImGui::MenuItem("Title",nullptr,plot.HasTitle()))

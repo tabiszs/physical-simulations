@@ -1,4 +1,5 @@
 #include "device.h"
+#include "shader.h"
 
 void Device::RenderToTheScreen()
 {
@@ -10,102 +11,102 @@ void Device::RenderToTheTexture(GLint framebufferName)
 	glBindFramebuffer(GL_FRAMEBUFFER, framebufferName);
 }
 
-//void Device::LoadMesh(std::shared_ptr<BaseModel> model)
-//{
-//	LoadMesh(model.get());
-//}
-//
-//void Device::LoadMesh(BaseModel* model)
-//{
-//	//Binding
-//	glGenVertexArrays(1, &model->VAO);
-//	glBindVertexArray(model->VAO);
-//
-//	//VBO Information
-//	glGenBuffers(1, &model->VBO);
-//	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
-//	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * model->GetNoVertices(), model->GetVertices().data(), GL_STATIC_DRAW);
-//
-//	//IBO Information
-//	glGenBuffers(1, &model->IBO);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
-//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * model->GetNoIndices(), model->GetIndices().data(), GL_STATIC_DRAW);
-//
-//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-//	glEnableVertexAttribArray(0);
-//
-//	//Unbinding
-//	glBindVertexArray(0);
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//}
-//
-//void Device::LoadPositionsAndTextureCoords(BaseModel* model)
-//{
-//	//Binding
-//	glGenVertexArrays(1, &model->VAO);
-//	glBindVertexArray(model->VAO);
-//
-//	//VBO Information
-//	glGenBuffers(1, &model->VBO);
-//	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
-//	glBufferData(GL_ARRAY_BUFFER, 5 * sizeof(GLfloat) * model->GetNoVertices(), model->GetVertices().data(), GL_STATIC_DRAW);
-//
-//	//IBO Information
-//	glGenBuffers(1, &model->IBO);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
-//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * model->GetNoIndices(), model->GetIndices().data(), GL_STATIC_DRAW);
-//
-//	// position attribute
-//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-//	glEnableVertexAttribArray(0);
-//
-//	// texture coord attribute
-//	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-//	glEnableVertexAttribArray(1);
-//
-//	//Unbinding
-//	glBindVertexArray(0);
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//}
-//void Device::UpdateMesh(BaseModel* model)
-//{
-//	glBindVertexArray(model->VAO);
-//
-//	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
-//	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat) * model->GetNoVertices(), model->GetVertices().data(), GL_STATIC_DRAW);
-//
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
-//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * model->GetNoIndices(), model->GetIndices().data(), GL_STATIC_DRAW);
-//
-//	glBindVertexArray(0);
-//	glBindBuffer(GL_ARRAY_BUFFER, 0);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//}
-//void Device::DrawTraingles(BaseModel* model)
-//{
-//	//Binding
-//	glBindVertexArray(model->VAO);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
-//
-//	//Rendering
-//	glDrawElements(GL_TRIANGLES, model->GetNoIndices(), GL_UNSIGNED_INT, 0);
-//
-//	//Unbinding	
-//	glBindVertexArray(0);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//}
-//
-//void Device::DrawTraingles(BaseModel* model, int count, int offset)
-//{
-//	glBindVertexArray(model->VAO);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
-//	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
-//	glBindVertexArray(0);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-//}
-//
+void Device::LoadMesh(std::shared_ptr<Object> model)
+{
+	LoadMesh(model.get());
+}
+
+void Device::LoadMesh(Object* model)
+{
+	//Binding
+	glGenVertexArrays(1, &model->VAO);
+	glBindVertexArray(model->VAO);
+
+	//VBO Information
+	glGenBuffers(1, &model->VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * model->vertices.size(), model->vertices.data(), GL_STATIC_DRAW);
+
+	//IBO Information
+	glGenBuffers(1, &model->IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * model->indices.size(), model->indices.data(), GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
+
+	//Unbinding
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void Device::LoadPositionsAndTextureCoords(Object* model)
+{
+	//Binding
+	glGenVertexArrays(1, &model->VAO);
+	glBindVertexArray(model->VAO);
+
+	//VBO Information
+	glGenBuffers(1, &model->VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
+	glBufferData(GL_ARRAY_BUFFER, 5 * sizeof(GLfloat) * model->vertices.size(), model->vertices.data(), GL_STATIC_DRAW);
+
+	//IBO Information
+	glGenBuffers(1, &model->IBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * model->indices.size(), model->indices.data(), GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// texture coord attribute
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	//Unbinding
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+void Device::UpdateMesh(Object* model)
+{
+	glBindVertexArray(model->VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * model->vertices.size(), model->vertices.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * model->indices.size(), model->indices.data(), GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+void Device::DrawTraingles(Object* model)
+{
+	//Binding
+	glBindVertexArray(model->VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
+
+	//Rendering
+	glDrawElements(GL_TRIANGLES, model->indices.size(), GL_UNSIGNED_INT, 0);
+
+	//Unbinding	
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void Device::DrawTraingles(Object* model, int count, int offset)
+{
+	glBindVertexArray(model->VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, model->IBO);
+	glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 //void Device::DrawLines(std::shared_ptr<BaseModel> model)
 //{
 //	DrawLines(model.get());

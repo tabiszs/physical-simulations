@@ -1580,7 +1580,7 @@ void Demo_Querying() {
         init = false;
     }
 
-    ImGui::BulletText("Box select and left click mouse to create a new query rect.");
+    ImGui::BulletText("Cube select and left click mouse to create a new query rect.");
     ImGui::BulletText("Ctrl + click in the plot area to draw points.");
 
     if (ImGui::Button("Clear Queries"))

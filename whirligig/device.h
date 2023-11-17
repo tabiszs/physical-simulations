@@ -1,19 +1,19 @@
 #pragma once
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
-//#include "models/baseModel.h"
+#include "Object.h"
 
 class Device
 {
 public:
 	void RenderToTheScreen();
 	void RenderToTheTexture(GLint framebufferName);
-	//void LoadMesh(std::shared_ptr<BaseModel> model);
-	//void LoadMesh(BaseModel* model);
-	//void LoadPositionsAndTextureCoords(BaseModel* model);
-	//void UpdateMesh(BaseModel* model);
-	//void DrawTraingles(BaseModel* model);
-	//void DrawTraingles(BaseModel* model, int count, int offset);
+	void LoadMesh(std::shared_ptr<Object> model);
+	void LoadMesh(Object* model);
+	void LoadPositionsAndTextureCoords(Object* model);
+	void UpdateMesh(Object* model);
+	void DrawTraingles(Object* model);
+	void DrawTraingles(Object* model, int count, int offset);
 	//void DrawLines(std::shared_ptr<BaseModel> model);
 	//void DrawLines(BaseModel* model);
 	//void DrawLines(BaseModel* model, int count, int offset);

@@ -9,7 +9,10 @@ public:
 	void Init();
 	void Delete();
 
-	std::shared_ptr<Shader> simpleShader;
+	std::shared_ptr<Shader> cubeShader;
+	std::shared_ptr<Shader> planeShader;
+	std::shared_ptr<Shader> diagonalShader;
+	std::shared_ptr<Shader> trajectoryShader;
 	std::shared_ptr<Shader> pointShader;
 	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> bezierShader;

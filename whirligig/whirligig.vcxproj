@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="glad.c" />
@@ -38,16 +39,20 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mat.cpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="ShaderHolder.cpp" />
     <ClCompile Include="SpringSimulator.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="ViewFrustrum.cpp" />
+    <ClCompile Include="WhirligigSimulator.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="device.h" />
     <ClInclude Include="imGuiBuilder.h" />
@@ -64,13 +69,20 @@
     <ClInclude Include="Implot\implot_internal.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="mat.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="ShaderHolder.h" />
     <ClInclude Include="SpringSimulator.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="ViewFrustrum.h" />
+    <ClInclude Include="WhirligigSimulator.h" />
     <ClInclude Include="window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\simple.fs" />
+    <None Include="Shaders\simple.vs" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

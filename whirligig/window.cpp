@@ -3,6 +3,10 @@
 #include <stdexcept>
 #include <string>
 
+#include"imgui.h"
+#include"imgui_impl_glfw.h"
+#include"imgui_impl_opengl3.h"
+
 Window::Window(int width, int height, const char* title)
     : m_Fullscreen(false), m_Width(width), m_Height(height), m_Title(title) {
     initGLFW();
@@ -99,7 +103,31 @@ void Window::static_KeyCallback(GLFWwindow* window, int key, int scancode, int a
 }
 
 void Window::keyCallback(int key, int scancode, int action, int mods) {
+    ImGuiIO& io = ImGui::GetIO();
+    if (!io.WantCaptureKeyboard)
+    {
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+            glfwSetWindowShouldClose(m_Window, true);
+        if (key == GLFW_KEY_F11 && action == GLFW_RELEASE)
+            setFullscreen();
 
+        auto& camera = scene->camera;
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = std::min(currentFrame - lastFrame, 0.1f);
+        lastFrame = currentFrame;
+        if (glfwGetKey(m_Window, GLFW_KEY_W) == GLFW_PRESS)
+            camera->MoveTarget(FORWARD, deltaTime);
+        if (glfwGetKey(m_Window, GLFW_KEY_S) == GLFW_PRESS)
+            camera->MoveTarget(BACKWARD, deltaTime);
+        if (glfwGetKey(m_Window, GLFW_KEY_A) == GLFW_PRESS)
+            camera->MoveTarget(LEFT, deltaTime);
+        if (glfwGetKey(m_Window, GLFW_KEY_D) == GLFW_PRESS)
+            camera->MoveTarget(RIGHT, deltaTime);
+        if (glfwGetKey(m_Window, GLFW_KEY_E) == GLFW_PRESS)
+            camera->MoveTarget(UP, deltaTime);
+        if (glfwGetKey(m_Window, GLFW_KEY_Q) == GLFW_PRESS)
+            camera->MoveTarget(DOWN, deltaTime);
+    }
 }
 
 void Window::setMouseCallback()
@@ -116,7 +144,19 @@ void Window::static_MouseCursorPosCallback(GLFWwindow* window, double xpos, doub
 
 void Window::mouseCursorPosCallback(double xpos, double ypos)
 {
-
+    ImGuiIO& io = ImGui::GetIO();
+    if (!io.WantCaptureMouse)
+    {
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos;
+        if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+        {
+            auto& camera = scene->camera;
+            camera->Rotate(xoffset * ROTATION_SPEED, yoffset * ROTATION_SPEED);
+        }
+    }
+    lastX = xpos;
+    lastY = ypos;
 }
 
 void Window::static_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -145,7 +185,12 @@ void Window::static_ScrollCallback(GLFWwindow* window, double xoffset, double yo
 
 void Window::scrollCallback(double xoffset, double yoffset)
 {
-
+    ImGuiIO& io = ImGui::GetIO();
+    if (!io.WantCaptureMouse)
+    {
+        auto& camera = scene->camera;
+        camera->Zoom(yoffset * ZOOM_SPEED);
+    }
 }
 
 float Window::ScreenToClipSpaceX(float xpos)
