@@ -29,6 +29,11 @@ void Scene::Update()
 		shader->use();
 		shader->set4Float("objectColor", cube->color);
 		shader->setMatrix4F("modelMtx", cube->ModelMatrix());
+
+		shader = cube->diagonal_shader;
+		shader->use();
+		shader->set4Float("objectColor", cube->diagonal_color);
+		shader->setMatrix4F("modelMtx", cube->ModelMatrix());
 		cube->need_update = false;
 	}
 
@@ -50,6 +55,10 @@ void Scene::Update()
 		cube->shader->setMatrix4F("projViewMtx", m_viewProjMtx);
 
 		shader = plane->shader;
+		shader->use();
+		plane->shader->setMatrix4F("projViewMtx", m_viewProjMtx);
+
+		shader = cube->diagonal_shader;
 		shader->use();
 		plane->shader->setMatrix4F("projViewMtx", m_viewProjMtx);
 

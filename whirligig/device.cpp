@@ -107,23 +107,23 @@ void Device::DrawTraingles(Object* model, int count, int offset)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-//void Device::DrawLines(std::shared_ptr<BaseModel> model)
-//{
-//	DrawLines(model.get());
-//}
-//
-//void Device::DrawLines(BaseModel* model)
-//{
-//	DrawLines(model, model->GetNoIndices(), 0);
-//}
-//
-//void Device::DrawLines(BaseModel* model, int count, int offset)
-//{
-//	glBindVertexArray(model->VAO);
-//	glDrawElements(GL_LINES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
-//	glBindVertexArray(0);
-//}
-//
+void Device::DrawLines(std::shared_ptr<Object> model)
+{
+	DrawLines(model.get());
+}
+
+void Device::DrawLines(Object* model)
+{
+	DrawLines(model, model->indices.size(), 0);
+}
+
+void Device::DrawLines(Object* model, int count, int offset)
+{
+	glBindVertexArray(model->VAO);
+	glDrawElements(GL_LINES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
+	glBindVertexArray(0);
+}
+
 //void Device::DrawLinesStrip(BaseModel* model)
 //{
 //	DrawLinesStrip(model, model->GetNoIndices(), 0);

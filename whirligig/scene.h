@@ -5,7 +5,7 @@
 #include "shader.h"
 #include "device.h"
 #include "ViewFrustrum.h"
-#include "Box.h"
+#include "Cube.h"
 #include "Plane.h"
 
 

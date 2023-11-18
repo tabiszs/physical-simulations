@@ -14,9 +14,9 @@ public:
 	void UpdateMesh(Object* model);
 	void DrawTraingles(Object* model);
 	void DrawTraingles(Object* model, int count, int offset);
-	//void DrawLines(std::shared_ptr<BaseModel> model);
-	//void DrawLines(BaseModel* model);
-	//void DrawLines(BaseModel* model, int count, int offset);
+	void DrawLines(std::shared_ptr<Object> model);
+	void DrawLines(Object* model);
+	void DrawLines(Object* model, int count, int offset);
 	//void DrawLinesStrip(BaseModel* model);
 	//void DrawLinesStrip(BaseModel* model, int count, int offset);
 	//void DrawLinesAdjcency(BaseModel* model);

@@ -20,63 +20,38 @@ public:
         xMin = yMin = zMin = minSize;
         xMax = yMax = zMax = maxSize;
         vertices = {
-            minSize, minSize,minSize, // triangle 1 : begin
-            minSize, minSize, maxSize,
-            minSize, maxSize, maxSize, // triangle 1 : end
-            maxSize, maxSize,minSize, // triangle 2 : begin
-            minSize, minSize,minSize,
-            minSize, maxSize,minSize, // triangle 2 : end
-            maxSize, minSize, maxSize,
-            minSize, minSize,minSize,
-            maxSize, minSize,minSize,
-            maxSize, maxSize,minSize,
-            maxSize, minSize,minSize,
-            minSize, minSize,minSize,
-            minSize, minSize,minSize,
-            minSize, maxSize, maxSize,
-            minSize, maxSize,minSize,
-            maxSize, minSize, maxSize,
-            minSize, minSize, maxSize,
-            minSize, minSize,minSize,
-            minSize, maxSize, maxSize,
-            minSize, minSize, maxSize,
-            maxSize, minSize, maxSize,
-            maxSize, maxSize, maxSize,
-            maxSize, minSize, minSize,
-            maxSize, maxSize, minSize,
-            maxSize, minSize, minSize,
-            maxSize, maxSize, maxSize,
-            maxSize, minSize, maxSize,
-            maxSize, maxSize, maxSize,
-            maxSize, maxSize, minSize,
-            minSize, maxSize, minSize,
-            maxSize, maxSize, maxSize,
-            minSize, maxSize, minSize,
-            minSize, maxSize, maxSize,
-            maxSize, maxSize, maxSize,
-            minSize, maxSize, maxSize,
-            maxSize, minSize, maxSize
+                xMin, yMin, zMax, //0
+                xMax, yMin, zMax, //1
+                xMin, yMax, zMax, //2
+                xMax, yMax, zMax, //3
+                xMin, yMin, zMin, //4
+                xMax, yMin, zMin, //5
+                xMin, yMax, zMin, //6
+                xMax, yMax, zMin  //7
         };
         indices = {
-            0,1,2,
-            3,4,5,
+            4,1,2,
+            7,4,6,
 
-            6,7,8,
-            9,10,11,
+            1,4,5,
+            7,5,4,
 
-            12,13,14,
-            15,16,17,
+            4,2,6,
+            1,0,4,
 
-            18,19,20,
-            21,22,23,
+            2,0,1,
+            3,5,7,
 
-            24,25,26,
-            27,28,29,
+            5,3,1,
+            3,7,6,
 
-            30,31,32,
-            33,34,35
+            3,6,2,
+            3,2,1,
+
+            3,4 // diagonal line
         };
         shader = ShaderHolder::Get().cubeShader;
+        diagonal_shader = ShaderHolder::Get().diagonal_shader;
         SetProperties();
     }
 
@@ -180,6 +155,8 @@ public:
     float inflection = 0.0f;
     int trajectory_length = 1000;
     bool use_gravitation = false;
+    std::shared_ptr<Shader> diagonal_shader;
+    float diagonal_color[4] = { 0.0f, 1.0f, 0.0f, 1.0f };
 private:
     float minSize = 0.0f;
     float xMin, yMin, zMin, xMax, yMax, zMax;

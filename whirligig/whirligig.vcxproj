@@ -20,7 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
-    <ClCompile Include="Box.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="device.cpp" />
     <ClCompile Include="glad.c" />
@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
-    <ClInclude Include="Box.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="device.h" />
     <ClInclude Include="imGuiBuilder.h" />
