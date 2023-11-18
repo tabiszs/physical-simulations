@@ -12,7 +12,7 @@ public:
 	std::vector<GLfloat> vertices;
 	std::vector<GLuint> indices;
 	GLuint VAO, VBO, IBO;
-	bool need_update = false;
+	bool need_update = true;
 
 private:
 	

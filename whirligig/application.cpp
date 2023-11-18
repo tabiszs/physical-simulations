@@ -24,6 +24,9 @@ Application::Application()
 	auto plane = make_shared<Plane>();
 	plane->LoadMeshTo(device);
 	scene->plane = plane;
+	auto trajectory = make_shared<Trajectory>();
+	trajectory->LoadMeshTo(device);
+	scene->trajectory = trajectory;
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }
@@ -81,31 +84,6 @@ void Application::Menu()
 	ImGui::End();
 }
 
-void Application::SelectFunction(const int& type, FunctionParameters& fun)
-{
-	switch (type)
-	{
-	case SpringSimulator::FunctionType::Constant:
-		fun.aGui();
-		break;
-	case SpringSimulator::FunctionType::Sharp:
-		fun.aGui();
-		fun.tGui();
-		break;
-	case SpringSimulator::FunctionType::Sign:
-		fun.aGui();
-		fun.wGui();
-		fun.phiGui();
-		break;
-	case SpringSimulator::FunctionType::Sin:
-		fun.aGui();
-		fun.wGui();
-		fun.phiGui();
-		break;
-	}
-	ImGui::Separator();
-}
-
 void Application::Update()
 {
 	device->CleanColor(backgroundColor);
@@ -120,6 +98,8 @@ void Application::Update()
 		while (dt > step)
 		{
 			scene->cube->Update(step);
+			glm::vec3 cone = scene->cube->GetConeCoordinates();
+			scene->trajectory->push_back(cone);
 			dt -= step;
 		}	
 	}

@@ -37,11 +37,9 @@ private:
 	void Render();	
 	void Swap();
 
-	void SelectFunction(const int& type, FunctionParameters& fun);
-
 	int width = 1200;
 	int height = 800;
-	const char* title = "Phisics Simulations in Virtual Environment - Spring";
+	const char* title = "Physics Simulations in Virtual Environment - Whirligig";
 	float backgroundColor[4] = { 0.07f, 0.13f, 0.17f, 1.0f };
 	glm::vec3 initTarget = glm::vec3(0.0f, 3.0f, 3.0f);
 	float initDistance = 10.0f;

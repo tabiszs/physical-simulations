@@ -3,6 +3,8 @@
 void Plane::LoadMeshTo(std::shared_ptr<Device> device)
 {
 	device->LoadMesh((Object*)this);
+	shader->use();
+	shader->set4Float("objectColor", color);
 }
 
 void Plane::UpdateMeshTo(std::shared_ptr<Device> device)

@@ -45,6 +45,7 @@
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="ShaderHolder.cpp" />
     <ClCompile Include="SpringSimulator.cpp" />
+    <ClCompile Include="Trajectory.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="ViewFrustrum.cpp" />
     <ClCompile Include="WhirligigSimulator.cpp" />
@@ -75,6 +76,7 @@
     <ClInclude Include="shader.h" />
     <ClInclude Include="ShaderHolder.h" />
     <ClInclude Include="SpringSimulator.h" />
+    <ClInclude Include="Trajectory.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="ViewFrustrum.h" />
     <ClInclude Include="WhirligigSimulator.h" />

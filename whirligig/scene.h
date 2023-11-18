@@ -7,6 +7,7 @@
 #include "ViewFrustrum.h"
 #include "Cube.h"
 #include "Plane.h"
+#include "Trajectory.h"
 
 
 using namespace std;
@@ -28,10 +29,11 @@ public:
 	
 	shared_ptr<Cube> cube;
 	shared_ptr<Plane> plane;
+	shared_ptr<Trajectory> trajectory;
 	shared_ptr<Light> light;
 	shared_ptr<FpsCamera> camera;
 	shared_ptr<ViewFrustrum> viewFrustrum;
-	bool showCube, showTrajectory, showDiagonal, showPlane;
+	bool showCube=true, showTrajectory=true, showDiagonal=true, showPlane=true;
 private:
 	void UpdateProjViewMtx();
 

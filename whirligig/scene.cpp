@@ -13,40 +13,51 @@ void Scene::UpdateViewFrustrum(int width, int height)
 
 void Scene::DrawOn(std::shared_ptr<Device> device)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	cube->DrawModelOn(device);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	plane->DrawModelOn(device);
+	if (showCube)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		cube->DrawModelOn(device);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	if(showDiagonal)
+		cube->DrawDiagonalOn(device);
+	if (showPlane)
+		plane->DrawModelOn(device);
+	if (showTrajectory)
+		trajectory->DrawModelOn(device);
 }
 
 void Scene::Update()
 {
 	std::shared_ptr<Shader> shader;
 
-	//if (box->need_update)
+	if (trajectory->need_update)
+	{
+		trajectory->UpdateMeshTo(device);
+		trajectory->need_update = false;
+	}
+	
+	if (cube->need_update)
 	{
 		shader = cube->shader;
 		shader->use();
-		shader->set4Float("objectColor", cube->color);
 		shader->setMatrix4F("modelMtx", cube->ModelMatrix());
 
 		shader = cube->diagonal_shader;
 		shader->use();
-		shader->set4Float("objectColor", cube->diagonal_color);
 		shader->setMatrix4F("modelMtx", cube->ModelMatrix());
 		cube->need_update = false;
 	}
 
-	//if (plane->need_update)
+	if (plane->need_update)
 	{
 		shader = plane->shader;
 		shader->use();
-		shader->set4Float("objectColor", plane->color);
 		shader->setMatrix4F("modelMtx", plane->ModelMatrix());
 		plane->need_update = false;
 	}
 
-	//if (camera->NeedUpdate() || viewFrustrum->NeedUpdate())
+	if (camera->NeedUpdate() || viewFrustrum->NeedUpdate())
 	{
 		UpdateProjViewMtx();
 
@@ -69,6 +80,5 @@ void Scene::Update()
 
 void Scene::UpdateProjViewMtx()
 {
-	m_viewProjMtx = viewFrustrum->getProjectionMatrix() * camera->ViewMatrix();
-	
+	m_viewProjMtx = viewFrustrum->getProjectionMatrix() * camera->ViewMatrix();	
 }

@@ -30,7 +30,7 @@ public:
                 xMax, yMax, zMin  //7
         };
         indices = {
-            4,1,2,
+            4,1,2, // triangles
             7,4,6,
 
             1,4,5,
@@ -124,21 +124,26 @@ public:
             + b_j[2] * k_2q
             + b_j[3] * k_3q);
 
-
         // mnozenie kwaternionow = zlozenie obrotow
         // mnozenie znormalizowanych wektorow = znormalizowany wektor
         quaternion = glm::normalize(newQ) * quaternion; 
         W = newW;
+        need_update = true;
+    }
+
+    glm::vec3 GetConeCoordinates()
+    {
+        return ModelMatrix() * glm::vec4(xMax, yMax, zMax, 1.0f);
+    }
+
+    glm::mat4 ModelMatrix() {
+        return glm::toMat4(quaternion);
     }
 
     void LoadMeshTo(std::shared_ptr<Device> device);
     void UpdateMeshTo(std::shared_ptr<Device> device);
     void DrawModelOn(std::shared_ptr<Device> device);
-
-    glm::mat4 ModelMatrix() { 
-        auto to = glm::toMat4(quaternion);
-        return glm::toMat4(quaternion) * Mat::identity();
-    }
+    void DrawDiagonalOn(std::shared_ptr<Device> device);
 
     glm::mat3 inertia_tensor, inv_inertia_tensor; // wzgledem poczatku ukladu wspolrzednych
     glm::quat quaternion = glm::quat(1, 0, 0, 0); // (cos(0), 0,0,0) // brak obrotu 
