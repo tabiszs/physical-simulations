@@ -76,65 +76,59 @@ public:
         ));
         inv_inertia_tensor = glm::inverse(inertia_tensor);
 
-        W = quaternion * w; // == conjugate(q) * w * q
+        W = Q * w; // == conjugate(q) * w * q
     }
 
     void SetQuaternion()
     {
-        quaternion = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }) * glm::quat({ 1,0,0,0 }); // obrot o 45st wokol osi z // przyklad z katami eulera
-        quaternion = glm::angleAxis(std::atan2f(1.0f, std::sqrt(2.0f)), glm::vec3(-1.0f, 0.0f, 0.0f)) * quaternion; // obrot o atan(sqrt(2)) // przyklad - os & kat
-        quaternion = glm::angleAxis(inflection, glm::vec3(0.0f, 0.0f, -1.0f)) * quaternion;
+        Q = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }) * glm::quat({ 1,0,0,0 }); // obrot o 45st wokol osi z // przyklad z katami eulera
+        Q = glm::angleAxis(std::atan2f(1.0f, std::sqrt(2.0f)), glm::vec3(-1.0f, 0.0f, 0.0f)) * Q; // obrot o atan(sqrt(2)) // przyklad - os & kat
+        Q = glm::angleAxis(inflection, glm::vec3(0.0f, 0.0f, -1.0f)) * Q;
         need_update = true;
     }
 
     void Update(float t)
     {
-        auto dWdt = [this](glm::vec3 v) {
+        auto dWdt = [this](glm::quat Q, glm::vec3 W) {
             auto IxWt = glm::cross((inertia_tensor * W*dt), W*dt);
             if (use_gravitation)
             {
-                auto mc = quaternion * mass_center;
+                auto mc = Q * mass_center;
                 auto r = mc - glm::vec3(0.0f, 0.0f, 0.0f);
                 auto f = mass * g;
                 n = glm::cross(r, f);
-                N = glm::conjugate(quaternion) * n;
+                N = glm::conjugate(Q) * n;
                 IxWt += N;
             }
             Wt = inv_inertia_tensor * IxWt;
             return Wt;
         };
 
-        auto dQdt = [this](glm::quat Q) {
+        auto dQdt = [this](glm::quat Q, glm::vec3 W) {
             glm::quat Qt = 0.5f * Q*dt * W*dt;
             return Qt;
         };
 
         // RungeKutty4
-        glm::vec3 k_0 = dWdt(W);
-        glm::vec3 k_1 = dWdt(W + dt * 0.5f * k_0);
-        glm::vec3 k_2 = dWdt(W + dt * 0.5f * k_1);
-        glm::vec3 k_3 = dWdt(W + dt * 1.0f * k_2);
-        auto newW = W + dt*(
-            + b_j[0] * k_0
-            + b_j[1] * k_1
-            + b_j[2] * k_2
-            + b_j[3] * k_3);
+        glm::vec3 k0_w = dt * dWdt(Q,W);
+        glm::quat k0_q = dt * dQdt(Q,W);
 
-        // RungeKutty4
-        glm::quat k_0q = dQdt(quaternion);
-        glm::quat k_1q = dQdt(quaternion + dt * 0.5f * k_0q);
-        glm::quat k_2q = dQdt(quaternion + dt * 0.5f * k_1q);
-        glm::quat k_3q = dQdt(quaternion + dt * 1.0f * k_2q);
-        auto newQ = dt*(
-            + b_j[0] * k_0q
-            + b_j[1] * k_1q
-            + b_j[2] * k_2q
-            + b_j[3] * k_3q);
+        glm::vec3 k1_w = dt * dWdt(Q + k0_q / 2.0f, W + k0_w / 2.0f);
+        glm::quat k1_q = dt * dQdt(Q + k0_q / 2.0f, W + k0_w / 2.0f);
+
+        glm::vec3 k2_w = dt * dWdt(Q + k1_q / 2.0f, W + k1_w / 2.0f);
+        glm::quat k2_q = dt * dQdt(Q + k1_q / 2.0f, W + k1_w / 2.0f);
+
+        glm::vec3 k3_w = dt * dWdt(Q + k2_q, W + k2_w);
+        glm::quat k3_q = dt * dQdt(Q + k2_q, W + k2_w);
+
+        auto Wt = (k0_w + 2.0f * k1_w + 2.0f * k2_w + k3_w) / 6.0f;
+        auto Qt = glm::normalize((k0_q + 2.0f * k1_q + 2.0f * k2_q + k3_q) / 6.0f);
 
         // mnozenie kwaternionow = zlozenie obrotow
         // mnozenie znormalizowanych wektorow = znormalizowany wektor
-        quaternion = glm::normalize(newQ) * quaternion; 
-        W = newW;
+        Q = Qt * Q;
+        W += Wt;
         need_update = true;
     }
 
@@ -144,7 +138,7 @@ public:
     }
 
     glm::mat4 ModelMatrix() {
-        return glm::toMat4(quaternion);
+        return glm::toMat4(Q);
     }
 
     void ChangedInflection()
@@ -158,7 +152,7 @@ public:
     void DrawDiagonalOn(std::shared_ptr<Device> device);
 
     glm::mat3 inertia_tensor, inv_inertia_tensor; // wzgledem poczatku ukladu wspolrzednych
-    glm::quat quaternion = glm::quat(1, 0, 0, 0); // (cos(0), 0,0,0) // brak obrotu 
+    glm::quat Q = glm::quat(1, 0, 0, 0); // (cos(0), 0,0,0) // brak obrotu 
     const float hp = glm::half_pi<float>();
     glm::vec3 w = glm::vec3(hp, hp, hp); // pi/2 rad na sek
     glm::vec3 mass_center;
@@ -167,7 +161,7 @@ public:
 
     float color[4] = { 0.8f, 0.2f, 0.5f, 0.5f };
     bool visible = true;
-    float dt = 0.01f;
+    float dt = 0.1f;
     float maxSize = 1.0f;
     float inflection = 0.0f;
     bool use_gravitation = false;
