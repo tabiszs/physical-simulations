@@ -45,15 +45,10 @@ void Application::Menu()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 
-	bool open = true;
-	//ImGui::ShowDemoWindow(&open);
-
-	//ImPlot::ShowDemoWindow();
-
-	ImGui::Begin("Menu");
-	// Controlls
+	ImGui::Begin("Controls");
 	if (ImGui::Button("Start")) {
 		start = true;
+		scene->cube->SetProperties();
 		time = glfwGetTime();
 		dt = 0;
 	}
@@ -62,26 +57,27 @@ void Application::Menu()
 	}
 	if (ImGui::Button("Reset")) {
 		start = false;
-		ss.Reset();
+		 ss.Reset();
+		 scene->cube->SetProperties();
 	}
 	ImGui::Separator();
 
-	// Components
-	bool cube, trajectory, diagonal, plane;
 	ImGui::Text("Components");
-	ImGui::Checkbox("Cube",&cube);
-	ImGui::Checkbox("Cube Diagonal", &diagonal);
-	ImGui::Checkbox("Cube Trajectory", &trajectory);
-	ImGui::Checkbox("Ground Plane", &plane);
+	ImGui::Checkbox("Cube",&scene->showCube);
+	ImGui::Checkbox("Cube Diagonal", &scene->showDiagonal);
+	ImGui::Checkbox("Cube Trajectory", &scene->showTrajectory);
+	ImGui::Checkbox("Ground Plane", &scene->showPlane);
 	ImGui::Separator();
-	
-	// Initial Conditions
-	// wymiary
-	// gestosc
-	// wychylenie
-	// predkosc katowa
-	// dlugosc wyswietlanej trajektorii
-	// wlaczenie wylaczenie grawitacji
+
+	ImGui::Text("Initial Conditions");
+	ImGui::PushItemFlag(ImGuiItemFlags_Disabled, start);
+	ImGui::SliderFloat("Cube size", &scene->cube->maxSize, 1.0f, 2.0f);
+	ImGui::SliderFloat("Cube density", &scene->cube->density, 0.1f, 10.f);
+	ImGui::SliderAngle("Cube inflection", &scene->cube->inflection, 0.0f, 90.0f);
+	ImGui::SliderFloat("Cube angular momentum", &(scene->cube->w.y), 0, 10); // co to oznacza??
+	ImGui::SliderInt("Trajectory length", &(scene->cube->trajectory_length), 1000, 1000000);
+	ImGui::PopItemFlag();
+	ImGui::Checkbox("Use gravitation", &scene->cube->use_gravitation);
 	ImGui::End();
 }
 
@@ -119,14 +115,13 @@ void Application::Update()
 		dt += time2 - time;
 		time = time2;
 
+		dt *= speed;
+		auto step = scene->cube->dt;
 		while (dt > step)
 		{
-			scene->cube->Update();
+			scene->cube->Update(step);
 			dt -= step;
-		}
-		//for (int i = 0; i < speed; ++i) {
-		//	ss.Update();
-		//}		
+		}	
 	}
 	
 	scene->Update();

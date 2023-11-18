@@ -79,13 +79,13 @@ private:
 
 public:	
 	float mass = 1;
-	float dt = 0.01;
+	float dt = 0.01f;
 	float bounce = 1;
 	float spring_length = 2;
 	float spring_deviation = 2;
 	float initial_deviation = 1;
 	float v0 = 0;
-	float k = 0.1;
+	float k = 0.1f;
 
 	float q = initial_deviation;
 	float v = v0;

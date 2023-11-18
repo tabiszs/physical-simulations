@@ -3,12 +3,14 @@
 #include <string>
 #include <cmath>
 #include <memory>
+#include <functional>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "Object.h"
 #include "device.h"
+#include "WhirligigSimulator.h"
 
 class Cube : public Object
 {
@@ -18,42 +20,42 @@ public:
         xMin = yMin = zMin = minSize;
         xMax = yMax = zMax = maxSize;
         vertices = {
-    minSize,minSize,minSize, // triangle 1 : begin
-    minSize,minSize, maxSize,
-    minSize, maxSize, maxSize, // triangle 1 : end
-    maxSize, maxSize,minSize, // triangle 2 : begin
-    minSize,minSize,minSize,
-    minSize, maxSize,minSize, // triangle 2 : end
-    maxSize,minSize, maxSize,
-    minSize,minSize,minSize,
-    maxSize,minSize,minSize,
-    maxSize, maxSize,minSize,
-    maxSize,minSize,minSize,
-    minSize,minSize,minSize,
-    minSize,minSize,minSize,
-    minSize, maxSize, maxSize,
-    minSize, maxSize,minSize,
-    maxSize,minSize, maxSize,
-    minSize,minSize, maxSize,
-    minSize,minSize,minSize,
-    minSize, maxSize, maxSize,
-    minSize,minSize, maxSize,
-    maxSize,minSize, maxSize,
-    maxSize, maxSize, maxSize,
-    maxSize,minSize,minSize,
-    maxSize, maxSize,minSize,
-    maxSize,minSize,minSize,
-    maxSize, maxSize, maxSize,
-    maxSize,minSize, maxSize,
-    maxSize, maxSize, maxSize,
-    maxSize, maxSize,minSize,
-    minSize, maxSize,minSize,
-    maxSize, maxSize, maxSize,
-    minSize, maxSize,minSize,
-    minSize, maxSize, maxSize,
-    maxSize, maxSize, maxSize,
-    minSize, maxSize, maxSize,
-    maxSize, minSize, maxSize
+            minSize, minSize,minSize, // triangle 1 : begin
+            minSize, minSize, maxSize,
+            minSize, maxSize, maxSize, // triangle 1 : end
+            maxSize, maxSize,minSize, // triangle 2 : begin
+            minSize, minSize,minSize,
+            minSize, maxSize,minSize, // triangle 2 : end
+            maxSize, minSize, maxSize,
+            minSize, minSize,minSize,
+            maxSize, minSize,minSize,
+            maxSize, maxSize,minSize,
+            maxSize, minSize,minSize,
+            minSize, minSize,minSize,
+            minSize, minSize,minSize,
+            minSize, maxSize, maxSize,
+            minSize, maxSize,minSize,
+            maxSize, minSize, maxSize,
+            minSize, minSize, maxSize,
+            minSize, minSize,minSize,
+            minSize, maxSize, maxSize,
+            minSize, minSize, maxSize,
+            maxSize, minSize, maxSize,
+            maxSize, maxSize, maxSize,
+            maxSize, minSize, minSize,
+            maxSize, maxSize, minSize,
+            maxSize, minSize, minSize,
+            maxSize, maxSize, maxSize,
+            maxSize, minSize, maxSize,
+            maxSize, maxSize, maxSize,
+            maxSize, maxSize, minSize,
+            minSize, maxSize, minSize,
+            maxSize, maxSize, maxSize,
+            minSize, maxSize, minSize,
+            minSize, maxSize, maxSize,
+            maxSize, maxSize, maxSize,
+            minSize, maxSize, maxSize,
+            maxSize, minSize, maxSize
         };
         indices = {
             0,1,2,
@@ -75,17 +77,14 @@ public:
             33,34,35
         };
         shader = ShaderHolder::Get().cubeShader;
-
-        // poczatkowe ustawienie 
-        quaternion = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }) * quaternion; // obrot o 45st wokol osi z // przyklad z katami eulera
-        quaternion = glm::angleAxis(std::atan2f(1, std::sqrt(2)), glm::vec3(-1.0f, 0.0f, 0.0f)) * quaternion; // obrot o atan(sqrt(2)) // przyklad - os & kat
-   
-        W = { 0,0,0 };
-        UpdateProperties();
+        SetProperties();
     }
 
-    void UpdateProperties()
+    void SetProperties()
     {
+        quaternion = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }) * glm::quat({ 1,0,0,0 }); // obrot o 45st wokol osi z // przyklad z katami eulera
+        quaternion = glm::angleAxis(std::atan2f(1.0f, std::sqrt(2.0f)), glm::vec3(-1.0f, 0.0f, 0.0f)) * quaternion; // obrot o atan(sqrt(2)) // przyklad - os & kat
+        
         mass = density * (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
         mass_center = density * 0.5f * glm::vec3((xMax * xMax - xMin * xMin), (yMax * yMax - yMin * yMin), (zMax * zMax - zMin * zMin)) / mass;
 
@@ -103,23 +102,58 @@ public:
         ));
         inv_inertia_tensor = glm::inverse(inertia_tensor);
 
-        auto r = mass_center - glm::vec3(0.0f, 0.0f, 0.0f);
-        auto f = mass * g;
-        n = glm::cross(r, f);
-        N = glm::conjugate(quaternion) * n;
-
-        auto IxWt = N + glm::cross((inertia_tensor * W), W);
-        Wt = inv_inertia_tensor * IxWt;
-
-        
+        W = quaternion * w; // == conjugate(q) * w * q
     }
 
-    void Update()
+    void Update(float t)
     {
+        auto dWdt = [this](glm::vec3 v) {
+            auto IxWt = glm::cross((inertia_tensor * W*dt), W*dt);
+            if (use_gravitation)
+            {
+                auto mc = quaternion * mass_center;
+                auto r = mc - glm::vec3(0.0f, 0.0f, 0.0f);
+                auto f = mass * g;
+                n = glm::cross(r, f);
+                N = glm::conjugate(quaternion) * n;
+                IxWt += N;
+            }
+            Wt = inv_inertia_tensor * IxWt;
+            return Wt;
+        };
+
+        auto dQdt = [this](glm::quat Q) {
+            glm::quat Qt = 0.5f * Q*dt * W*dt;
+            return Qt;
+        };
+
+        // RungeKutty4
+        glm::vec3 k_0 = dWdt(W);
+        glm::vec3 k_1 = dWdt(W + dt * 0.5f * k_0);
+        glm::vec3 k_2 = dWdt(W + dt * 0.5f * k_1);
+        glm::vec3 k_3 = dWdt(W + dt * 1.0f * k_2);
+        auto newW = W + dt*(
+            + b_j[0] * k_0
+            + b_j[1] * k_1
+            + b_j[2] * k_2
+            + b_j[3] * k_3);
+
+        // RungeKutty4
+        glm::quat k_0q = dQdt(quaternion);
+        glm::quat k_1q = dQdt(quaternion + dt * 0.5f * k_0q);
+        glm::quat k_2q = dQdt(quaternion + dt * 0.5f * k_1q);
+        glm::quat k_3q = dQdt(quaternion + dt * 1.0f * k_2q);
+        auto newQ = dt*(
+            + b_j[0] * k_0q
+            + b_j[1] * k_1q
+            + b_j[2] * k_2q
+            + b_j[3] * k_3q);
 
 
-        auto rotQ = glm::angleAxis(glm::radians(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        quaternion = rotQ * quaternion;
+        // mnozenie kwaternionow = zlozenie obrotow
+        // mnozenie znormalizowanych wektorow = znormalizowany wektor
+        quaternion = glm::normalize(newQ) * quaternion; 
+        W = newW;
     }
 
     void LoadMeshTo(std::shared_ptr<Device> device);
@@ -132,20 +166,35 @@ public:
     }
 
     glm::mat3 inertia_tensor, inv_inertia_tensor; // wzgledem poczatku ukladu wspolrzednych
+    glm::quat quaternion = glm::quat(1, 0, 0, 0); // (cos(0), 0,0,0) // brak obrotu 
+    const float hp = glm::half_pi<float>();
+    glm::vec3 w = glm::vec3(hp, hp, hp); // pi/2 rad na sek
+    glm::vec3 mass_center;
     float density = 1.0f;
     float mass;
-    glm::vec3 mass_center;
-    glm::quat quaternion = glm::quat(1, 0, 0, 0); // (cos(0), 0,0,0) // brak obrotu 
-   
 
     float color[4] = { 0.8f, 0.2f, 0.5f, 0.5f };
     bool visible = true;
-private:
+    float dt = 0.01f;
     float maxSize = 1.0f;
+    float inflection = 0.0f;
+    int trajectory_length = 1000;
+    bool use_gravitation = false;
+private:
     float minSize = 0.0f;
     float xMin, yMin, zMin, xMax, yMax, zMax;
     glm::vec3 n, N, W, Wt;
-    glm::vec3 g = { 0, -9.81, 0 };
+    glm::vec3 g = { 0, -9.81f, 0 };
+
+    // Runge Kutty Coefficients
+    glm::mat4 a_ij = glm::transpose(glm::mat4(
+        0, 0, 0, 0,
+        0.5f, 0, 0, 0,
+        0, 0.5f, 0, 0,
+        0, 0, 1.0f, 0
+    ));
+    glm::vec4 c_i = { 0, 0.5, 0.5, 1 };
+    glm::vec4 b_j = { 1. / 6, 1. / 3, 1. / 3, 1. / 6 };
 };
 
 

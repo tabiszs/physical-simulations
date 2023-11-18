@@ -31,6 +31,7 @@ public:
 	shared_ptr<Light> light;
 	shared_ptr<FpsCamera> camera;
 	shared_ptr<ViewFrustrum> viewFrustrum;
+	bool showCube, showTrajectory, showDiagonal, showPlane;
 private:
 	void UpdateProjViewMtx();
 

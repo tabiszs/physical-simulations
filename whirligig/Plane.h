@@ -29,7 +29,7 @@ public:
 
 	glm::mat4 ModelMatrix() { return Mat::scale({ 3,3,3 })*Mat::identity(); }
 
-	float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
+	float color[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 	bool visible = true;
 };
 
