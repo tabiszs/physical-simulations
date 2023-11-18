@@ -57,9 +57,8 @@ public:
 
     void SetProperties()
     {
-        quaternion = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }) * glm::quat({ 1,0,0,0 }); // obrot o 45st wokol osi z // przyklad z katami eulera
-        quaternion = glm::angleAxis(std::atan2f(1.0f, std::sqrt(2.0f)), glm::vec3(-1.0f, 0.0f, 0.0f)) * quaternion; // obrot o atan(sqrt(2)) // przyklad - os & kat
-        
+        SetQuaternion();
+
         mass = density * (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
         mass_center = density * 0.5f * glm::vec3((xMax * xMax - xMin * xMin), (yMax * yMax - yMin * yMin), (zMax * zMax - zMin * zMin)) / mass;
 
@@ -78,6 +77,14 @@ public:
         inv_inertia_tensor = glm::inverse(inertia_tensor);
 
         W = quaternion * w; // == conjugate(q) * w * q
+    }
+
+    void SetQuaternion()
+    {
+        quaternion = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }) * glm::quat({ 1,0,0,0 }); // obrot o 45st wokol osi z // przyklad z katami eulera
+        quaternion = glm::angleAxis(std::atan2f(1.0f, std::sqrt(2.0f)), glm::vec3(-1.0f, 0.0f, 0.0f)) * quaternion; // obrot o atan(sqrt(2)) // przyklad - os & kat
+        quaternion = glm::angleAxis(inflection, glm::vec3(0.0f, 0.0f, -1.0f)) * quaternion;
+        need_update = true;
     }
 
     void Update(float t)
@@ -140,6 +147,11 @@ public:
         return glm::toMat4(quaternion);
     }
 
+    void ChangedInflection()
+    {
+        SetQuaternion();
+    }
+
     void LoadMeshTo(std::shared_ptr<Device> device);
     void UpdateMeshTo(std::shared_ptr<Device> device);
     void DrawModelOn(std::shared_ptr<Device> device);
@@ -158,7 +170,6 @@ public:
     float dt = 0.01f;
     float maxSize = 1.0f;
     float inflection = 0.0f;
-    int trajectory_length = 1000;
     bool use_gravitation = false;
     std::shared_ptr<Shader> diagonal_shader;
     float diagonal_color[4] = { 0.0f, 1.0f, 0.0f, 1.0f };

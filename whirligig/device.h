@@ -17,8 +17,8 @@ public:
 	void DrawLines(std::shared_ptr<Object> model);
 	void DrawLines(Object* model);
 	void DrawLines(Object* model, int count, int offset);
-	//void DrawLinesStrip(BaseModel* model);
-	//void DrawLinesStrip(BaseModel* model, int count, int offset);
+	void DrawLinesStrip(Object* model);
+	void DrawLinesStrip(Object* model, int count, int offset);
 	//void DrawLinesAdjcency(BaseModel* model);
 	//void DrawLinesAdjcency(BaseModel* model, int count, int offset);
 	//void DrawPoints(std::shared_ptr<BaseModel> model);

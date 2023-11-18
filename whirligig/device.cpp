@@ -124,18 +124,18 @@ void Device::DrawLines(Object* model, int count, int offset)
 	glBindVertexArray(0);
 }
 
-//void Device::DrawLinesStrip(BaseModel* model)
-//{
-//	DrawLinesStrip(model, model->GetNoIndices(), 0);
-//}
-//
-//void Device::DrawLinesStrip(BaseModel* model, int count, int offset)
-//{
-//	glBindVertexArray(model->VAO);
-//	glDrawElements(GL_LINE_STRIP, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
-//	glBindVertexArray(0);
-//}
-//
+void Device::DrawLinesStrip(Object* model)
+{
+	DrawLinesStrip(model, model->indices.size(), 0);
+}
+
+void Device::DrawLinesStrip(Object* model, int count, int offset)
+{
+	glBindVertexArray(model->VAO);
+	glDrawElements(GL_LINE_STRIP, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
+	glBindVertexArray(0);
+}
+
 //void Device::DrawLinesAdjcency(BaseModel* model)
 //{
 //	DrawLinesAdjcency(model, model->GetNoIndices(), 0);

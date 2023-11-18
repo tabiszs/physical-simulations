@@ -17,7 +17,7 @@ void ShaderHolder::Init()
 	cubeShader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
 	planeShader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
 	diagonal_shader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
-	trajectoryShader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
+	trajectoryShader = std::shared_ptr<Shader>(new Shader("shaders/pointVS.glsl", "shaders/pointFS.glsl"));
 	pointShader = std::shared_ptr<Shader>(new Shader("shaders/pointVS.glsl", "shaders/pointFS.glsl"));
 	oldPointShader = std::shared_ptr<Shader>(new Shader("shaders/point.vs", "shaders/point.fs"));
 	bezierShader = std::shared_ptr<Shader>(new Shader("shaders/bezierVS.glsl", "shaders/bezierFS.glsl", "shaders/bezierGS.glsl"));

@@ -217,5 +217,17 @@
     <None Include="Shaders\simple.vs">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Shaders\pointFS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\pointVS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\point.fs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\point.vs">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

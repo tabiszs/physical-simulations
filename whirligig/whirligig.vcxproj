@@ -83,6 +83,10 @@
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\point.fs" />
+    <None Include="Shaders\point.vs" />
+    <None Include="Shaders\pointFS.glsl" />
+    <None Include="Shaders\pointVS.glsl" />
     <None Include="Shaders\simple.fs" />
     <None Include="Shaders\simple.vs" />
   </ItemGroup>

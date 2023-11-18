@@ -52,6 +52,7 @@ void Application::Menu()
 	if (ImGui::Button("Start")) {
 		start = true;
 		scene->cube->SetProperties();
+		scene->trajectory->Clean();
 		time = glfwGetTime();
 		dt = 0;
 	}
@@ -60,8 +61,8 @@ void Application::Menu()
 	}
 	if (ImGui::Button("Reset")) {
 		start = false;
-		 ss.Reset();
-		 scene->cube->SetProperties();
+		scene->cube->SetProperties();
+		scene->trajectory->Clean();
 	}
 	ImGui::Separator();
 
@@ -76,11 +77,13 @@ void Application::Menu()
 	ImGui::PushItemFlag(ImGuiItemFlags_Disabled, start);
 	ImGui::SliderFloat("Cube size", &scene->cube->maxSize, 1.0f, 2.0f);
 	ImGui::SliderFloat("Cube density", &scene->cube->density, 0.1f, 10.f);
-	ImGui::SliderAngle("Cube inflection", &scene->cube->inflection, 0.0f, 90.0f);
-	ImGui::SliderFloat("Cube angular momentum", &(scene->cube->w.y), 0, 10); // co to oznacza??
-	ImGui::SliderInt("Trajectory length", &(scene->cube->trajectory_length), 1000, 1000000);
+	if (ImGui::SliderAngle("Cube inflection", &scene->cube->inflection, 0.0f, 90.0f))
+		scene->cube->ChangedInflection();
+	ImGui::SliderFloat("Cube angular momentum", &(scene->cube->w.y), 0, 10); // rad/s w kierunku y na scenie
+	ImGui::SliderInt("Trajectory length", &(scene->trajectory->length), 1000, scene->trajectory->max_trajectory);
 	ImGui::PopItemFlag();
 	ImGui::Checkbox("Use gravitation", &scene->cube->use_gravitation);
+	ImGui::SliderInt("Speed", &speed, 1, 100);
 	ImGui::End();
 }
 
@@ -102,8 +105,7 @@ void Application::Update()
 			scene->trajectory->push_back(cone);
 			dt -= step;
 		}	
-	}
-	
+	}	
 	scene->Update();
 }
 

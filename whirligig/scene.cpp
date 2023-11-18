@@ -63,15 +63,19 @@ void Scene::Update()
 
 		shader = cube->shader;
 		shader->use();
-		cube->shader->setMatrix4F("projViewMtx", m_viewProjMtx);
+		shader->setMatrix4F("projViewMtx", m_viewProjMtx);
 
 		shader = plane->shader;
 		shader->use();
-		plane->shader->setMatrix4F("projViewMtx", m_viewProjMtx);
+		shader->setMatrix4F("projViewMtx", m_viewProjMtx);
 
 		shader = cube->diagonal_shader;
 		shader->use();
-		plane->shader->setMatrix4F("projViewMtx", m_viewProjMtx);
+		shader->setMatrix4F("projViewMtx", m_viewProjMtx);
+
+		shader = trajectory->shader;
+		shader->use();
+		shader->setMatrix4F("projViewMtx", m_viewProjMtx);
 
 		camera->Updated();
 		viewFrustrum->Updated();
