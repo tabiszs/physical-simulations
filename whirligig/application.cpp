@@ -79,11 +79,12 @@ void Application::Menu()
 	ImGui::SliderFloat("Cube density", &scene->cube->density, 0.1f, 10.f);
 	if (ImGui::SliderAngle("Cube inflection", &scene->cube->inflection, 0.0f, 90.0f))
 		scene->cube->ChangedInflection();
-	ImGui::SliderFloat("Cube angular momentum", &(scene->cube->w.y), 0, 10); // rad/s w kierunku y na scenie
+	ImGui::SliderFloat("Cube angular momentum", &(scene->cube->velocity), 0, 10); // rad/s w kierunku y na scenie
 	ImGui::SliderInt("Trajectory length", &(scene->trajectory->length), 1000, scene->trajectory->max_trajectory);
 	ImGui::PopItemFlag();
 	ImGui::Checkbox("Use gravitation", &scene->cube->use_gravitation);
 	ImGui::SliderInt("Speed", &speed, 1, 100);
+	ImGui::SliderFloat("Step", &scene->cube->dt, 0.001f, 1.0f);
 	ImGui::End();
 }
 
@@ -97,7 +98,7 @@ void Application::Update()
 		time = time2;
 
 		dt *= speed;
-		auto step = scene->cube->dt;
+		auto step = scene->cube->dt;		
 		while (dt > step)
 		{
 			scene->cube->Update(step);

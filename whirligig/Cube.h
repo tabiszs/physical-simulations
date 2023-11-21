@@ -60,7 +60,8 @@ public:
         SetQuaternion();
 
         mass = density * (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
-        mass_center = density * 0.5f * glm::vec3((xMax * xMax - xMin * xMin), (yMax * yMax - yMin * yMin), (zMax * zMax - zMin * zMin)) / mass;
+        //mass_center = density * 0.5f * glm::vec3((xMax * xMax - xMin * xMin), (yMax * yMax - yMin * yMin), (zMax * zMax - zMin * zMin)) / mass;
+        mass_center = glm::vec3(0, sqrt(3) / 2, 0);
 
         float X2 = 1.0f / 3 * (xMax * xMax * xMax - xMin * xMin * xMin);
         float Y2 = 1.0f / 3 * (yMax * yMax * yMax - yMin * yMin * yMin);
@@ -69,20 +70,38 @@ public:
         float XZ = 0.5f * (xMax * xMax - xMin * xMin) * 0.5f * (zMax * zMax - zMin * zMin);
         float YZ = 0.5f * (yMax * yMax - yMin * yMin) * 0.5f * (zMax * zMax - zMin * zMin);
 
-        inertia_tensor = density * glm::transpose(glm::mat3(
-            Y2 + Z2, -XY, -XZ,
-            -XY, X2 + Z2, -YZ,
-            -XZ, -YZ, X2 + Y2
-        ));
-        inv_inertia_tensor = glm::inverse(inertia_tensor);
+        //inertia_tensor = density * glm::mat3(
+        //    Y2 + Z2, -XY, -XZ,
+        //    -XY, X2 + Z2, -YZ,
+        //    -XZ, -YZ, X2 + Y2
+        //);
 
-        W = Q * w; // == conjugate(q) * w * q
+        //inv_inertia_tensor = density * glm::mat3(
+        //    1.0f/(Y2 + Z2), -1.0f/XY, -1.0f/XZ,
+        //    -1.0f/XY, 1.0f/(X2 + Z2), -1.0f/YZ,
+        //    -1.0f/XZ, -1.0f/YZ, 1.0f/(X2 + Y2)
+        //);
+
+        inertia_tensor = density * glm::mat3(
+            0.9167, 0, 0,
+            0, 0.1667, 0,
+            0, 0, 0.9167
+        );
+
+        inv_inertia_tensor = density * glm::mat3(
+            1.0f / 0.9167, 0,0,
+            0, 1.0f / 0.1667, 0,
+            0,0, 1.0f / 0.9167
+        );
+        W = glm::vec3(0, velocity, 0);
     }
 
     void SetQuaternion()
     {
-        Q = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }) * glm::quat({ 1,0,0,0 }); // obrot o 45st wokol osi z // przyklad z katami eulera
-        Q = glm::angleAxis(std::atan2f(1.0f, std::sqrt(2.0f)), glm::vec3(-1.0f, 0.0f, 0.0f)) * Q; // obrot o atan(sqrt(2)) // przyklad - os & kat
+        frameQ = glm::quat({ 0.0f, 0.0f, glm::radians(45.0f) }); // obrot o 45st wokol osi z // przyklad z katami eulera
+        frameQ = glm::angleAxis(std::atan2f(1.0f, std::sqrt(2.0f)), glm::vec3(-1.0f, 0.0f, 0.0f)) * frameQ; // obrot o atan(sqrt(2)) // przyklad - os & kat
+        
+        Q = glm::quat(1, 0, 0, 0);
         Q = glm::angleAxis(inflection, glm::vec3(0.0f, 0.0f, -1.0f)) * Q;
         need_update = true;
     }
@@ -90,14 +109,13 @@ public:
     void Update(float t)
     {
         auto dWdt = [this](glm::quat Q, glm::vec3 W) {
-            auto IxWt = glm::cross((inertia_tensor * W*dt), W*dt);
+            auto IxWt = - glm::cross((inertia_tensor * W), W);
             if (use_gravitation)
             {
-                auto mc = Q * mass_center;
-                auto r = mc - glm::vec3(0.0f, 0.0f, 0.0f);
-                auto f = mass * g;
-                n = glm::cross(r, f);
-                N = glm::conjugate(Q) * n;
+                auto G = glm::conjugate(Q) * glm::quat(0,g) * Q;
+                glm::vec3 F = mass * glm::vec3(G.x,G.y,G.z);
+                glm::vec3 R = mass_center - glm::vec3(0.0f, 0.0f, 0.0f);
+                N = glm::cross(R, F);
                 IxWt += N;
             }
             Wt = inv_inertia_tensor * IxWt;
@@ -105,7 +123,7 @@ public:
         };
 
         auto dQdt = [this](glm::quat Q, glm::vec3 W) {
-            glm::quat Qt = 0.5f * Q*dt * W*dt;
+            glm::quat Qt = 0.5f * Q * glm::quat(0,W);
             return Qt;
         };
 
@@ -123,11 +141,9 @@ public:
         glm::quat k3_q = dt * dQdt(Q + k2_q, W + k2_w);
 
         auto Wt = (k0_w + 2.0f * k1_w + 2.0f * k2_w + k3_w) / 6.0f;
-        auto Qt = glm::normalize((k0_q + 2.0f * k1_q + 2.0f * k2_q + k3_q) / 6.0f);
+        auto Qt = (k0_q + 2.0f * k1_q + 2.0f * k2_q + k3_q) / 6.0f;
 
-        // mnozenie kwaternionow = zlozenie obrotow
-        // mnozenie znormalizowanych wektorow = znormalizowany wektor
-        Q = Qt * Q;
+        Q = glm::normalize(Q + Qt);
         W += Wt;
         need_update = true;
     }
@@ -138,7 +154,7 @@ public:
     }
 
     glm::mat4 ModelMatrix() {
-        return glm::toMat4(Q);
+        return glm::toMat4(Q) * glm::toMat4(frameQ);
     }
 
     void ChangedInflection()
@@ -151,17 +167,18 @@ public:
     void DrawModelOn(std::shared_ptr<Device> device);
     void DrawDiagonalOn(std::shared_ptr<Device> device);
 
-    glm::mat3 inertia_tensor, inv_inertia_tensor; // wzgledem poczatku ukladu wspolrzednych
+    glm::mat3 inertia_tensor, inv_inertia_tensor; // wzgledem poczatku ukladu wspolrzednych w bryle
     glm::quat Q = glm::quat(1, 0, 0, 0); // (cos(0), 0,0,0) // brak obrotu 
+    glm::quat frameQ;
     const float hp = glm::half_pi<float>();
-    glm::vec3 w = glm::vec3(hp, hp, hp); // pi/2 rad na sek
+    float velocity = hp; // pi/2 rad na sek
     glm::vec3 mass_center;
     float density = 1.0f;
     float mass;
 
     float color[4] = { 0.8f, 0.2f, 0.5f, 0.5f };
     bool visible = true;
-    float dt = 0.1f;
+    float dt = 0.01f;
     float maxSize = 1.0f;
     float inflection = 0.0f;
     bool use_gravitation = false;
