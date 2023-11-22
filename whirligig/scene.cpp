@@ -13,6 +13,9 @@ void Scene::UpdateViewFrustrum(int width, int height)
 
 void Scene::DrawOn(std::shared_ptr<Device> device)
 {
+	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+
 	if (showPlane)
 		plane->DrawModelOn(device);
 	if (showCube)
@@ -25,6 +28,9 @@ void Scene::DrawOn(std::shared_ptr<Device> device)
 		cube->DrawDiagonalOn(device);
 	if (showTrajectory)
 		trajectory->DrawModelOn(device);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 }
 
 void Scene::Update()

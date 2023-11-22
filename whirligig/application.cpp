@@ -29,9 +29,6 @@ Application::Application()
 	scene->trajectory = trajectory;
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
-
-	glDisable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
 }
 
 void Application::MainLoop()
