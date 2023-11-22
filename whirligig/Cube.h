@@ -60,7 +60,6 @@ public:
         SetQuaternion();
 
         mass = density * (xMax - xMin) * (yMax - yMin) * (zMax - zMin);
-        //mass_center = density * 0.5f * glm::vec3((xMax * xMax - xMin * xMin), (yMax * yMax - yMin * yMin), (zMax * zMax - zMin * zMin)) / mass;
         mass_center = glm::vec3(0, sqrt(3) / 2, 0);
 
         float X2 = 1.0f / 3 * (xMax * xMax * xMax - xMin * xMin * xMin);
@@ -70,29 +69,33 @@ public:
         float XZ = 0.5f * (xMax * xMax - xMin * xMin) * 0.5f * (zMax * zMax - zMin * zMin);
         float YZ = 0.5f * (yMax * yMax - yMin * yMin) * 0.5f * (zMax * zMax - zMin * zMin);
 
-        //inertia_tensor = density * glm::mat3(
-        //    Y2 + Z2, -XY, -XZ,
-        //    -XY, X2 + Z2, -YZ,
-        //    -XZ, -YZ, X2 + Y2
-        //);
-
-        //inv_inertia_tensor = density * glm::mat3(
-        //    1.0f/(Y2 + Z2), -1.0f/XY, -1.0f/XZ,
-        //    -1.0f/XY, 1.0f/(X2 + Z2), -1.0f/YZ,
-        //    -1.0f/XZ, -1.0f/YZ, 1.0f/(X2 + Y2)
-        //);
-
+        // version 1 - implicit
         inertia_tensor = density * glm::mat3(
             0.9167, 0, 0,
             0, 0.1667, 0,
             0, 0, 0.9167
         );
-
         inv_inertia_tensor = density * glm::mat3(
             1.0f / 0.9167, 0,0,
             0, 1.0f / 0.1667, 0,
             0,0, 1.0f / 0.9167
         );
+
+        // version 2 - transformation to axis on main diagonal: I_transformed = R * I conj(R)
+        //inertia_tensor = density * glm::toMat4(frameQ) * glm::mat4(
+        //    Y2 + Z2, -XY, -XZ, 0,
+        //    -XY, X2 + Z2, -YZ, 0,
+        //    -XZ, -YZ, X2 + Y2, 0,
+        //    0, 0, 0, 1
+        //) * glm::toMat4(glm::conjugate(frameQ));
+
+        //inv_inertia_tensor = density * glm::toMat4(frameQ) * glm::mat4(
+        //    1.0f/(Y2 + Z2), -1.0f/XY, -1.0f/XZ, 0,
+        //    -1.0f/XY, 1.0f/(X2 + Z2), -1.0f/YZ, 0,
+        //    -1.0f/XZ, -1.0f/YZ, 1.0f/(X2 + Y2), 0,
+        //    0,          0,          0,          1
+        //) * glm::toMat4(glm::conjugate(frameQ));
+
         W = glm::vec3(0, velocity, 0);
     }
 
@@ -167,7 +170,7 @@ public:
     void DrawModelOn(std::shared_ptr<Device> device);
     void DrawDiagonalOn(std::shared_ptr<Device> device);
 
-    glm::mat3 inertia_tensor, inv_inertia_tensor; // wzgledem poczatku ukladu wspolrzednych w bryle
+    glm::mat3 inertia_tensor, inv_inertia_tensor; // wzgledem poczatku ukladu wspolrzednych w bryle z osia Y na glownej przekanej
     glm::quat Q = glm::quat(1, 0, 0, 0); // (cos(0), 0,0,0) // brak obrotu 
     glm::quat frameQ;
     const float hp = glm::half_pi<float>();

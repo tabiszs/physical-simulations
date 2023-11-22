@@ -13,6 +13,8 @@ void Scene::UpdateViewFrustrum(int width, int height)
 
 void Scene::DrawOn(std::shared_ptr<Device> device)
 {
+	if (showPlane)
+		plane->DrawModelOn(device);
 	if (showCube)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -21,8 +23,6 @@ void Scene::DrawOn(std::shared_ptr<Device> device)
 	}
 	if(showDiagonal)
 		cube->DrawDiagonalOn(device);
-	if (showPlane)
-		plane->DrawModelOn(device);
 	if (showTrajectory)
 		trajectory->DrawModelOn(device);
 }
