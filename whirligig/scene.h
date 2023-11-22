@@ -9,6 +9,10 @@
 #include "Plane.h"
 #include "Trajectory.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+#include <implot.h>
 
 using namespace std;
 
@@ -24,18 +28,21 @@ public:
 	}
 	void SetDevice(shared_ptr<Device> device);
 	void UpdateViewFrustrum(int width, int height);
-	void DrawOn(std::shared_ptr<Device> device);
-	void Update();
-	
-	shared_ptr<Cube> cube;
-	shared_ptr<Plane> plane;
-	shared_ptr<Trajectory> trajectory;
+	virtual void DrawOn(std::shared_ptr<Device> device);
+	virtual void Update();
+	virtual void Menu();
+
 	shared_ptr<Light> light;
 	shared_ptr<FpsCamera> camera;
 	shared_ptr<ViewFrustrum> viewFrustrum;
-	bool showCube=true, showTrajectory=true, showDiagonal=true, showPlane=true;
-private:
+
+	bool start = false;
+	int speed = 1;
+	double time = 0;
+	double dt = 0;
+protected:
 	void UpdateProjViewMtx();
+	void SetProjViewMtx(const std::shared_ptr<Shader> shader);
 
 	std::shared_ptr<Scene> getptr()
 	{

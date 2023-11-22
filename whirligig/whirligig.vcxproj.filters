@@ -120,6 +120,12 @@
     <ClCompile Include="Trajectory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WhirligigScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JellyScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -207,6 +213,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Trajectory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WhirligigScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JellyScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

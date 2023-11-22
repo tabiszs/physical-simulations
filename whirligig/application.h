@@ -18,6 +18,8 @@
 #include "window.h"
 #include "device.h"
 #include "SpringSimulator.h"
+#include "WhirligigScene.h"
+#include "JellyScene.h"
 
 
 using namespace std;
@@ -50,11 +52,7 @@ private:
 
 	shared_ptr<Window> window;
 	shared_ptr<Device> device;
-	shared_ptr<Scene> scene;
+	shared_ptr<WhirligigScene> whirligig_scene;
+	shared_ptr<JellyScene> jelly_scene;
 	SpringSimulator ss = SpringSimulator();
-	bool start = false;
-	int speed = 1;
-	double time = 0;
-	double dt = 0;
-	double step = 0.01;
 };
