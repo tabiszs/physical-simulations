@@ -24,6 +24,8 @@ void ShaderHolder::Init()
 	pointShader = std::shared_ptr<Shader>(new Shader("shaders/pointSizeVS.glsl", "shaders/pointFS.glsl"));
 	surfaceC0Shader = std::make_shared<Shader>("shaders/bicubicVS.glsl", "shaders/bicubicFS.glsl", "shaders/bicubicTCS.glsl", "shaders/deCasteljauTES.glsl");
 
+	cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
+
 	oldPointShader = std::shared_ptr<Shader>(new Shader("shaders/point.vs", "shaders/point.fs"));
 	bezierShader = std::shared_ptr<Shader>(new Shader("shaders/bezierVS.glsl", "shaders/bezierFS.glsl", "shaders/bezierGS.glsl"));
 	stereoscopyShader = std::shared_ptr<Shader>(new Shader("shaders/stereoscopyVS.glsl", "shaders/stereoscopyFS.glsl"));
@@ -42,6 +44,8 @@ void ShaderHolder::Delete()
 	if (frameShader != nullptr)	glDeleteProgram(frameShader->ID);
 	if (pointShader != nullptr)		glDeleteProgram(pointShader->ID);
 	if (surfaceC0Shader != nullptr) glDeleteProgram(surfaceC0Shader->ID);
+
+	if (cursorShader != nullptr) glDeleteProgram(cursorShader->ID);
 
 	if (oldPointShader != nullptr)	glDeleteProgram(oldPointShader->ID);
 	if (bezierShader != nullptr)	glDeleteProgram(bezierShader->ID);

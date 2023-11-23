@@ -15,5 +15,5 @@ void Plane::UpdateMeshTo(std::shared_ptr<Device> device)
 void Plane::DrawModelOn(std::shared_ptr<Device> device)
 {
 	shader->use();
-	device->DrawTraingles((Object*)this);
+	device->DrawTriangles((Object*)this);
 }

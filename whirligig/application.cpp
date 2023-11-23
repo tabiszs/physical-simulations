@@ -6,6 +6,7 @@
 #include "imGuiBuilder.h"
 #include "Cube.h"
 #include "ControlCube.h"
+#include "Cursor.h"
 
 Application::Application()
 {
@@ -43,6 +44,14 @@ Application::Application()
 	bezier_cube->LoadMeshTo(device);
 	jelly_scene->bezier_cube = bezier_cube;
 
+	interpolation_scene = std::make_shared<InterpolationScene>(camera, light, viewFrustum);
+	interpolation_scene->SetDevice(device);
+	interpolation_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
+	window->ImportScene(interpolation_scene);
+	auto cursor = make_shared<Cursor>();
+	cursor->LoadMeshTo(device);
+	interpolation_scene->cursorQ = cursor;
+
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }
 
@@ -64,20 +73,23 @@ void Application::Menu()
 	ImGui::NewFrame();
 
 	//whirligig_scene->Menu();
-	jelly_scene->Menu();
+	//jelly_scene->Menu();
+	interpolation_scene->Menu();
 }
 
 void Application::Update()
 {
 	device->CleanColor(backgroundColor);
 	//whirligig_scene->Update();
-	jelly_scene->Update();
+	//jelly_scene->Update();
+	interpolation_scene->Update();
 }
 
 void Application::Render()
 {
 	//whirligig_scene->DrawOn(device);
-	jelly_scene->DrawOn(device);
+	//jelly_scene->DrawOn(device);
+	interpolation_scene->DrawOn(device);
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

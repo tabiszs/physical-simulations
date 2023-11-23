@@ -20,6 +20,7 @@
 #include "SpringSimulator.h"
 #include "WhirligigScene.h"
 #include "JellyScene.h"
+#include "InterpolationScene.h"
 
 
 using namespace std;
@@ -41,7 +42,7 @@ private:
 
 	int width = 1200;
 	int height = 800;
-	const char* title = "Physics Simulations in Virtual Environment - Whirligig";
+	const char* title = "Physics Simulations in Virtual Environment - Interpolation Movement";
 	float backgroundColor[4] = { 0.07f, 0.13f, 0.17f, 1.0f };
 	glm::vec3 initTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 	float initDistance = 10.0f;
@@ -54,5 +55,6 @@ private:
 	shared_ptr<Device> device;
 	shared_ptr<WhirligigScene> whirligig_scene;
 	shared_ptr<JellyScene> jelly_scene;
+	shared_ptr<InterpolationScene> interpolation_scene;
 	SpringSimulator ss = SpringSimulator();
 };

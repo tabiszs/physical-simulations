@@ -135,6 +135,12 @@
     <ClCompile Include="BezierCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InterpolationScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -239,6 +245,12 @@
     <ClInclude Include="BezierCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InterpolationScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cursor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\simple.fs">
@@ -272,6 +284,12 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Shaders\pointSizeVS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\cursorFS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\cursorVS.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

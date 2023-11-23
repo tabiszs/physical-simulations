@@ -6,7 +6,12 @@ void Scene::SetDevice(shared_ptr<Device> device)
 	this->device = device;
 }
 
-void Scene::UpdateViewFrustrum(int width, int height)
+void Scene::SetViewport(float width, float height)
+{
+	glViewport(0, 0, width, height);
+}
+
+void Scene::UpdateViewFrustum(int width, int height)
 {
 	viewFrustrum->setViewportSize({ width, height });
 }

@@ -17,7 +17,7 @@ void WhirligigCube::UpdateMeshTo(std::shared_ptr<Device> device)
 void WhirligigCube::DrawModelOn(std::shared_ptr<Device> device)
 {
 	shader->use();
-	device->DrawTraingles((Object*)this, indices.size() - 2, 0);
+	device->DrawTriangles((Object*)this, indices.size() - 2, 0);
 }
 
 void WhirligigCube::DrawDiagonalOn(std::shared_ptr<Device> device)

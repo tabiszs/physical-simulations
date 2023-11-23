@@ -27,7 +27,8 @@ public:
 		UpdateProjViewMtx();
 	}
 	void SetDevice(shared_ptr<Device> device);
-	void UpdateViewFrustrum(int width, int height);
+	virtual void SetViewport(float width, float height);
+	virtual void UpdateViewFrustum(int width, int height);
 	virtual void DrawOn(std::shared_ptr<Device> device);
 	virtual void Update();
 	virtual void Menu();
@@ -40,6 +41,7 @@ public:
 	int speed = 1;
 	double time = 0;
 	double dt = 0;
+	bool camera_movement = true;
 protected:
 	void UpdateProjViewMtx();
 	void SetProjViewMtx(const std::shared_ptr<Shader> shader);

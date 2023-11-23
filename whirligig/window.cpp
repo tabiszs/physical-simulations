@@ -40,7 +40,7 @@ void Window::initGLFW() {
 
 void Window::createWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, nullptr, nullptr);
     if (!m_Window) {
@@ -87,10 +87,10 @@ void Window::static_WindowSizeCallback(GLFWwindow* window, int width, int height
 
 void Window::windowSizeCallback(int width, int height) {
     glfwSetWindowSize(m_Window, width, height);
-    glViewport(0, 0, width, height);
+    scene->SetViewport(width, height);// glViewport(0, 0, width, height);
     m_Height = height;
     m_Width = width;
-    scene->UpdateViewFrustrum(m_Width, m_Height);
+    scene->UpdateViewFrustum(m_Width, m_Height);
 }
 
 void Window::setKeyCallback() {
@@ -104,7 +104,7 @@ void Window::static_KeyCallback(GLFWwindow* window, int key, int scancode, int a
 
 void Window::keyCallback(int key, int scancode, int action, int mods) {
     ImGuiIO& io = ImGui::GetIO();
-    if (!io.WantCaptureKeyboard)
+    if (!io.WantCaptureKeyboard && scene->camera_movement)
     {
         if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
             glfwSetWindowShouldClose(m_Window, true);
@@ -145,7 +145,7 @@ void Window::static_MouseCursorPosCallback(GLFWwindow* window, double xpos, doub
 void Window::mouseCursorPosCallback(double xpos, double ypos)
 {
     ImGuiIO& io = ImGui::GetIO();
-    if (!io.WantCaptureMouse)
+    if (!io.WantCaptureMouse && scene->camera_movement)
     {
         float xoffset = xpos - lastX;
         float yoffset = lastY - ypos;
@@ -186,7 +186,7 @@ void Window::static_ScrollCallback(GLFWwindow* window, double xoffset, double yo
 void Window::scrollCallback(double xoffset, double yoffset)
 {
     ImGuiIO& io = ImGui::GetIO();
-    if (!io.WantCaptureMouse)
+    if (!io.WantCaptureMouse && scene->camera_movement)
     {
         auto& camera = scene->camera;
         camera->Zoom(yoffset * ZOOM_SPEED);

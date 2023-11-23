@@ -20,6 +20,8 @@ public:
 	void Reset();
 
 	glm::mat4  getProjectionMatrix() const;
+	constexpr float getWidth() { return m_viewportSize.cx; }
+	constexpr float getHeight() { return m_viewportSize.cy; }
 	constexpr bool NeedUpdate() { return needUpdate; }
 	constexpr void Updated() { needUpdate = false; }
 
