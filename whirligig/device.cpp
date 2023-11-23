@@ -136,64 +136,72 @@ void Device::DrawLinesStrip(Object* model, int count, int offset)
 	glBindVertexArray(0);
 }
 
-//void Device::DrawLinesAdjcency(BaseModel* model)
-//{
-//	DrawLinesAdjcency(model, model->GetNoIndices(), 0);
-//}
-//
-//void Device::DrawLinesAdjcency(BaseModel* model, int count, int offset)
-//{
-//	glBindVertexArray(model->VAO);
-//	glDrawElements(GL_LINES_ADJACENCY, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
-//	glBindVertexArray(0);
-//}
-//
-//void Device::DrawPoints(std::shared_ptr<BaseModel> model)
-//{
-//	DrawPoints(model.get());
-//}
-//
-//void Device::DrawPoints(BaseModel* model)
-//{
-//	DrawPoints(model, model->GetNoIndices(), 0);
-//}
-//
-//void Device::DrawPoints(BaseModel* model, int count, int offset)
-//{
-//	glBindVertexArray(model->VAO);
-//	glDrawElements(GL_POINTS, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
-//	glBindVertexArray(0);
-//}
-//
-//void Device::DrawPatches16(BaseModel* model)
-//{
-//	DrawPatches16(model, model->GetNoIndices(), 0);
-//}
-//
-//void Device::DrawPatches16(BaseModel* model, int count, int offset)
-//{
-//	DrawPatches(16, model, count, offset);
-//}
-//
-//void Device::DrawPatches20(BaseModel* model)
-//{
-//	DrawPatches20(model, model->GetNoIndices(), 0);
-//}
-//
-//void Device::DrawPatches20(BaseModel* model, int count, int offset)
-//{
-//	DrawPatches(20, model, count, offset);
-//}
-//
-//void Device::DrawPatches(int points, BaseModel* model, int count, int offset)
-//{
-//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-//	glBindVertexArray(model->VAO);
-//	glPatchParameteri(GL_PATCH_VERTICES, points);
-//	glDrawElements(GL_PATCHES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
-//	glBindVertexArray(0);
-//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-//}
+void Device::DrawLinesAdjcency(Object* model)
+{
+	DrawLinesAdjcency(model, model->indices.size(), 0);
+}
+
+void Device::DrawLinesAdjcency(Object* model, int count, int offset)
+{
+	glBindVertexArray(model->VAO);
+	glDrawElements(GL_LINES_ADJACENCY, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
+	glBindVertexArray(0);
+}
+
+void Device::DrawPoints(std::shared_ptr<Object> model)
+{
+	DrawPoints(model.get());
+}
+
+void Device::DrawPoints(Object* model)
+{
+	DrawPoints(model, model->indices.size(), 0);
+}
+
+void Device::DrawPoints(Object* model, int count, int offset)
+{
+	glBindVertexArray(model->VAO);
+	glDrawElements(GL_POINTS, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
+	glBindVertexArray(0);
+}
+
+void Device::DrawPatches16(Object* model)
+{
+	DrawPatches16(model, model->indices.size(), 0);
+}
+
+void Device::DrawPatches16(Object* model, int count, int offset, bool mesh)
+{
+	DrawPatches(16, model, count, offset, mesh);
+}
+
+void Device::DrawPatches20(Object* model)
+{
+	DrawPatches20(model, model->indices.size(), 0);
+}
+
+void Device::DrawPatches20(Object* model, int count, int offset)
+{
+	DrawPatches(20, model, count, offset);
+}
+
+void Device::DrawPatches(int points, Object* model, int count, int offset, bool mesh)
+{
+	if (mesh)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+
+	glBindVertexArray(model->VAO);
+	glPatchParameteri(GL_PATCH_VERTICES, points);
+	glDrawElements(GL_PATCHES, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
+	glBindVertexArray(0);
+
+	if (mesh)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+}
 
 void Device::CleanColor(float color[4])
 {

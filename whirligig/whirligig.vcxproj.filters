@@ -132,6 +132,9 @@
     <ClCompile Include="ControlCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BezierCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -233,6 +236,9 @@
     <ClInclude Include="ControlCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BezierCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\simple.fs">
@@ -251,6 +257,21 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Shaders\point.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\bicubicFS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\bicubicTCS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\bicubicVS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\deCasteljauTES.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\pointSizeVS.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

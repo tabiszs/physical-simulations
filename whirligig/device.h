@@ -19,16 +19,16 @@ public:
 	void DrawLines(Object* model, int count, int offset);
 	void DrawLinesStrip(Object* model);
 	void DrawLinesStrip(Object* model, int count, int offset);
-	//void DrawLinesAdjcency(BaseModel* model);
-	//void DrawLinesAdjcency(BaseModel* model, int count, int offset);
-	//void DrawPoints(std::shared_ptr<BaseModel> model);
-	//void DrawPoints(BaseModel* model);
-	//void DrawPoints(BaseModel* model, int count, int offset);
-	//void DrawPatches16(BaseModel* model);
-	//void DrawPatches16(BaseModel* model, int count, int offset);
-	//void DrawPatches20(BaseModel* model);
-	//void DrawPatches20(BaseModel* model, int count, int offset);
-	//void DrawPatches(int points, BaseModel* model, int count, int offset);
+	void DrawLinesAdjcency(Object* model);
+	void DrawLinesAdjcency(Object* model, int count, int offset);
+	void DrawPoints(std::shared_ptr<Object> model);
+	void DrawPoints(Object* model);
+	void DrawPoints(Object* model, int count, int offset);
+	void DrawPatches16(Object* model);
+	void DrawPatches16(Object* model, int count, int offset, bool mesh = true);
+	void DrawPatches20(Object* model);
+	void DrawPatches20(Object* model, int count, int offset);
+	void DrawPatches(int points, Object* model, int count, int offset, bool mesh = true);
 	void CleanColor(float color[4]);
 private:
 

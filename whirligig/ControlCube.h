@@ -4,7 +4,7 @@
 class ControlCube : public Cube
 {
 public:
-	ControlCube()
+	ControlCube() : Cube(1.0f)
 	{
 		shader = ShaderHolder::Get().frameShader;
 	}

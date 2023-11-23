@@ -2,9 +2,9 @@
 
 glm::mat4 Cube::ModelMatrix()
 {
-    auto v = glm::vec3(xMin, yMin, zMin);
-    auto t = Mat::translation(v);
-    return Mat::identity();
+    auto v = glm::vec3((xMax-xMin)/2, (yMax-yMin)/2, (zMax-zMin)/2);
+    auto t = Mat::translation(-v);
+    return t;
 }
 
 void Cube::LoadMeshTo(std::shared_ptr<Device> device)

@@ -16,10 +16,10 @@ public:
 
 	std::shared_ptr<Shader> boxShader;
 	std::shared_ptr<Shader> frameShader;
-
 	std::shared_ptr<Shader> pointShader;
-	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> bezierShader;
+
+	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> stereoscopyShader;
 	std::shared_ptr<Shader> surfaceC0Shader;
 	std::shared_ptr<Shader> surfaceC2Shader;

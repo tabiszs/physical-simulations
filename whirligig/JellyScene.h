@@ -2,6 +2,7 @@
 #include "scene.h"
 #include "Cube.h"
 #include "ControlCube.h"
+#include "BezierCube.h"
 
 class JellyScene : public Scene
 {
@@ -14,12 +15,13 @@ public:
 	void Update() override;
 	void Menu() override;
 
-	shared_ptr<Cube> box;
-	shared_ptr<ControlCube> control_frame;
-	bool showCube = true, showTrajectory = true, showDiagonal = true, showPlane = true;
+	shared_ptr<Cube> bounding_cube;
+	shared_ptr<ControlCube> control_cube;
+	shared_ptr<BezierCube> bezier_cube;
+	
 
 private:
 	void UpdateTrajectory();
-
+	bool m_show_jelly_points = true, m_show_jelly_edges = true, m_show_bezier_cube = true;
 };
 

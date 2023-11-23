@@ -5,8 +5,8 @@
 class Cube : public Object
 {
 public:
-    Cube() : Cube(1.0f) {}
-    Cube(float size) : Cube(-size, size, -size, size, -size, size) {}
+    Cube() {}
+    Cube(float size) : Cube(0, size, 0, size, 0, size) {}
     Cube(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax)
     {
         SetBoundings(xMin, xMax, yMin, yMax, zMin, zMax);
@@ -34,10 +34,10 @@ public:
     }
 
     virtual glm::mat4 ModelMatrix();
-    void LoadMeshTo(std::shared_ptr<Device> device);
-    void UpdateMeshTo(std::shared_ptr<Device> device);
-    void DrawModelOn(std::shared_ptr<Device> device);
-    void Update(float t)
+    virtual void LoadMeshTo(std::shared_ptr<Device> device);
+    virtual void UpdateMeshTo(std::shared_ptr<Device> device);
+    virtual void DrawModelOn(std::shared_ptr<Device> device);
+    virtual void Update(float t)
     {
     }
 

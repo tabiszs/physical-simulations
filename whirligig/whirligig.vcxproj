@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
+    <ClCompile Include="BezierCube.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="ControlCube.cpp" />
     <ClCompile Include="WhirligigCube.cpp" />
@@ -57,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
+    <ClInclude Include="BezierCube.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="ControlCube.h" />
     <ClInclude Include="WhirligigCube.h" />
@@ -91,9 +93,14 @@
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\bicubicFS.glsl" />
+    <None Include="Shaders\bicubicTCS.glsl" />
+    <None Include="Shaders\bicubicVS.glsl" />
+    <None Include="Shaders\deCasteljauTES.glsl" />
     <None Include="Shaders\point.fs" />
     <None Include="Shaders\point.vs" />
     <None Include="Shaders\pointFS.glsl" />
+    <None Include="Shaders\pointSizeVS.glsl" />
     <None Include="Shaders\pointVS.glsl" />
     <None Include="Shaders\simple.fs" />
     <None Include="Shaders\simple.vs" />

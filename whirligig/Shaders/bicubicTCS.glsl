@@ -1,8 +1,8 @@
 #version 400 core
 layout (vertices = 16) out;
 
-uniform int segmentsU;
-uniform int segmentsV;
+uniform int segmentsU = 16;
+uniform int segmentsV = 16;
 
 void main()
 {
