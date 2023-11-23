@@ -18,6 +18,10 @@ void ShaderHolder::Init()
 	planeShader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
 	diagonal_shader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
 	trajectoryShader = std::shared_ptr<Shader>(new Shader("shaders/pointVS.glsl", "shaders/pointFS.glsl"));
+	
+	boxShader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
+	frameShader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
+	
 	pointShader = std::shared_ptr<Shader>(new Shader("shaders/pointVS.glsl", "shaders/pointFS.glsl"));
 	oldPointShader = std::shared_ptr<Shader>(new Shader("shaders/point.vs", "shaders/point.fs"));
 	bezierShader = std::shared_ptr<Shader>(new Shader("shaders/bezierVS.glsl", "shaders/bezierFS.glsl", "shaders/bezierGS.glsl"));
@@ -33,6 +37,10 @@ void ShaderHolder::Delete()
 	if (planeShader != nullptr)	glDeleteProgram(planeShader->ID);
 	if (diagonal_shader != nullptr)	glDeleteProgram(diagonal_shader->ID);
 	if (trajectoryShader != nullptr)	glDeleteProgram(trajectoryShader->ID);
+
+	if (boxShader != nullptr)	glDeleteProgram(boxShader->ID);
+	if (frameShader != nullptr)	glDeleteProgram(frameShader->ID);
+
 	if (pointShader != nullptr)		glDeleteProgram(pointShader->ID);
 	if (oldPointShader != nullptr)	glDeleteProgram(oldPointShader->ID);
 	if (bezierShader != nullptr)	glDeleteProgram(bezierShader->ID);

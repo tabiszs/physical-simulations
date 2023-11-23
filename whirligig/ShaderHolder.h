@@ -13,6 +13,10 @@ public:
 	std::shared_ptr<Shader> planeShader;
 	std::shared_ptr<Shader> diagonal_shader;
 	std::shared_ptr<Shader> trajectoryShader;
+
+	std::shared_ptr<Shader> boxShader;
+	std::shared_ptr<Shader> frameShader;
+
 	std::shared_ptr<Shader> pointShader;
 	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> bezierShader;

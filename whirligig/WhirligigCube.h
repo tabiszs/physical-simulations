@@ -12,10 +12,10 @@
 #include "device.h"
 #include "WhirligigSimulator.h"
 
-class Cube : public Object
+class WhirligigCube : public Object
 {
 public:
-    Cube()
+    WhirligigCube()
     {
         xMin = yMin = zMin = minSize;
         xMax = yMax = zMax = maxSize;

@@ -4,6 +4,8 @@
 #include "ShaderHolder.h"
 #include "utils.h"
 #include "imGuiBuilder.h"
+#include "Box.h"
+#include "ControlFrame.h"
 
 Application::Application()
 {
@@ -18,7 +20,7 @@ Application::Application()
 	whirligig_scene = std::make_shared<WhirligigScene>(camera, light, viewFrustum);
 	whirligig_scene->SetDevice(device);
 	window->ImportScene(whirligig_scene);
-	auto cube = make_shared<Cube>();
+	auto cube = make_shared<WhirligigCube>();
 	cube->LoadMeshTo(device);
 	whirligig_scene->cube = cube;
 	auto plane = make_shared<Plane>();
@@ -29,8 +31,14 @@ Application::Application()
 	whirligig_scene->trajectory = trajectory;
 
 	jelly_scene = std::make_shared<JellyScene>(camera, light, viewFrustum);
-	whirligig_scene->SetDevice(device);
-	window->ImportScene(whirligig_scene);
+	jelly_scene->SetDevice(device);
+	window->ImportScene(jelly_scene);
+	auto box = make_shared<Box>(5.0f);
+	box->LoadMeshTo(device);
+	jelly_scene->box = box;
+	auto control_frame = make_shared<ControlFrame>();
+	control_frame->LoadMeshTo(device);
+	jelly_scene->control_frame = control_frame;
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }

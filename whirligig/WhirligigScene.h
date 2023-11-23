@@ -12,7 +12,7 @@ public:
 	void Update() override;
 	void Menu() override;
 
-	shared_ptr<Cube> cube;
+	shared_ptr<WhirligigCube> cube;
 	shared_ptr<Plane> plane;
 	shared_ptr<Trajectory> trajectory;
 	bool showCube = true, showTrajectory = true, showDiagonal = true, showPlane = true;
