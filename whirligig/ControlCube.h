@@ -1,10 +1,10 @@
 #pragma once
-#include "Box.h"
+#include "Cube.h"
 
-class ControlFrame : public Box
+class ControlCube : public Cube
 {
 public:
-	ControlFrame()
+	ControlCube()
 	{
 		shader = ShaderHolder::Get().frameShader;
 	}

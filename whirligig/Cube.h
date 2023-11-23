@@ -2,12 +2,12 @@
 #include "Object.h"
 #include "device.h"
 
-class Box : public Object
+class Cube : public Object
 {
 public:
-    Box() : Box(1.0f) {}
-    Box(float size) : Box(-size, size, -size, size, -size, size) {}
-    Box(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax)
+    Cube() : Cube(1.0f) {}
+    Cube(float size) : Cube(-size, size, -size, size, -size, size) {}
+    Cube(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax)
     {
         SetBoundings(xMin, xMax, yMin, yMax, zMin, zMax);
 

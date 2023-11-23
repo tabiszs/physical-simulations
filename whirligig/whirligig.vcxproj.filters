@@ -126,10 +126,10 @@
     <ClCompile Include="JellyScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Box.cpp">
+    <ClCompile Include="Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ControlFrame.cpp">
+    <ClCompile Include="ControlCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -227,10 +227,10 @@
     <ClInclude Include="JellyScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Box.h">
+    <ClInclude Include="Cube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ControlFrame.h">
+    <ClInclude Include="ControlCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

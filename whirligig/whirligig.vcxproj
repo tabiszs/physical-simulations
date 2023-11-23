@@ -20,8 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
-    <ClCompile Include="Box.cpp" />
-    <ClCompile Include="ControlFrame.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="ControlCube.cpp" />
     <ClCompile Include="WhirligigCube.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="device.cpp" />
@@ -57,8 +57,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
-    <ClInclude Include="Box.h" />
-    <ClInclude Include="ControlFrame.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="ControlCube.h" />
     <ClInclude Include="WhirligigCube.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="device.h" />

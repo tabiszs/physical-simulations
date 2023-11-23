@@ -4,8 +4,8 @@
 #include "ShaderHolder.h"
 #include "utils.h"
 #include "imGuiBuilder.h"
-#include "Box.h"
-#include "ControlFrame.h"
+#include "Cube.h"
+#include "ControlCube.h"
 
 Application::Application()
 {
@@ -33,10 +33,10 @@ Application::Application()
 	jelly_scene = std::make_shared<JellyScene>(camera, light, viewFrustum);
 	jelly_scene->SetDevice(device);
 	window->ImportScene(jelly_scene);
-	auto box = make_shared<Box>(5.0f);
+	auto box = make_shared<Cube>(5.0f);
 	box->LoadMeshTo(device);
 	jelly_scene->box = box;
-	auto control_frame = make_shared<ControlFrame>();
+	auto control_frame = make_shared<ControlCube>();
 	control_frame->LoadMeshTo(device);
 	jelly_scene->control_frame = control_frame;
 

@@ -1,31 +1,31 @@
-#include "Box.h"
+#include "Cube.h"
 
-glm::mat4 Box::ModelMatrix()
+glm::mat4 Cube::ModelMatrix()
 {
     auto v = glm::vec3(xMin, yMin, zMin);
     auto t = Mat::translation(v);
     return Mat::identity();
 }
 
-void Box::LoadMeshTo(std::shared_ptr<Device> device)
+void Cube::LoadMeshTo(std::shared_ptr<Device> device)
 {
     device->LoadMesh((Object*)this);
     shader->use();
     shader->set4Float("objectColor", color);
 }
 
-void Box::UpdateMeshTo(std::shared_ptr<Device> device)
+void Cube::UpdateMeshTo(std::shared_ptr<Device> device)
 {
     device->UpdateMesh((Object*)this);
 }
 
-void Box::DrawModelOn(std::shared_ptr<Device> device)
+void Cube::DrawModelOn(std::shared_ptr<Device> device)
 {
     shader->use();
     device->DrawLines((Object*)this);
 }
 
-void Box::SetBoundings(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax)
+void Cube::SetBoundings(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax)
 {
     vertices.clear();
     vertices = {
