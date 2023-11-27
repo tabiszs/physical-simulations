@@ -94,18 +94,14 @@ void Application::Update()
 	device->CleanColor(backgroundColor);
 	//whirligig_scene->Update();
 	//jelly_scene->Update();
-	if(!interpolation_scene->draw_all_frames)
-		interpolation_scene->Update();
+	interpolation_scene->Update();
 }
 
 void Application::Render()
 {
 	//whirligig_scene->DrawOn(device);
 	//jelly_scene->DrawOn(device);
-	if (interpolation_scene->draw_all_frames)
-		interpolation_scene->PerformAllFramesOn(device);
-	else
-		interpolation_scene->DrawOn(device);
+	interpolation_scene->DrawOn(device);		
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
