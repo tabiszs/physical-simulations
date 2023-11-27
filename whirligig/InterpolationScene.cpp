@@ -13,6 +13,40 @@ void InterpolationScene::UpdateViewFrustum(int width, int height)
 	viewFrustrum->setViewportSize({ long((width - menu_width)/2.0f), height });
 }
 
+void InterpolationScene::PerformAllFramesOn(std::shared_ptr<Device> device)
+{
+	draw_animation = true;
+	glViewport(menu_width, 0, viewFrustrum->getWidth(), viewFrustrum->getHeight());
+	initial_cursor->DrawModelOn(device);
+
+	glViewport(menu_width + viewFrustrum->getWidth(), 0, viewFrustrum->getWidth(), viewFrustrum->getHeight());
+	initial_cursor->DrawModelOn(device);
+
+	for (int i = 0; i < frame_count; ++i)
+	{
+		auto simulated_time_from_start = animation_time * i / frame_count;
+		UpdateEulerInterpolation(simulated_time_from_start);
+		UpdateQuaternionInterpolation(simulated_time_from_start);
+		Update();
+
+		// Left - quaternion rotation
+		glViewport(menu_width, 0, viewFrustrum->getWidth(), viewFrustrum->getHeight());
+		if (draw_animation)
+			quat_cursor->DrawModelOn(device);
+
+		// Right - euler angles rotation
+		glViewport(menu_width + viewFrustrum->getWidth(), 0, viewFrustrum->getWidth(), viewFrustrum->getHeight());
+		if (draw_animation)
+			euler_cursor->DrawModelOn(device);
+	}
+
+	glViewport(menu_width, 0, viewFrustrum->getWidth(), viewFrustrum->getHeight());
+	final_cursor->DrawModelOn(device);
+
+	glViewport(menu_width + viewFrustrum->getWidth(), 0, viewFrustrum->getWidth(), viewFrustrum->getHeight());
+	final_cursor->DrawModelOn(device);
+}
+
 void InterpolationScene::DrawOn(std::shared_ptr<Device> device)
 {
 	// Left - quaternion rotation
@@ -23,10 +57,10 @@ void InterpolationScene::DrawOn(std::shared_ptr<Device> device)
 		quat_cursor->DrawModelOn(device);
 
 	// Right - euler angles rotation
-	glViewport(menu_width+viewFrustrum->getWidth(), 0, viewFrustrum->getWidth(), viewFrustrum->getHeight());
+	glViewport(menu_width + viewFrustrum->getWidth(), 0, viewFrustrum->getWidth(), viewFrustrum->getHeight());
 	initial_cursor->DrawModelOn(device);
 	final_cursor->DrawModelOn(device);
-	if(draw_animation)
+	if (draw_animation)
 		euler_cursor->DrawModelOn(device);
 }
 
@@ -122,6 +156,7 @@ void InterpolationScene::Menu()
 	ImGui::SliderInt("Speed", &speed, 1, 100);
 	ImGui::SliderFloat("Animation time", &animation_time, 1.0f, 10.0f);
 	ImGui::SliderInt("Frame count", &frame_count, 1, 100);
+	ImGui::Checkbox("Show all frames",&draw_all_frames);
 	ImGui::Separator();
 
 	ImGui::Text("Initial configuration");

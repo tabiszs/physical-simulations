@@ -30,7 +30,7 @@ public:
     
     glm::vec3 position = { 0.0f, 0.0f, 0.0f };
     glm::vec3 euler_angles = { 0.0f, 0.0f, 0.0f };
-    glm::vec4 quaternion = { 1.0f, 0.0f, 0.0f, 0.0f };
+    glm::vec4 quaternion = { 0.0f, 0.0f, 0.0f, 1.0f }; // x, y, z, w
 private:
     float xMin, yMin, zMin, xMax, yMax, zMax, minPt, maxPt;
     float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };

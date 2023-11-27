@@ -12,6 +12,7 @@ public:
 
 	void SetViewport(float width, float height) override;
 	void UpdateViewFrustum(int width, int height) override;
+	void PerformAllFramesOn(std::shared_ptr<Device> device);
 	void DrawOn(std::shared_ptr<Device> device) override;
 	void Update() override;
 	void Menu() override;
@@ -20,12 +21,14 @@ public:
 	shared_ptr<Cursor> quat_cursor;
 	shared_ptr<Cursor> initial_cursor;
 	shared_ptr<Cursor> final_cursor;
+	bool draw_all_frames = false;
 private:
 	const float menu_width = 300.0f;
 	float time_start, animation_time = 5.0f;
 	int frame_count = 200;
 	float step{};
 	bool draw_animation = false;
+
 	int use_slerp_quaternion_interpolation = 0;
 
 	void UpdateInterpolation();
