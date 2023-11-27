@@ -23,7 +23,7 @@ public:
 private:
 	const float menu_width = 300.0f;
 	float time_start, animation_time = 5.0f;
-	int frame_count = 20;
+	int frame_count = 200;
 	float step{};
 	bool draw_animation = false;
 	int use_slerp_quaternion_interpolation = 0;

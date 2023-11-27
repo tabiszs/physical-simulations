@@ -1,6 +1,7 @@
 #include "Cursor.h"
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include "Quaternion.h"
 
 glm::mat4 Cursor::ModelMatrix()
 {
@@ -17,7 +18,7 @@ glm::mat4 Cursor::ModelMatrixQuat()
     float s = 1.0f / (maxPt - minPt);
     auto scale = Mat::scale(s, s, s);
     auto t = Mat::translation({ position[0],position[1] ,position[2] });
-    auto r = glm::toMat4(quaternion);
+    auto r = Quaternion::toMat4(quaternion);
     return t * r * scale;
 }
 
@@ -37,16 +38,12 @@ void Cursor::DrawModelOn(std::shared_ptr<Device> device)
     device->DrawTriangles((Object*)this);
 }
 
-void Cursor::Update(float t)
-{
-
-}
-
 void Cursor::SetPosition(const glm::vec3& position)
 {
     this->position[0] = position[0];
     this->position[1] = position[1];
     this->position[2] = position[2];
+    need_update = true;
 }
 
 void Cursor::SetRotation(const glm::vec3& euler_angles)
@@ -54,11 +51,13 @@ void Cursor::SetRotation(const glm::vec3& euler_angles)
     this->euler_angles[0] = euler_angles[0];
     this->euler_angles[1] = euler_angles[1];
     this->euler_angles[2] = euler_angles[2];
+    need_update = true;
 }
 
-void Cursor::SetRotation(const glm::quat& quaternion)
+void Cursor::SetRotation(const glm::vec4& quaternion)
 {
     this->quaternion = quaternion;
+    need_update = true;
 }
 
 void Cursor::ImproveShortestPath(const glm::vec3& euler_angles)
@@ -84,20 +83,16 @@ void Cursor::ImproveShortestPath(const glm::vec3& euler_angles)
     SetQuaternion(this->euler_angles);
 }
 
-void Cursor::ImproveShortestPath(const glm::quat& quaternion)
-{
-}
-
 void Cursor::SetQuaternion(const glm::vec3& euler_angles)
 {
-    quaternion = glm::quat(euler_angles);
+    quaternion = Quaternion::ToQuaternion(euler_angles);
     need_update = true;
 }
 
-void Cursor::SetEulerAngles(const glm::quat& quaternion)
+void Cursor::SetEulerAngles(const glm::vec4& quaternion)
 {
-    this->quaternion = glm::normalize(quaternion);
-    euler_angles = glm::eulerAngles(quaternion);
+    this->quaternion = Quaternion::Normalize(quaternion);
+    euler_angles = Quaternion::ToEulerAngles(quaternion);
     need_update = true;
 }
 

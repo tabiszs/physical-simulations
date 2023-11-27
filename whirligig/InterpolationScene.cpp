@@ -1,4 +1,5 @@
 #include "InterpolationScene.h"
+#include "Quaternion.h"
 
 void InterpolationScene::SetViewport(float width, float height)
 {
@@ -203,15 +204,11 @@ void InterpolationScene::UpdateQuaternionInterpolation(double time_from_start)
 
 	if (use_slerp_quaternion_interpolation)
 	{
-		quat_cursor->quaternion = glm::slerp(initial_cursor->quaternion, final_cursor->quaternion, animation_part);
+		quat_cursor->quaternion = Quaternion::SLERP(initial_cursor->quaternion, final_cursor->quaternion, animation_part);
 	}
 	else
 	{
-		quat_cursor->quaternion[0] = initial_cursor->quaternion[0] * (1 - animation_part) + final_cursor->quaternion[0] * animation_part;
-		quat_cursor->quaternion[1] = initial_cursor->quaternion[1] * (1 - animation_part) + final_cursor->quaternion[1] * animation_part;
-		quat_cursor->quaternion[2] = initial_cursor->quaternion[2] * (1 - animation_part) + final_cursor->quaternion[2] * animation_part;
-		quat_cursor->quaternion[3] = initial_cursor->quaternion[3] * (1 - animation_part) + final_cursor->quaternion[3] * animation_part;
-		quat_cursor->quaternion = glm::normalize(quat_cursor->quaternion);
+		quat_cursor->quaternion = Quaternion::LERP(initial_cursor->quaternion, final_cursor->quaternion, animation_part);
 	}
 
 	quat_cursor->need_update = true;
