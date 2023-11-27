@@ -28,7 +28,7 @@ glm::vec3 Quaternion::ToEulerAngles(glm::vec4 q)
 glm::vec4 Quaternion::ToQuaternion(glm::vec3 euler_angles) // roll (x), pitch (y), yaw (z), angles are in radians
 {
     auto roll = euler_angles.x;
-    auto pitch = euler_angles.y;
+    auto pitch = -euler_angles.y;
     auto yaw = euler_angles.z;
 
     // Abbreviations for the various angular functions

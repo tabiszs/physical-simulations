@@ -39,7 +39,5 @@ private:
 	void SetRightViewport();
 	void DrawInitialCursor();
 	void DrawFinalCursor();
-	void DrawEulerCursor();
-	void DrawQuatCursor();
 };
 

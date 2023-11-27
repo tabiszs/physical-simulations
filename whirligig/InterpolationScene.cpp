@@ -107,12 +107,12 @@ void InterpolationScene::Menu()
 		draw_animation = false;		
 	}
 	ImGui::PopItemFlag();
+	ImGui::SliderInt("Speed", &speed, 1, 100);
+	ImGui::SliderFloat("Animation time", &animation_time, 1.0f, 10.0f);
+	ImGui::SliderInt("Frame count", &frame_count, 1, 100);
 	ImGui::PushItemFlag(ImGuiItemFlags_Disabled, start);
 	ImGui::Checkbox("Show all frames", &draw_all_frames);
 	ImGui::PopItemFlag();
-	ImGui::SliderInt("Speed", &speed, 1, 100);
-	ImGui::SliderFloat("Animation time", &animation_time, 1.0f, 10.0f);
-	ImGui::SliderInt("Frame count", &frame_count, 1, 100);	
 	ImGui::Separator();
 
 	ImGui::Text("Initial configuration");
@@ -277,14 +277,6 @@ void InterpolationScene::DrawFinalCursor()
 {
 	SetLeftViewport();
 	final_cursor->DrawModelOn(device);
-	SetLeftViewport();
+	SetRightViewport();
 	final_cursor->DrawModelOn(device);
-}
-
-void InterpolationScene::DrawEulerCursor()
-{
-}
-
-void InterpolationScene::DrawQuatCursor()
-{
 }
