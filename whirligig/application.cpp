@@ -48,9 +48,21 @@ Application::Application()
 	interpolation_scene->SetDevice(device);
 	interpolation_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
 	window->ImportScene(interpolation_scene);
-	auto cursor = make_shared<Cursor>();
+	auto cursor = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
 	cursor->LoadMeshTo(device);
-	interpolation_scene->cursorQ = cursor;
+	interpolation_scene->euler_cursor = cursor;
+	cursor = make_shared<Cursor>(ShaderHolder::Get().quat_cursorShader);
+	cursor->LoadMeshTo(device);
+	interpolation_scene->quat_cursor = cursor;
+	cursor = make_shared<Cursor>(ShaderHolder::Get().initial_cursorShader);
+	cursor->LoadMeshTo(device);
+	interpolation_scene->initial_cursor = cursor;
+	cursor = make_shared<Cursor>(ShaderHolder::Get().final_cursorShader);
+	cursor->LoadMeshTo(device);
+	cursor->position[2] = -0.5f;
+	cursor->position[2] = 2.0f;
+	interpolation_scene->final_cursor = cursor;
+
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }

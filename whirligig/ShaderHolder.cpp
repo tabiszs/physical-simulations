@@ -24,7 +24,10 @@ void ShaderHolder::Init()
 	pointShader = std::shared_ptr<Shader>(new Shader("shaders/pointSizeVS.glsl", "shaders/pointFS.glsl"));
 	surfaceC0Shader = std::make_shared<Shader>("shaders/bicubicVS.glsl", "shaders/bicubicFS.glsl", "shaders/bicubicTCS.glsl", "shaders/deCasteljauTES.glsl");
 
-	cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
+	initial_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
+	final_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
+	euler_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
+	quat_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
 
 	oldPointShader = std::shared_ptr<Shader>(new Shader("shaders/point.vs", "shaders/point.fs"));
 	bezierShader = std::shared_ptr<Shader>(new Shader("shaders/bezierVS.glsl", "shaders/bezierFS.glsl", "shaders/bezierGS.glsl"));
@@ -45,7 +48,10 @@ void ShaderHolder::Delete()
 	if (pointShader != nullptr)		glDeleteProgram(pointShader->ID);
 	if (surfaceC0Shader != nullptr) glDeleteProgram(surfaceC0Shader->ID);
 
-	if (cursorShader != nullptr) glDeleteProgram(cursorShader->ID);
+	if (initial_cursorShader != nullptr) glDeleteProgram(initial_cursorShader->ID);
+	if (final_cursorShader != nullptr) glDeleteProgram(final_cursorShader->ID);
+	if (euler_cursorShader != nullptr) glDeleteProgram(euler_cursorShader->ID);
+	if (quat_cursorShader != nullptr) glDeleteProgram(quat_cursorShader->ID);
 
 	if (oldPointShader != nullptr)	glDeleteProgram(oldPointShader->ID);
 	if (bezierShader != nullptr)	glDeleteProgram(bezierShader->ID);

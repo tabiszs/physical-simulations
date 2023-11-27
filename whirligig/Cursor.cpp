@@ -1,9 +1,24 @@
 #include "Cursor.h"
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 glm::mat4 Cursor::ModelMatrix()
 {
+    
     float s = 1.0f / (maxPt - minPt);
-    return Mat::scale(s,s,s);
+    auto scale = Mat::scale(s, s, s);
+    auto t = Mat::translation({ position[0],position[1] ,position[2] });
+    auto r = glm::eulerAngleXYZ(euler_angles[0], euler_angles[1], euler_angles[2]);
+    return t * r * scale;
+}
+
+glm::mat4 Cursor::ModelMatrixQuat()
+{
+    float s = 1.0f / (maxPt - minPt);
+    auto scale = Mat::scale(s, s, s);
+    auto t = Mat::translation({ position[0],position[1] ,position[2] });
+    auto r = glm::toMat4(quaternion);
+    return t * r * scale;
 }
 
 void Cursor::LoadMeshTo(std::shared_ptr<Device> device)
@@ -24,6 +39,66 @@ void Cursor::DrawModelOn(std::shared_ptr<Device> device)
 
 void Cursor::Update(float t)
 {
+
+}
+
+void Cursor::SetPosition(const glm::vec3& position)
+{
+    this->position[0] = position[0];
+    this->position[1] = position[1];
+    this->position[2] = position[2];
+}
+
+void Cursor::SetRotation(const glm::vec3& euler_angles)
+{
+    this->euler_angles[0] = euler_angles[0];
+    this->euler_angles[1] = euler_angles[1];
+    this->euler_angles[2] = euler_angles[2];
+}
+
+void Cursor::SetRotation(const glm::quat& quaternion)
+{
+    this->quaternion = quaternion;
+}
+
+void Cursor::ImproveShortestPath(const glm::vec3& euler_angles)
+{
+    float d0 = this->euler_angles[0] - euler_angles[0];
+    float d1 = this->euler_angles[1] - euler_angles[1];
+    float d2 = this->euler_angles[2] - euler_angles[2];
+    if (abs(d0) > glm::pi<float>())
+    {
+        if (d0 > 0) this->euler_angles[0] -= glm::two_pi<float>();
+        if (d0 < 0) this->euler_angles[0] += glm::two_pi<float>();
+    }
+    if (abs(d1) > glm::pi<float>())
+    {
+        if (d1 > 0) this->euler_angles[1] -= glm::two_pi<float>();
+        if (d1 < 0) this->euler_angles[1] += glm::two_pi<float>();
+    }
+    if (abs(d2) > glm::pi<float>())
+    {
+        if (d2 > 0) this->euler_angles[2] -= glm::two_pi<float>();
+        if (d2 < 0) this->euler_angles[2] += glm::two_pi<float>();
+    }
+    SetQuaternion(this->euler_angles);
+}
+
+void Cursor::ImproveShortestPath(const glm::quat& quaternion)
+{
+}
+
+void Cursor::SetQuaternion(const glm::vec3& euler_angles)
+{
+    quaternion = glm::quat(euler_angles);
+    need_update = true;
+}
+
+void Cursor::SetEulerAngles(const glm::quat& quaternion)
+{
+    this->quaternion = glm::normalize(quaternion);
+    euler_angles = glm::eulerAngles(quaternion);
+    need_update = true;
 }
 
 void Cursor::AddAxis(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax, glm::vec3 color)

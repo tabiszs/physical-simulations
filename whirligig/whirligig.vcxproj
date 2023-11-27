@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -25,6 +25,7 @@
     <ClCompile Include="ControlCube.cpp" />
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="InterpolationScene.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="WhirligigCube.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="device.cpp" />
@@ -65,6 +66,7 @@
     <ClInclude Include="ControlCube.h" />
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="InterpolationScene.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="WhirligigCube.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="device.h" />

@@ -19,7 +19,10 @@ public:
 	std::shared_ptr<Shader> pointShader;
 	std::shared_ptr<Shader> bezierShader;
 
-	std::shared_ptr<Shader> cursorShader;
+	std::shared_ptr<Shader> initial_cursorShader;
+	std::shared_ptr<Shader> final_cursorShader;
+	std::shared_ptr<Shader> euler_cursorShader;
+	std::shared_ptr<Shader> quat_cursorShader;
 
 	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> stereoscopyShader;
