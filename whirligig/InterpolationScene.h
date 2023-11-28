@@ -25,7 +25,7 @@ public:
 private:
 	const float menu_width = 300.0f;
 	float time_start, animation_time = 5.0f;
-	int frame_count = 200;
+	int frame_count = 10;
 	float step{};
 	bool draw_animation = false;
 	bool draw_all_frames = false;

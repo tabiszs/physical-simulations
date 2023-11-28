@@ -15,10 +15,13 @@ void InterpolationScene::UpdateViewFrustum(int width, int height)
 
 void InterpolationScene::PerformAllFramesOn(std::shared_ptr<Device> device)
 {
+	final_cursor->ImproveShortestPath(initial_cursor->euler_angles);
+	UpdateObjects();
+
 	DrawInitialCursor();
 	for (int i = 0; i < frame_count; ++i)
 	{
-		auto simulated_time_from_start = animation_time * i / frame_count;
+		auto simulated_time_from_start = animation_time * i / (frame_count-1);
 		UpdateEulerInterpolation(simulated_time_from_start);
 		UpdateQuaternionInterpolation(simulated_time_from_start);
 		UpdateObjects();

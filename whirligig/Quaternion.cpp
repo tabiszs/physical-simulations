@@ -28,7 +28,7 @@ glm::vec3 Quaternion::ToEulerAngles(glm::vec4 q)
 glm::vec4 Quaternion::ToQuaternion(glm::vec3 euler_angles) // roll (x), pitch (y), yaw (z), angles are in radians
 {
     auto roll = euler_angles.x;
-    auto pitch = -euler_angles.y;
+    auto pitch = euler_angles.y;
     auto yaw = euler_angles.z;
 
     // Abbreviations for the various angular functions
@@ -45,7 +45,7 @@ glm::vec4 Quaternion::ToQuaternion(glm::vec3 euler_angles) // roll (x), pitch (y
     q.y = cr * sp * cy + sr * cp * sy;
     q.z = cr * cp * sy - sr * sp * cy;
 
-    return q;
+    return Quaternion::Normalize(q);
 }
 
 glm::vec4 Quaternion::SLERP(const glm::vec4& q1, const glm::vec4& q2, float a)
@@ -99,7 +99,7 @@ glm::mat4 Quaternion::toMat4(const glm::vec4& q)
     float qj = q.y;
     float qk = q.z;
 
-    // for unit quaternion - without normalization
+    // for unit quaternion - without normalizations
     glm::mat4 m = glm::transpose(glm::mat4(
     1 - 2*(qj*qj + qk*qk), 2*(qi*qj - qk*qr), 2*(qi*qk + qj*qr), 0,
     2*(qi*qj + qk*qr), 1 - 2*(qi*qi + qk*qk), 2*(qj*qk - qi*qr), 0,

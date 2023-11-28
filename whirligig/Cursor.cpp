@@ -5,7 +5,6 @@
 
 glm::mat4 Cursor::ModelMatrix()
 {
-    
     float s = 1.0f / (maxPt - minPt);
     auto scale = Mat::scale(s, s, s);
     auto t = Mat::translation({ position[0],position[1] ,position[2] });
@@ -18,7 +17,8 @@ glm::mat4 Cursor::ModelMatrixQuat()
     float s = 1.0f / (maxPt - minPt);
     auto scale = Mat::scale(s, s, s);
     auto t = Mat::translation({ position[0],position[1] ,position[2] });
-    auto r = Quaternion::toMat4(quaternion);
+    auto euler_angles = Quaternion::ToEulerAngles(quaternion);
+    auto r = glm::eulerAngleXYZ(euler_angles[0], euler_angles[1], euler_angles[2]);
     return t * r * scale;
 }
 
