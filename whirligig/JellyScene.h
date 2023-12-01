@@ -19,8 +19,10 @@ public:
 	shared_ptr<ControlCube> control_cube;
 	shared_ptr<BezierCube> bezier_cube;
 	
+	
 
 private:
+	void UpdateJelly();
 	void UpdateTrajectory();
 	bool m_show_jelly_points = true, m_show_jelly_edges = true, m_show_bezier_cube = true;
 };

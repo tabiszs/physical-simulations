@@ -14,6 +14,8 @@ void JellyScene::DrawOn(std::shared_ptr<Device> device)
 
 void JellyScene::Update()
 {
+	UpdateJelly();
+
 	std::shared_ptr<Shader> shader;
 
 	if (bounding_cube->need_update)
@@ -34,9 +36,7 @@ void JellyScene::Update()
 
 	if (bezier_cube->need_update)
 	{
-		shader = bezier_cube->point_shader;
-		shader->use();
-		shader->setMatrix4F("modelMtx", bezier_cube->ModelMatrix());
+		bezier_cube->UpdateMeshTo(device);
 		bezier_cube->need_update = false;
 	}
 
@@ -98,4 +98,20 @@ void JellyScene::Menu()
 	control_cube->need_update |= ImGui::InputFloat3("Control Cube Rotation", control_cube->euler_angles);
 
 	ImGui::End();
+}
+
+void JellyScene::UpdateJelly()
+{
+	auto time2 = glfwGetTime();
+	dt += time2 - time;
+	time = time2;
+
+	dt *= speed;
+	auto step = bezier_cube->dt;
+	while (dt > step)
+	{
+		auto cc_corners = control_cube->GetCornersPositions();
+		bezier_cube->ComputeForce(cc_corners);
+		dt -= step;
+	}
 }

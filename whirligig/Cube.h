@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "device.h"
+#include <array>
 
 class Cube : public Object
 {
@@ -37,9 +38,7 @@ public:
     virtual void LoadMeshTo(std::shared_ptr<Device> device);
     virtual void UpdateMeshTo(std::shared_ptr<Device> device);
     virtual void DrawModelOn(std::shared_ptr<Device> device);
-    virtual void Update(float t)
-    {
-    }
+    virtual void Update(float t) {}
 
 protected:
     void SetBoundings(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax);

@@ -87,7 +87,7 @@ void Window::static_WindowSizeCallback(GLFWwindow* window, int width, int height
 
 void Window::windowSizeCallback(int width, int height) {
     glfwSetWindowSize(m_Window, width, height);
-    scene->SetViewport(width, height);// glViewport(0, 0, width, height);
+    scene->SetViewport(width, height);
     m_Height = height;
     m_Width = width;
     scene->UpdateViewFrustum(m_Width, m_Height);
