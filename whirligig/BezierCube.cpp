@@ -54,17 +54,89 @@ void BezierCube::ComputeForce(const std::array<glm::vec3, 8>& cc_corners)
     const int corner_count = 8;
     auto jelly_corners_idx = GetCornersPositions();
 
-    for (int i = 0; i < corner_count; ++i)
+    // force on corners
+    //for (int i = 0; i < corner_count; ++i)
+    //{
+    //    auto& x1 = cc_corners[i];
+    //    auto& x = positions[jelly_corners_idx[i]];   
+    //    auto& xt = velocities[jelly_corners_idx[i]];
+
+    //    const auto [dx, dxt] = RungeKutta4(x1, x, xt);
+
+    //    velocities[jelly_corners_idx[i]] += dxt;
+    //    positions[jelly_corners_idx[i]] += dx;
+    //}
+
+    // force inside    
+
+    //// precomputing bounce component
+    //auto computed_spring_bounce = std::array<glm::vec3, 6 * 64>{};
+    //auto is_computed_spring = std::array<bool, 6 * 64>{};
+    //for (int i = 0; i < tree_of_congruence_vertices.size(); ++i)
+    //{
+    //    int j = 0;
+    //    for (auto it = tree_of_congruence_vertices[i].begin(); it != tree_of_congruence_vertices[i].end(); ++it,++j)
+    //    {
+    //        const auto& p = (*it).first;
+    //        int idx = i * 6 + j; // decode index. 
+    //        if (!is_computed_spring[idx])
+    //        {
+    //            const auto& is_on_edge = (*it).second;
+    //            auto distance_diff = positions[p] - positions[i];
+    //            auto distance_norm = std::sqrt(glm::dot(distance_diff, distance_diff));
+    //            auto l = is_on_edge ? one_div_three : sqrt_two_div_three;
+    //            auto bounce = distance_norm == 0 ? glm::vec3() : (glm::vec3(c2, c2, c2) * (distance_norm - l) / distance_norm); // * distance_diff (different from every point)
+    //            computed_spring_bounce[idx] = bounce;
+    //            is_computed_spring[idx] = true;
+    //        }            
+    //    }
+    //}
+
+    // for every point compute velocity end position
+    // include springs with control cube //TODO
+    for (int i = 0, j=0; i < tree_of_congruence_vertices.size(); ++i)
     {
-        auto& x1 = cc_corners[i];
-        auto& x = positions[jelly_corners_idx[i]];   
-        auto& xt = velocities[jelly_corners_idx[i]];
+        // oblicz sile dla kazdego wierzcholka
+        //int j = 0;
+        //glm::vec3 fi{};
+        //for (auto it = tree_of_congruence_vertices[i].begin(); it != tree_of_congruence_vertices[i].end(); ++it, ++j)
+        //{
+        //    const auto& p = (*it).first;
+        //    int idx = i * 6!!! (max 2*3 (edges) + 4*4 (faces) + j; // todo i-mniejsze, j-wieksze -> pozwoli na optymalizacje
+        //    
+        //    auto& x1 = positions[p];
+        //    auto& x0 = positions[i];
+        //    fi += computed_spring_bounce[idx] * (x1 - x0);
+        //}
+        // 
+        // oblicz nowa predkosc i pozycje
 
-        const auto [dx, dxt] = RungeKutta4(x1, x, xt);
 
-        velocities[jelly_corners_idx[i]] += dxt;
-        positions[jelly_corners_idx[i]] += dx;
+
+        std::list<std::pair<glm::vec3, bool>> neighbours{};
+        for (auto it = tree_of_congruence_vertices[i].begin(); it != tree_of_congruence_vertices[i].end(); ++it)
+        {
+            neighbours.push_back({positions[(*it).first], (*it).second});
+        }
+        auto& x = positions[i];
+        auto& xt = velocities[i];
+
+        if (j < jelly_corners_idx.size() && jelly_corners_idx[j] == i)
+        {
+            const auto& cc = cc_corners[j];
+            const auto [dx, dxt] = RungeKutta4(cc, neighbours, x, xt);
+            velocities[i] += dxt;
+            positions[i] += dx;
+            j++;
+        }
+        else
+        {
+            const auto [dx, dxt] = RungeKutta4(neighbours, x, xt);
+            velocities[i] += dxt;
+            positions[i] += dx;
+        }
     }
+
     need_update = true;
 }
 
@@ -179,6 +251,85 @@ void BezierCube::SetVerticesAndLines()
     }
 }
 
+void BezierCube::SetTreeOfCongruence()
+{
+    for (int i = 0; i < n - 1; ++i) //x
+    {
+        for (int j = 0; j < n - 1; ++j) // y
+        {
+            for (int k = 0; k < n - 1; ++k) // z
+            {
+                int idx = (i * n + j) * n + k;
+                int a1 = idx;
+                int a2 = idx + 1;
+                int a3 = idx + n;
+                int a4 = idx + n + 1;
+                int a5 = idx + n * n;
+                int a6 = idx + n * n + 1;
+                int a7 = idx + n * n + n;
+                int a8 = idx + n * n + n + 1;
+
+                // true - spring is on edge, false - spring is on face
+                tree_of_congruence_vertices[a1].insert({ a2, true });
+                tree_of_congruence_vertices[a1].insert({ a3, true });
+                tree_of_congruence_vertices[a1].insert({ a5, true });
+                tree_of_congruence_vertices[a1].insert({ a4, false });
+                tree_of_congruence_vertices[a1].insert({ a7, false });
+                tree_of_congruence_vertices[a1].insert({ a6, false });
+
+                tree_of_congruence_vertices[a2].insert({ a1, true });
+                tree_of_congruence_vertices[a2].insert({ a4, true });
+                tree_of_congruence_vertices[a2].insert({ a6, true });
+                tree_of_congruence_vertices[a2].insert({ a3, false });
+                tree_of_congruence_vertices[a2].insert({ a8, false });
+                tree_of_congruence_vertices[a2].insert({ a5, false });
+
+                tree_of_congruence_vertices[a3].insert({ a1, true });
+                tree_of_congruence_vertices[a3].insert({ a4, true });
+                tree_of_congruence_vertices[a3].insert({ a7, true });
+                tree_of_congruence_vertices[a3].insert({ a2, false });
+                tree_of_congruence_vertices[a3].insert({ a5, false });
+                tree_of_congruence_vertices[a3].insert({ a8, false });
+
+                tree_of_congruence_vertices[a4].insert({ a2, true });
+                tree_of_congruence_vertices[a4].insert({ a3, true });
+                tree_of_congruence_vertices[a4].insert({ a8, true });
+                tree_of_congruence_vertices[a4].insert({ a1, false });
+                tree_of_congruence_vertices[a4].insert({ a6, false });
+                tree_of_congruence_vertices[a4].insert({ a7, false });
+
+                tree_of_congruence_vertices[a5].insert({ a1, true });
+                tree_of_congruence_vertices[a5].insert({ a6, true });
+                tree_of_congruence_vertices[a5].insert({ a7, true });
+                tree_of_congruence_vertices[a5].insert({ a3, false });
+                tree_of_congruence_vertices[a5].insert({ a8, false });
+                tree_of_congruence_vertices[a5].insert({ a2, false });
+
+                tree_of_congruence_vertices[a6].insert({ a2, true });
+                tree_of_congruence_vertices[a6].insert({ a5, true });
+                tree_of_congruence_vertices[a6].insert({ a8, true });
+                tree_of_congruence_vertices[a6].insert({ a4, false });
+                tree_of_congruence_vertices[a6].insert({ a7, false });
+                tree_of_congruence_vertices[a6].insert({ a1, false });
+
+                tree_of_congruence_vertices[a7].insert({ a3, true });
+                tree_of_congruence_vertices[a7].insert({ a5, true });
+                tree_of_congruence_vertices[a7].insert({ a8, true });
+                tree_of_congruence_vertices[a7].insert({ a1, false });
+                tree_of_congruence_vertices[a7].insert({ a6, false });
+                tree_of_congruence_vertices[a7].insert({ a4, false });
+
+                tree_of_congruence_vertices[a8].insert({ a6, true });
+                tree_of_congruence_vertices[a8].insert({ a7, true });
+                tree_of_congruence_vertices[a8].insert({ a4, true });
+                tree_of_congruence_vertices[a8].insert({ a3, false });
+                tree_of_congruence_vertices[a8].insert({ a2, false });
+                tree_of_congruence_vertices[a8].insert({ a5, false });
+            }
+        }
+    }
+}
+
 void BezierCube::UpdateBuffer()
 {
     for (int i = 0; i < n; ++i)
@@ -197,12 +348,20 @@ void BezierCube::UpdateBuffer()
     }
 }
 
-std::tuple<glm::vec3, glm::vec3> BezierCube::RungeKutta4(const glm::vec3& x1, const glm::vec3& x, const glm::vec3& xt)
+std::tuple<glm::vec3, glm::vec3> BezierCube::RungeKutta4(const glm::vec3& cc, std::list<std::pair<glm::vec3, bool>>& neighbours, const glm::vec3& x, const glm::vec3& xt)
 {
-    auto dxtdt = [this](const glm::vec3& x1, const glm::vec3& x, const glm::vec3& xt) {
-        auto distance_diff = x1 - x;
+    auto dxtdt = [this](const glm::vec3& cc, std::list<std::pair<glm::vec3, bool>>& neighbours, const glm::vec3& x, const glm::vec3& xt) {
+        auto distance_diff = cc - x;
         auto distance_norm = std::sqrt(glm::dot(distance_diff, distance_diff));
         auto f = distance_norm == 0 ? glm::vec3() : (glm::vec3(c2, c2, c2) * (distance_norm - 0) * distance_diff / distance_norm);
+        for (auto it = neighbours.begin(); it != neighbours.end(); ++it)
+        {
+            const auto& is_on_edge = (*it).second;
+            auto l = is_on_edge ? one_div_three : sqrt_two_div_three;
+            auto distance_diff = (*it).first - x;
+            auto distance_norm = std::sqrt(glm::dot(distance_diff, distance_diff));
+            f += distance_norm == 0 ? glm::vec3() : (glm::vec3(c1, c1, c1) * (distance_norm - l) * distance_diff / distance_norm);
+        }
         auto g = -glm::vec3(k, k, k) * xt;
         auto F = f + g;
         return F / mass;
@@ -212,31 +371,59 @@ std::tuple<glm::vec3, glm::vec3> BezierCube::RungeKutta4(const glm::vec3& x1, co
         return xt;
     };
     
-    glm::vec3 k0_xt = dt * dxtdt(x1, x, xt);
+    glm::vec3 k0_xt = dt * dxtdt(cc, neighbours, x, xt);
     glm::vec3 k0_x = dt * dxdt(xt);
 
-    glm::vec3 k1_xt = dt * dxtdt(x1, x + k0_x / 2.0f, xt + k0_xt / 2.0f);
+    glm::vec3 k1_xt = dt * dxtdt(cc, neighbours, x + k0_x / 2.0f, xt + k0_xt / 2.0f);
     glm::vec3 k1_x = dt * dxdt(xt + k0_xt / 2.0f);
 
-    glm::vec3 k2_xt = dt * dxtdt(x1, x + k1_xt / 2.0f, xt + k1_xt / 2.0f);
+    glm::vec3 k2_xt = dt * dxtdt(cc, neighbours, x + k1_xt / 2.0f, xt + k1_xt / 2.0f);
     glm::vec3 k2_x = dt * dxdt(xt + k1_xt / 2.0f);
 
-    glm::vec3 k3_xt = dt * dxtdt(x1, x + k2_xt, xt + k2_xt);
+    glm::vec3 k3_xt = dt * dxtdt(cc, neighbours, x + k2_xt, xt + k2_xt);
     glm::vec3 k3_x = dt * dxdt(xt + k2_xt);
 
     auto dxt = (k0_xt + 2.0f * k1_xt + 2.0f * k2_xt + k3_xt) / 6.0f;
     auto dx = (k0_x + 2.0f * k1_x + 2.0f * k2_x + k3_x) / 6.0f;
 
     return std::tuple<glm::vec3, glm::vec3>(dx, dxt);
+}
 
-        //auto& x1 = cc_corners[i];
-        //auto& x2 = positions[jelly_corners_idx[i]];
-        //auto distance_diff = x1 - x2;
-        //auto distance_norm = std::sqrt(glm::dot(distance_diff, distance_diff));
-        //auto f = distance_norm == 0 ? glm::vec3() : (glm::vec3(c2,c2,c2) * (distance_norm - 0) * distance_diff / distance_norm);
-        //auto g = -glm::vec3(k, k, k) * velocities[jelly_corners_idx[i]];
-        //auto F = f + g;
-        //auto xtt = F / mass;
-        //velocities[jelly_corners_idx[i]] += dt * xtt;
-        //positions[jelly_corners_idx[i]] += dt * velocities[jelly_corners_idx[i]];
+std::tuple<glm::vec3, glm::vec3> BezierCube::RungeKutta4(std::list<std::pair<glm::vec3, bool>>& neighbours, const glm::vec3& x, const glm::vec3& xt)
+{
+    auto dxtdt = [this](const std::list<std::pair<glm::vec3, bool>>& neighbours, const glm::vec3& x, const glm::vec3& xt) {
+        glm::vec3 f{};
+        for (auto it=neighbours.begin(); it != neighbours.end(); ++it)
+        {
+            const auto& is_on_edge = (*it).second;
+            auto l = is_on_edge ? one_div_three : sqrt_two_div_three;
+            auto distance_diff = (*it).first - x;
+            auto distance_norm = std::sqrt(glm::dot(distance_diff, distance_diff));
+            f += distance_norm == 0 ? glm::vec3() : (glm::vec3(c1, c1, c1) * (distance_norm - l) * distance_diff / distance_norm);
+        }        
+        auto g = -glm::vec3(k, k, k) * xt;
+        auto F = f + g;
+        return F / mass;
+    };
+
+    auto dxdt = [this](const glm::vec3& xt) {
+        return xt;
+    };
+
+    glm::vec3 k0_xt = dt * dxtdt(neighbours, x, xt);
+    glm::vec3 k0_x = dt * dxdt(xt);
+
+    glm::vec3 k1_xt = dt * dxtdt(neighbours, x + k0_x / 2.0f, xt + k0_xt / 2.0f);
+    glm::vec3 k1_x = dt * dxdt(xt + k0_xt / 2.0f);
+
+    glm::vec3 k2_xt = dt * dxtdt(neighbours, x + k1_xt / 2.0f, xt + k1_xt / 2.0f);
+    glm::vec3 k2_x = dt * dxdt(xt + k1_xt / 2.0f);
+
+    glm::vec3 k3_xt = dt * dxtdt(neighbours, x + k2_xt, xt + k2_xt);
+    glm::vec3 k3_x = dt * dxdt(xt + k2_xt);
+
+    auto dxt = (k0_xt + 2.0f * k1_xt + 2.0f * k2_xt + k3_xt) / 6.0f;
+    auto dx = (k0_x + 2.0f * k1_x + 2.0f * k2_x + k3_x) / 6.0f;
+
+    return std::tuple<glm::vec3, glm::vec3>(dx, dxt);
 }
