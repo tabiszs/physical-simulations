@@ -105,6 +105,7 @@
     <None Include="Shaders\cursorFS.glsl" />
     <None Include="Shaders\cursorVS.glsl" />
     <None Include="Shaders\deCasteljauTES.glsl" />
+    <None Include="Shaders\jellyCS.glsl" />
     <None Include="Shaders\point.fs" />
     <None Include="Shaders\point.vs" />
     <None Include="Shaders\pointFS.glsl" />

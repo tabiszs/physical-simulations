@@ -1,5 +1,46 @@
 #include "shader.h"
 
+Shader::Shader(const char* computePath)
+{
+    std::string computeCode;
+    std::ifstream cShaderFile;
+    cShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try
+    {
+        // open files
+        cShaderFile.open(computePath);
+        std::stringstream cShaderStream;
+        // read file's buffer contents into streams
+        cShaderStream << cShaderFile.rdbuf();
+        // close file handlers
+        cShaderFile.close();
+        // convert stream into string
+        computeCode = cShaderStream.str();
+        // if geometry shader path is present, also load a geometry shader
+    }
+    catch (std::ifstream::failure& e)
+    {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << e.what() << std::endl;
+        throw std::runtime_error("Could not open file");
+    }
+    const char* cShaderCode = computeCode.c_str();
+    // 2. compile shaders
+    unsigned int compute;
+    // compute shader
+    compute = glCreateShader(GL_COMPUTE_SHADER);
+    glShaderSource(compute, 1, &cShaderCode, NULL);
+    glCompileShader(compute);
+    checkCompileErrors(compute, "COMPUTE");
+    
+    // shader Program
+    ID = glCreateProgram();
+    glAttachShader(ID, compute);
+    glLinkProgram(ID);
+    checkCompileErrors(ID, "PROGRAM");
+    // delete the shaders as they're linked into our program now and no longer necessary
+    glDeleteShader(compute);
+}
+
 Shader::Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath)
 {
     // 1. retrieve the vertex/fragment source code from filePath
@@ -205,12 +246,19 @@ void Shader::setMatrix4F(const std::string& name, glm::mat4 value) const
     glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 }
 
+void Shader::setTexture1D(const std::string& name, void* data, int size) const
+{
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glTexImage1D(GL_TEXTURE_1D, 0, GL_SHORT, size, 0, GL_RED, GL_UNSIGNED_BYTE, data);
+}
+
 void Shader::setTextureAtUnit(const std::string& name, int value) const
 {
     glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
 }
 
-void Shader::activateTexture(int i, int texture) const
+void Shader::activateTexture2D(int i, int texture) const
 {
     glActiveTexture(GL_TEXTURE0 + i);
     glBindTexture(GL_TEXTURE_2D, texture);

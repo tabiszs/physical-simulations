@@ -141,6 +141,9 @@
     <ClCompile Include="Cursor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -251,6 +254,9 @@
     <ClInclude Include="Cursor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\simple.fs">
@@ -290,6 +296,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Shaders\cursorVS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\jellyCS.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

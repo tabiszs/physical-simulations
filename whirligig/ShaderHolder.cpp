@@ -23,6 +23,7 @@ void ShaderHolder::Init()
 	frameShader = std::shared_ptr<Shader>(new Shader("shaders/simple.vs", "shaders/simple.fs"));
 	pointShader = std::shared_ptr<Shader>(new Shader("shaders/pointSizeVS.glsl", "shaders/pointFS.glsl"));
 	surfaceC0Shader = std::make_shared<Shader>("shaders/bicubicVS.glsl", "shaders/bicubicFS.glsl", "shaders/bicubicTCS.glsl", "shaders/deCasteljauTES.glsl");
+	computeShader = std::make_shared<Shader>("shaders/jellyCS.glsl");
 
 	initial_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
 	final_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
@@ -47,6 +48,7 @@ void ShaderHolder::Delete()
 	if (frameShader != nullptr)	glDeleteProgram(frameShader->ID);
 	if (pointShader != nullptr)		glDeleteProgram(pointShader->ID);
 	if (surfaceC0Shader != nullptr) glDeleteProgram(surfaceC0Shader->ID);
+	if (computeShader != nullptr) glDeleteProgram(computeShader->ID);
 
 	if (initial_cursorShader != nullptr) glDeleteProgram(initial_cursorShader->ID);
 	if (final_cursorShader != nullptr) glDeleteProgram(final_cursorShader->ID);

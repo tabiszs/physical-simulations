@@ -101,6 +101,17 @@ void Device::LoadPositionsAndColor(Object* model)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void Device::LoadUniformBufferObject(int index, int size, void* data)
+{
+	unsigned int uniform_block;
+	glGenBuffers(1, &uniform_block);
+	glBindBuffer(GL_UNIFORM_BUFFER, uniform_block);
+	glBufferData(GL_UNIFORM_BUFFER, 1024, (GLuint*) data, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	// define the range of the buffer that links to a uniform binding point
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uniform_block, 0, 1024);
+}
+
 void Device::UpdateMesh(Object* model)
 {
 	glBindVertexArray(model->VAO);

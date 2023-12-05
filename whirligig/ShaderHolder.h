@@ -18,6 +18,7 @@ public:
 	std::shared_ptr<Shader> frameShader;
 	std::shared_ptr<Shader> pointShader;
 	std::shared_ptr<Shader> bezierShader;
+	std::shared_ptr<Shader> computeShader;
 
 	std::shared_ptr<Shader> initial_cursorShader;
 	std::shared_ptr<Shader> final_cursorShader;

@@ -112,6 +112,7 @@ void JellyScene::UpdateJelly()
 	{
 		auto cc_corners = control_cube->GetCornersPositions();
 		bezier_cube->ComputeForce(cc_corners);
+		//bezier_cube->Update();
 		dt -= step;
 	}
 }
