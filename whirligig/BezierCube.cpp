@@ -14,11 +14,7 @@ void BezierCube::LoadMeshTo(std::shared_ptr<Device> device)
     point_shader->use();
     point_shader->set4Float("objectColor", blue);
     point_shader->setMatrix4F("modelMtx", ModelMatrix());
-
-    device->LoadUniformBufferObject(0, sizeof(bool) * n_pow_three, corners_positions);
-    device->LoadUniformBufferObject(1, sizeof(int) * n_pow_three, neighbours_count);
-    device->LoadUniformBufferObject(2, sizeof(int) * n_pow_three * 18, neighbours_list); // 6 on edges, 12 on faces - in 3D
-    device->LoadUniformBufferObject(3, sizeof(bool) * n_pow_three * 18, neighbours_distance);        
+       
 }
 
 void BezierCube::UpdateMeshTo(std::shared_ptr<Device> device)
@@ -47,11 +43,7 @@ void BezierCube::DrawEdgesOn(std::shared_ptr<Device> device)
 
 void BezierCube::Update()
 {
-    compute_shader->use();
-    glDispatchCompute((unsigned int)10, (unsigned int)10, 1);
 
-    // make sure writing to image has finished before read
-    glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 }
 
 std::array<int, 8> BezierCube::GetCornersPositions()
@@ -73,19 +65,16 @@ void BezierCube::ComputeForce(const std::array<glm::vec3, 8>& cc_corners)
         if (j < jelly_corners_idx.size() && jelly_corners_idx[j] == i)
         {
             const auto& cc = cc_corners[j];
-            const auto [a, b] = RungeKutta4(cc, i, x, xt);
-            dxt[i] = a; 
-            dx[i] = b;
+            RungeKutta4(i, x, xt, cc, true);            
             j++;
         }
         else
         {
-            const auto [a, b] = RungeKutta4(i, x, xt);
-            dxt[i] = a;
-            dx[i] = b;
+            RungeKutta4(i, x, xt, x, false);
         }
     }
 
+    // in the end update positions and velocities
     for (int i = 0; i < n_pow_three; ++i)
     {
         velocities[i] += dxt[i];
@@ -330,19 +319,24 @@ void BezierCube::UpdateBuffer()
     }
 }
 
-std::tuple<glm::vec3, glm::vec3> BezierCube::RungeKutta4(const glm::vec3& cc, int current_idx, const glm::vec3& x, const glm::vec3& xt)
+void BezierCube::RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt, const glm::vec3& cc, bool corner)
 {
-    auto dxtdt = [this](const glm::vec3& cc, int current_idx, const glm::vec3& x, const glm::vec3& xt) {
-        auto distance_diff = cc - x;
-        auto distance_norm = std::sqrt(glm::dot(distance_diff, distance_diff));
-        auto f = distance_norm == 0 ? glm::vec3() : (glm::vec3(c2, c2, c2) * (distance_norm - 0) * distance_diff / distance_norm);
+    auto dxtdt = [this](const glm::vec3& cc, int current_idx, const glm::vec3& x, const glm::vec3& xt, bool corner) {
+        glm::vec3 f = glm::vec3(0,0,0);
+        if (corner)
+        {
+            auto distance_diff = cc - x;
+            f = (glm::vec3(c2, c2, c2) *  distance_diff);
+        }
+
         for (int i=0; i<neighbours_count[current_idx]; ++i)
         {
             const auto& is_on_edge = neighbours_distance[18 * current_idx + i];
             auto l = is_on_edge ? one_div_three : sqrt_two_div_three;
             auto distance_diff = positions[neighbours_list[18 * current_idx + i]] - x;
-            auto distance_norm = std::sqrt(glm::dot(distance_diff, distance_diff));
-            f += distance_norm == 0 ? glm::vec3() : (glm::vec3(c1, c1, c1) * (distance_norm - l) * distance_diff / distance_norm);
+            auto distance_norm = std::sqrtf(glm::dot(distance_diff, distance_diff));
+            auto distance_norm_l = (distance_norm - l);
+            f += abs(distance_norm_l) < FLT_EPSILON ? glm::vec3() : (glm::vec3(c1, c1, c1) * distance_norm_l * distance_diff / distance_norm);
         }
         auto g = -glm::vec3(k, k, k) * xt;
         auto F = f + g;
@@ -352,60 +346,19 @@ std::tuple<glm::vec3, glm::vec3> BezierCube::RungeKutta4(const glm::vec3& cc, in
     auto dxdt = [this](const glm::vec3& xt) {
         return xt;
     };
-    
-    glm::vec3 k0_xt = dt * dxtdt(cc, current_idx, x, xt);
+
+    glm::vec3 k0_xt = dt * dxtdt(cc, current_idx, x, xt, corner);
     glm::vec3 k0_x = dt * dxdt(xt);
 
-    glm::vec3 k1_xt = dt * dxtdt(cc, current_idx, x + k0_x / 2.0f, xt + k0_xt / 2.0f);
+    glm::vec3 k1_xt = dt * dxtdt(cc, current_idx, x + k0_x / 2.0f, xt + k0_xt / 2.0f, corner);
     glm::vec3 k1_x = dt * dxdt(xt + k0_xt / 2.0f);
 
-    glm::vec3 k2_xt = dt * dxtdt(cc, current_idx, x + k1_xt / 2.0f, xt + k1_xt / 2.0f);
+    glm::vec3 k2_xt = dt * dxtdt(cc, current_idx, x + k1_xt / 2.0f, xt + k1_xt / 2.0f, corner);
     glm::vec3 k2_x = dt * dxdt(xt + k1_xt / 2.0f);
 
-    glm::vec3 k3_xt = dt * dxtdt(cc, current_idx, x + k2_xt, xt + k2_xt);
+    glm::vec3 k3_xt = dt * dxtdt(cc, current_idx, x + k2_xt, xt + k2_xt, corner);
     glm::vec3 k3_x = dt * dxdt(xt + k2_xt);
 
-    auto dxt = (k0_xt + 2.0f * k1_xt + 2.0f * k2_xt + k3_xt) / 6.0f;
-    auto dx = (k0_x + 2.0f * k1_x + 2.0f * k2_x + k3_x) / 6.0f;
-
-    return std::tuple<glm::vec3, glm::vec3>(dx, dxt);
-}
-
-std::tuple<glm::vec3, glm::vec3> BezierCube::RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt)
-{
-    auto dxtdt = [this](int current_idx, const glm::vec3& x, const glm::vec3& xt) {
-        glm::vec3 f{};
-        for (int i = 0; i < neighbours_count[current_idx]; ++i)
-        {
-            const auto& is_on_edge = neighbours_distance[18 * current_idx + i];
-            auto l = is_on_edge ? one_div_three : sqrt_two_div_three;
-            auto distance_diff = positions[neighbours_list[18 * current_idx + i]] - x;
-            auto distance_norm = std::sqrt(glm::dot(distance_diff, distance_diff));
-            f += distance_norm == 0 ? glm::vec3() : (glm::vec3(c1, c1, c1) * (distance_norm - l) * distance_diff / distance_norm);
-        }        
-        auto g = -glm::vec3(k, k, k) * xt;
-        auto F = f + g;
-        return F / mass;
-    };
-
-    auto dxdt = [this](const glm::vec3& xt) {
-        return xt;
-    };
-
-    glm::vec3 k0_xt = dt * dxtdt(current_idx, x, xt);
-    glm::vec3 k0_x = dt * dxdt(xt);
-
-    glm::vec3 k1_xt = dt * dxtdt(current_idx, x + k0_x / 2.0f, xt + k0_xt / 2.0f);
-    glm::vec3 k1_x = dt * dxdt(xt + k0_xt / 2.0f);
-
-    glm::vec3 k2_xt = dt * dxtdt(current_idx, x + k1_xt / 2.0f, xt + k1_xt / 2.0f);
-    glm::vec3 k2_x = dt * dxdt(xt + k1_xt / 2.0f);
-
-    glm::vec3 k3_xt = dt * dxtdt(current_idx, x + k2_xt, xt + k2_xt);
-    glm::vec3 k3_x = dt * dxdt(xt + k2_xt);
-
-    auto dxt = (k0_xt + 2.0f * k1_xt + 2.0f * k2_xt + k3_xt) / 6.0f;
-    auto dx = (k0_x + 2.0f * k1_x + 2.0f * k2_x + k3_x) / 6.0f;
-
-    return std::tuple<glm::vec3, glm::vec3>(dx, dxt);
+    dxt[current_idx] = (k0_xt + 2.0f * k1_xt + 2.0f * k2_xt + k3_xt) / 6.0f;
+    dx[current_idx] = (k0_x + 2.0f * k1_x + 2.0f * k2_x + k3_x) / 6.0f;
 }

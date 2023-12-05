@@ -108,7 +108,7 @@ void JellyScene::UpdateJelly()
 
 	dt *= speed;
 	auto step = bezier_cube->dt;
-	while (dt > step)
+	//while (dt > step)
 	{
 		auto cc_corners = control_cube->GetCornersPositions();
 		bezier_cube->ComputeForce(cc_corners);

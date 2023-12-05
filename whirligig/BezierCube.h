@@ -31,15 +31,15 @@ public:
 	float gravitation[3] = { 0.0f, 0.0f, 0.0f };
 	int use_whole_vector_velocities = 0;
 	float mass = 1.0f;
-	float k = 4.0f;
-	float c1 = 32.0f;
-	float c2 = 32.0f;
+	float k = 1.0f;
+	float c1 = 1.0f;
+	float c2 = 10.0f;
 	bool depth_on;
 
 	std::array<glm::vec3, 64> positions{};
 	std::array<glm::vec3, 64> velocities{};
-	std::array<glm::vec3, 64> tmp_positions{};
-	std::array<glm::vec3, 64> tmp_velocities{};
+	std::array<glm::vec3, 64> dx{};
+	std::array<glm::vec3, 64> dxt{};
 	float blue[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
 	float yellow[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
 	std::shared_ptr<Shader> point_shader;
@@ -51,8 +51,7 @@ private:
 	void SetNeighbours();
 	std::array<int, 8> GetCornersPositions();
 	void UpdateBuffer();
-	std::tuple<glm::vec3, glm::vec3> RungeKutta4(const glm::vec3& cc, int current_idx, const glm::vec3& x, const glm::vec3& xt);
-	std::tuple<glm::vec3, glm::vec3> RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt);
+	void RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt, const glm::vec3& cc, bool corner);
 
 	static const int n = 4;
 	static const int n_pow_three = n * n * n;

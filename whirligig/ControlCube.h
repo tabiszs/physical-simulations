@@ -12,7 +12,7 @@ public:
 	std::array<glm::vec3, 8> GetCornersPositions();
 
 	float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
-	float position[3] = { 0.0f, -1.0f, 0.0f };
+	float position[3] = { 1.0f, 0.0f, 0.0f };
 	float euler_angles[3] = {0.0f, 0.0f, 0.0f};
 
 };
