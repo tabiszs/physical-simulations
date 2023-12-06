@@ -83,6 +83,69 @@ void BezierCube::ComputeForce(const std::array<glm::vec3, 8>& cc_corners)
     need_update = true;
 }
 
+void BezierCube::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
+{
+    for (int i = 0; i < n_pow_three; ++i)
+    {
+        // rekurencyjnie kazdy kierunek do czasu az po trzech wymiarach w jednej petli nie bedzie poprawki
+        auto& pos = positions[i];
+        auto& vel = velocities[i];
+        bool has_collision = false;
+        do
+        {
+            if (pos.x > boundings_dimensions.x)
+            {
+                auto diff = pos.x - boundings_dimensions.x;
+                pos.x -= 2 * diff;
+                vel.x = -vel.x;
+                has_collision = true;
+            }
+            else if (pos.x < -boundings_dimensions.x)
+            {
+                auto diff = -boundings_dimensions.x - pos.x;
+                pos.x += 2 * diff;
+                vel.x = -vel.x;
+                has_collision = true;
+            }
+            else if (pos.y > boundings_dimensions.y)
+            {
+                auto diff = pos.y - boundings_dimensions.y;
+                pos.y -= 2 * diff;
+                vel.y = -vel.y;
+                has_collision = true;
+            }
+            else if (pos.y < -boundings_dimensions.y)
+            {
+                auto diff = -boundings_dimensions.y - pos.y;
+                pos.y += 2 * diff;
+                vel.y = -vel.y;
+                has_collision = true;
+            }
+            else if (pos.z > boundings_dimensions.z)
+            {
+                auto diff = pos.z - boundings_dimensions.z;
+                pos.z -= 2 * diff;
+                vel.z = -vel.z;
+                has_collision = true;
+            }
+            else if (pos.z < -boundings_dimensions.z)
+            {
+                auto diff = -boundings_dimensions.z - pos.z;
+                pos.z += 2 * diff;
+                vel.z = -vel.z;
+                has_collision = true;
+            }
+            else
+            {
+                has_collision = false;
+            }
+
+        } while (has_collision);
+
+
+    }
+}
+
 void BezierCube::SetVerticesAndLines()
 {
     int i = 0;
@@ -361,4 +424,8 @@ void BezierCube::RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec
 
     dxt[current_idx] = (k0_xt + 2.0f * k1_xt + 2.0f * k2_xt + k3_xt) / 6.0f;
     dx[current_idx] = (k0_x + 2.0f * k1_x + 2.0f * k2_x + k3_x) / 6.0f;
+}
+
+void BezierCube::CheckCollisions()
+{
 }

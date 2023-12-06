@@ -39,6 +39,7 @@ public:
     virtual void UpdateMeshTo(std::shared_ptr<Device> device);
     virtual void DrawModelOn(std::shared_ptr<Device> device);
     virtual void Update(float t) {}
+    glm::vec3 GetDimensions();
 
 protected:
     void SetBoundings(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax);

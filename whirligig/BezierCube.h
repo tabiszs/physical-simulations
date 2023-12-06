@@ -26,6 +26,7 @@ public:
 	void DrawEdgesOn(std::shared_ptr<Device> device);
 	void Update();
 	void ComputeForce(const std::array<glm::vec3, 8>& cc_corners);
+	void TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions);
 
 	float dt = 0.01f;
 	float gravitation[3] = { 0.0f, 0.0f, 0.0f };
@@ -52,6 +53,7 @@ private:
 	std::array<int, 8> GetCornersPositions();
 	void UpdateBuffer();
 	void RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt, const glm::vec3& cc, bool corner);
+	void CheckCollisions();
 
 	static const int n = 4;
 	static const int n_pow_three = n * n * n;
