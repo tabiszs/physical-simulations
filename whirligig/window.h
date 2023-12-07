@@ -17,9 +17,6 @@ private:
 
     std::shared_ptr<Scene> scene;
 
-    //mouse parameters
-    float lastX;
-    float lastY;
 
     // timing
     float deltaTime = 0.0f;	// time between current frame and last frame

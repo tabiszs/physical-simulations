@@ -21,6 +21,7 @@
 #include "WhirligigScene.h"
 #include "JellyScene.h"
 #include "InterpolationScene.h"
+#include "KinematicChainScene.h"
 
 
 using namespace std;
@@ -56,5 +57,6 @@ private:
 	shared_ptr<WhirligigScene> whirligig_scene;
 	shared_ptr<JellyScene> jelly_scene;
 	shared_ptr<InterpolationScene> interpolation_scene;
+	shared_ptr<KinematicChainScene> kinematic_chain_scene;
 	SpringSimulator ss = SpringSimulator();
 };

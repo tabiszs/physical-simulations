@@ -25,6 +25,9 @@ public:
 	std::shared_ptr<Shader> euler_cursorShader;
 	std::shared_ptr<Shader> quat_cursorShader;
 
+	std::shared_ptr<Shader> armShader;
+	std::shared_ptr<Shader> blockShader;
+
 	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> stereoscopyShader;
 	std::shared_ptr<Shader> surfaceC0Shader;

@@ -32,6 +32,8 @@ public:
 	virtual void DrawOn(std::shared_ptr<Device> device);
 	virtual void Update();
 	virtual void Menu();
+	virtual void ProcessMouseCursorPosCallback(GLFWwindow* m_Window, float xpos, float ypos);
+	virtual void ProcessMouseButtonCallback(int button, int action, int mods, float xpos, float ypos) {}
 
 	shared_ptr<Light> light;
 	shared_ptr<FpsCamera> camera;
@@ -45,6 +47,9 @@ public:
 protected:
 	void UpdateProjViewMtx();
 	void SetProjViewMtx(const std::shared_ptr<Shader> shader);
+	glm::vec4 ClipToWorldSpace(glm::vec4 clipPos);
+	glm::vec4 WorldToClipSpace(glm::vec4 worldPos);
+	glm::vec4 ScreenToClipSpace(float x_sceen_pos, float y_screen_pos, float z_clip_pos);
 
 	std::shared_ptr<Scene> getptr()
 	{
@@ -53,6 +58,10 @@ protected:
 	shared_ptr<Device> device;
 
 	glm::mat4 m_viewProjMtx;
+
+	//mouse parameters
+	float lastX;
+	float lastY;
 	
 };
 

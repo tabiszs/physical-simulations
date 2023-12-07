@@ -144,19 +144,7 @@ void Window::static_MouseCursorPosCallback(GLFWwindow* window, double xpos, doub
 
 void Window::mouseCursorPosCallback(double xpos, double ypos)
 {
-    ImGuiIO& io = ImGui::GetIO();
-    if (!io.WantCaptureMouse && scene->camera_movement)
-    {
-        float xoffset = (float)xpos - lastX;
-        float yoffset = lastY - (float)ypos;
-        if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-        {
-            auto& camera = scene->camera;
-            camera->Rotate(xoffset * ROTATION_SPEED, yoffset * ROTATION_SPEED);
-        }
-    }
-    lastX = (float)xpos;
-    lastY = (float)ypos;
+    scene->ProcessMouseCursorPosCallback(m_Window, (float)xpos, (float)ypos);
 }
 
 void Window::static_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -169,7 +157,7 @@ void Window::static_MouseButtonCallback(GLFWwindow* window, int button, int acti
 
 void Window::mouseButtonCallback(int button, int action, int mods, double xpos, double ypos)
 {
-
+    scene->ProcessMouseButtonCallback(button, action, mods, (float)xpos, (float)ypos);
 }
 
 void Window::setScrollCallback()

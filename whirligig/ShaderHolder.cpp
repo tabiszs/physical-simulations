@@ -30,6 +30,9 @@ void ShaderHolder::Init()
 	euler_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
 	quat_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
 
+	armShader = std::make_shared<Shader>("shaders/pointVS.glsl", "shaders/pointFS.glsl");
+	blockShader = std::make_shared<Shader>("shaders/simple.vs", "shaders/simple.fs");
+
 	oldPointShader = std::shared_ptr<Shader>(new Shader("shaders/point.vs", "shaders/point.fs"));
 	bezierShader = std::shared_ptr<Shader>(new Shader("shaders/bezierVS.glsl", "shaders/bezierFS.glsl", "shaders/bezierGS.glsl"));
 	stereoscopyShader = std::shared_ptr<Shader>(new Shader("shaders/stereoscopyVS.glsl", "shaders/stereoscopyFS.glsl"));
@@ -54,6 +57,9 @@ void ShaderHolder::Delete()
 	if (final_cursorShader != nullptr) glDeleteProgram(final_cursorShader->ID);
 	if (euler_cursorShader != nullptr) glDeleteProgram(euler_cursorShader->ID);
 	if (quat_cursorShader != nullptr) glDeleteProgram(quat_cursorShader->ID);
+
+	if (armShader != nullptr) glDeleteProgram(armShader->ID);
+	if (blockShader != nullptr) glDeleteProgram(blockShader->ID);
 
 	if (oldPointShader != nullptr)	glDeleteProgram(oldPointShader->ID);
 	if (bezierShader != nullptr)	glDeleteProgram(bezierShader->ID);

@@ -7,6 +7,7 @@
 #include "Cube.h"
 #include "ControlCube.h"
 #include "Cursor.h"
+#include "Arm.h"
 
 Application::Application()
 {
@@ -63,6 +64,22 @@ Application::Application()
 	cursor->position[2] = 2.0f;
 	interpolation_scene->final_cursor = cursor;
 
+	kinematic_chain_scene = std::make_shared<KinematicChainScene>(camera, light, viewFrustum);
+	window->ImportScene(kinematic_chain_scene);
+	auto arm1 = make_shared<Arm>(glm::quarter_pi<float>(), 1);
+	arm1->LoadMeshTo(device);
+	kinematic_chain_scene->arm1_start = arm1;
+	auto arm2 = make_shared<Arm>(glm::quarter_pi<float>(), 1, arm1);
+	arm2->LoadMeshTo(device);
+	kinematic_chain_scene->arm2_start = arm2;
+	arm1->SetChild(arm2);
+	arm1 = make_shared<Arm>(0, 1);
+	arm1->LoadMeshTo(device);
+	kinematic_chain_scene->arm1_end = arm1;
+	arm2 = make_shared<Arm>(0, 1, arm1);
+	arm2->LoadMeshTo(device);
+	kinematic_chain_scene->arm2_end = arm2;
+	arm1->SetChild(arm2);
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }
@@ -85,23 +102,26 @@ void Application::Menu()
 	ImGui::NewFrame();
 
 	//whirligig_scene->Menu();
-	jelly_scene->Menu();
+	//jelly_scene->Menu();
 	//interpolation_scene->Menu();
+	kinematic_chain_scene->Menu();
 }
 
 void Application::Update()
 {
 	device->CleanColor(backgroundColor);
 	//whirligig_scene->Update();
-	jelly_scene->Update();
+	//jelly_scene->Update();
 	//interpolation_scene->Update();
+	kinematic_chain_scene->Update();
 }
 
 void Application::Render()
 {
 	//whirligig_scene->DrawOn(device);
-	jelly_scene->DrawOn(device);
+	//jelly_scene->DrawOn(device);
 	//interpolation_scene->DrawOn(device);		
+	kinematic_chain_scene->DrawOn(device);
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

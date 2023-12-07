@@ -34,7 +34,7 @@ public:
         shader = ShaderHolder::Get().boxShader;
     }
 
-    virtual glm::mat4 ModelMatrix();
+    glm::mat4 ModelMatrix() override;
     virtual void LoadMeshTo(std::shared_ptr<Device> device);
     virtual void UpdateMeshTo(std::shared_ptr<Device> device);
     virtual void DrawModelOn(std::shared_ptr<Device> device);
