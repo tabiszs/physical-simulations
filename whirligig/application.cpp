@@ -64,22 +64,9 @@ Application::Application()
 	cursor->position[2] = 2.0f;
 	interpolation_scene->final_cursor = cursor;
 
-	kinematic_chain_scene = std::make_shared<KinematicChainScene>(camera, light, viewFrustum);
+	kinematic_chain_scene = std::make_shared<KinematicChainScene>(camera, light, viewFrustum, device);
 	window->ImportScene(kinematic_chain_scene);
-	auto arm1 = make_shared<Arm>(glm::quarter_pi<float>(), 1);
-	arm1->LoadMeshTo(device);
-	kinematic_chain_scene->arm1_start = arm1;
-	auto arm2 = make_shared<Arm>(glm::quarter_pi<float>(), 1, arm1);
-	arm2->LoadMeshTo(device);
-	kinematic_chain_scene->arm2_start = arm2;
-	arm1->SetChild(arm2);
-	arm1 = make_shared<Arm>(0, 1);
-	arm1->LoadMeshTo(device);
-	kinematic_chain_scene->arm1_end = arm1;
-	arm2 = make_shared<Arm>(0, 1, arm1);
-	arm2->LoadMeshTo(device);
-	kinematic_chain_scene->arm2_end = arm2;
-	arm1->SetChild(arm2);
+
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }

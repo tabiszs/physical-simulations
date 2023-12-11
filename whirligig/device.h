@@ -32,6 +32,8 @@ public:
 	void DrawPatches20(Object* model, int count, int offset);
 	void DrawPatches(int points, Object* model, int count, int offset, bool mesh = true);
 	void CleanColor(float color[4]);
+	void CreateTexture(GLuint& image_texture);
+	void UpdateTexture(GLuint& image_texture, int width, int height, const void* data);
 private:
 
 };

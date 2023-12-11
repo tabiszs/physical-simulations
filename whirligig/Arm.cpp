@@ -71,7 +71,7 @@ void Arm::SetAngle(float a)
 
 void Arm::UpdateAngle()
 {
-	// zalozenie ze poprzednie katy sa aktualne
+	// zalozenie ze poprzednie katy w lancuchu sa aktualne
 	const auto& parent_sum_angle = parent == nullptr ? 0 : parent->GetSumAngle();
 	angle = atan2f(effector_point.y - anchor_point.y, effector_point.x - anchor_point.x) - parent_sum_angle;
 }
