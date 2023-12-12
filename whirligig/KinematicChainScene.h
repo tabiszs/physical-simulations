@@ -95,5 +95,8 @@ private:
 	float screen_xpos, screen_ypos;
 	bool add_new_block{}, path_exists = false;
 	const float clip_space_z = 0.818181872f;
+
+	bool move_block = false;
+	int idx_moving_block;
 };
 

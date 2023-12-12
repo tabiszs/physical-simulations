@@ -36,6 +36,11 @@ public:
 	bool PointIsInside(glm::vec3 pt);
 	bool HasIntersection(glm::vec3 pt1, glm::vec3 pt2);
 
+	void SetInitMovingPoint(glm::vec3 p);
+	void Move(glm::vec3 p);
+
+	glm::vec3 prev_move_pos{};
+
 	glm::vec2 top_left;
 	glm::vec2 top_right;
 	glm::vec2 bottom_left;

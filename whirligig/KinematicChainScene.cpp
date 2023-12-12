@@ -148,7 +148,11 @@ void KinematicChainScene::Menu()
 				ImGui::BeginTable("sceneObjects", 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_NoBordersInBody);
 				ImGui::TableNextColumn();
 				std::string name = "Block " + std::to_string(blocks[i]->id);
-				ImGui::Button(name.c_str());
+				if (ImGui::Button(name.c_str()))
+				{
+					move_block = true;
+					idx_moving_block = i;
+				}
 				ImGui::TableNextColumn();
 				name += "qq";
 				ImGui::PushID(name.c_str());
@@ -218,14 +222,29 @@ void KinematicChainScene::ProcessMouseCursorPosCallback(GLFWwindow* m_Window, fl
 	{
 		float xoffset = xpos - lastX;
 		float yoffset = lastY - ypos;
-		if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && add_new_block)
+
+		if (move_block)
 		{
-			// update position new block
-			const auto& block = blocks.back();
-			auto newClipPos = ScreenToClipSpace(xpos, ypos, clip_space_z);
-			auto newWorldPos = ClipToWorldSpace(newClipPos);
-			block->UpdateBlockSize(newWorldPos);
+			if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+			{
+				// update position moving block
+				auto newClipPos = ScreenToClipSpace(xpos, ypos, clip_space_z);
+				auto newWorldPos = ClipToWorldSpace(newClipPos);
+				blocks[idx_moving_block]->Move(newWorldPos);
+			}
 		}
+		else if (add_new_block)
+		{
+			if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+			{
+				// update position new block
+				const auto& block = blocks.back();
+				auto newClipPos = ScreenToClipSpace(xpos, ypos, clip_space_z);
+				auto newWorldPos = ClipToWorldSpace(newClipPos);
+				block->UpdateBlockSize(newWorldPos);
+			}
+		}
+
 	}
 	lastX = xpos;
 	lastY = ypos;
@@ -236,7 +255,21 @@ void KinematicChainScene::ProcessMouseButtonCallback(int button, int action, int
 	ImGuiIO& io = ImGui::GetIO();
 	if (!io.WantCaptureMouse)
 	{
-		if (add_new_block)
+		if (move_block)
+		{
+			if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+			{
+				// set initial movig position
+				auto newClipPos = ScreenToClipSpace(xpos, ypos, clip_space_z);
+				auto newWorldPos = ClipToWorldSpace(newClipPos);
+				blocks[idx_moving_block]->SetInitMovingPoint(newWorldPos);
+			}
+			else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
+			{
+				move_block = false;
+			}
+		}		
+		else if (add_new_block)
 		{
 			if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 			{
@@ -250,7 +283,6 @@ void KinematicChainScene::ProcessMouseButtonCallback(int button, int action, int
 			}
 			else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
 			{
-				const auto& block = blocks.back();
 				add_new_block = false;
 			}
 		}

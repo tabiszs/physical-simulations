@@ -157,3 +157,33 @@ bool Block::HasIntersection(glm::vec3 pt1, glm::vec3 pt2)
 	}
 	return false;
 }
+
+void Block::SetInitMovingPoint(glm::vec3 p)
+{
+	prev_move_pos = p;
+}
+
+void Block::Move(glm::vec3 p)
+{
+	glm::vec2 delta = p - prev_move_pos;
+	this->top_left += delta;
+	this->top_right += delta;
+	this->bottom_right += delta;
+	this->bottom_left += delta;
+
+	// set top left
+	vertices[3 * 3 + 0] = top_left.x;
+	vertices[3 * 3 + 1] = top_left.y;
+	// set top right
+	vertices[3 * 0 + 0] = top_right.x;
+	vertices[3 * 0 + 1] = top_right.y;
+	// set bottom right
+	vertices[3 * 1 + 0] = bottom_right.x;
+	vertices[3 * 1 + 1] = bottom_right.y;
+	// set bottom left
+	vertices[3 * 2 + 0] = bottom_left.x;
+	vertices[3 * 2 + 1] = bottom_left.y;
+
+	prev_move_pos = p;
+	need_update = true;
+}
