@@ -4,6 +4,7 @@
 #include "Arm.h"
 #include <queue>
 #include <list>
+#include <vector>
 
 class KinematicChainScene : public Scene
 {
@@ -38,6 +39,7 @@ public:
 	void DrawOn(std::shared_ptr<Device> device) override;
 	void Update() override;
 	void Menu() override;
+	void ProcessMouseCursorPosCallback(GLFWwindow* m_Window, float xpos, float ypos) override;
 	void ProcessMouseButtonCallback(int button, int action, int mods, float xpos, float ypos) override;
 	void UpdateConfigurationSpace();
 
@@ -47,7 +49,7 @@ public:
 	std::shared_ptr<Arm> arm2_end;
 	std::shared_ptr<Arm> arm1_animation;
 	std::shared_ptr<Arm> arm2_animation;
-	std::list<std::shared_ptr<Block>> blocks{};
+	std::vector<std::shared_ptr<Block>> blocks{};
 private:
 	void InverseKinematic(float xpos, float ypos, std::list<glm::vec3>& p2s_start, const std::shared_ptr<Arm>& arm1, const std::shared_ptr<Arm>& arm2);
 	glm::vec3 EffectorPositionFrom(float xpos, float ypos, const std::shared_ptr<Arm>& arm2);
@@ -72,6 +74,12 @@ private:
 	//  0 - default - not visited
 	// -1 - block
 	// >0 - visited
+	// --------> a2
+	// |
+	// |
+	// | a1
+	// V 
+	const int blocked_value = -1;
 	std::array<int, size_pow_two> configuration_space{};
 	GLubyte texture[3 * size_pow_two]{};
 	GLuint image_texture;
@@ -83,5 +91,9 @@ private:
 	std::vector<int> path{};
 	int animation_frame;
 	bool draw_animation = false;
+
+	float screen_xpos, screen_ypos;
+	bool add_new_block{}, path_exists = false;
+	const float clip_space_z = 0.818181872f;
 };
 

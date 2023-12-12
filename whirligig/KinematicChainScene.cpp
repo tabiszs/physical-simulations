@@ -13,6 +13,10 @@ void KinematicChainScene::DrawOn(std::shared_ptr<Device> device)
 		arm1_animation->DrawModelOn(device);
 		arm2_animation->DrawModelOn(device);
 	}
+	for (auto& block : blocks)
+	{
+		block->DrawModelOn(device);
+	}
 }
 
 void KinematicChainScene::Update()
@@ -24,8 +28,6 @@ void KinematicChainScene::Update()
 		device->UpdateTexture(image_texture, size, size, texture);
 		update_texture = false;
 	}
-
-	std::shared_ptr<Shader> shader;
 
 	if (arm1_start->need_update)
 	{
@@ -61,6 +63,15 @@ void KinematicChainScene::Update()
 	{
 		arm2_animation->UpdateMeshTo(device);
 		arm2_animation->need_update = false;
+	}
+
+	for (auto& block : blocks)
+	{
+		if (block->need_update)
+		{
+			block->UpdateMeshTo(device);
+			block->need_update = false;
+		}
 	}
 
 	if (camera->NeedUpdate() || viewFrustrum->NeedUpdate())
@@ -127,6 +138,35 @@ void KinematicChainScene::Menu()
 			ImGui::PopItemFlag();
 
 			ImGui::Text("Blocks");
+			if (ImGui::Button("Add block"))
+			{
+				add_new_block = true;
+			}
+			int idx_to_remove = -1;
+			for (int i=0; i< blocks.size(); ++i)
+			{
+				ImGui::BeginTable("sceneObjects", 2, ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoSavedSettings | ImGuiTableFlags_NoBordersInBody);
+				ImGui::TableNextColumn();
+				std::string name = "Block " + std::to_string(blocks[i]->id);
+				ImGui::Button(name.c_str());
+				ImGui::TableNextColumn();
+				name += "qq";
+				ImGui::PushID(name.c_str());
+				ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0, 0.6f, 0.6f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0, 0.7f, 0.7f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0, 0.8f, 0.8f));
+				if (ImGui::SmallButton("x"))
+				{
+					idx_to_remove = i;
+				}
+				ImGui::PopStyleColor(3);
+				ImGui::PopID();
+				ImGui::EndTable();
+			}
+			if (idx_to_remove >= 0)
+			{
+				blocks.erase(blocks.begin() + idx_to_remove, blocks.begin() + idx_to_remove + 1);
+			}
 
 			ImGui::EndTabItem();
 		}
@@ -136,7 +176,7 @@ void KinematicChainScene::Menu()
 			{
 				UpdateConfigurationSpace();
 			}
-			ImGui::Text("Is simulating: bool value"); // TODO
+			ImGui::Text("Path exists: %d", path_exists);
 			ImGui::Separator();
 
 			if (ImGui::Button("Start")) {
@@ -177,33 +217,74 @@ void KinematicChainScene::Menu()
 	ImGui::End();
 }
 
+void KinematicChainScene::ProcessMouseCursorPosCallback(GLFWwindow* m_Window, float xpos, float ypos)
+{
+	ImGuiIO& io = ImGui::GetIO();
+	if (!io.WantCaptureMouse)
+	{
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos;
+		if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && add_new_block)
+		{
+			// update position new block
+			const auto& block = blocks.back();
+			auto newClipPos = ScreenToClipSpace(xpos, ypos, clip_space_z);
+			auto newWorldPos = ClipToWorldSpace(newClipPos);
+			block->UpdateBlockSize(newWorldPos);
+		}
+	}
+	lastX = xpos;
+	lastY = ypos;
+}
+
 void KinematicChainScene::ProcessMouseButtonCallback(int button, int action, int mods, float xpos, float ypos)
 {
 	ImGuiIO& io = ImGui::GetIO();
 	if (!io.WantCaptureMouse)
 	{
-		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		{			
-			if (chain == start_chain)
+		if (add_new_block)
+		{
+			if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 			{
-				InverseKinematic(xpos, ypos, p2s_start, arm1_start, arm2_start);
-				use_start_alternative_solution = false;
+				// add block
+				auto newClipPos = ScreenToClipSpace(xpos, ypos, clip_space_z);
+				auto newWorldPos = ClipToWorldSpace(newClipPos);
+				std::shared_ptr<Block> block = std::make_shared<Block>(newWorldPos);
+				block->LoadMeshTo(device);
+				SetProjViewMtx(block->shader);
+				blocks.push_back(block);
 			}
-			else
+			else if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
 			{
-				InverseKinematic(xpos, ypos, p2s_end, arm1_end, arm2_end);
-				use_end_alternative_solution = false;
+				const auto& block = blocks.back();
+				add_new_block = false;
 			}
 		}
-		else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+		else
 		{
-			if (p2s_start.size() > 1 && chain == start_chain)
+			if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 			{
-				UseAlternativeSolution(p2s_start, arm1_start, arm2_start, use_start_alternative_solution);
+				if (chain == start_chain)
+				{
+					InverseKinematic(xpos, ypos, p2s_start, arm1_start, arm2_start);
+					use_start_alternative_solution = false;
+				}
+				else
+				{
+					InverseKinematic(xpos, ypos, p2s_end, arm1_end, arm2_end);
+					use_end_alternative_solution = false;
+				}
 			}
-			else if (p2s_end.size() > 1 && chain == end_chain)
+			else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
 			{
-				UseAlternativeSolution(p2s_end, arm1_end, arm2_end, use_end_alternative_solution);
+				if (p2s_start.size() > 1 && chain == start_chain)
+				{
+					UseAlternativeSolution(p2s_start, arm1_start, arm2_start, use_start_alternative_solution);
+				}
+				else if (p2s_end.size() > 1 && chain == end_chain)
+				{
+					UseAlternativeSolution(p2s_end, arm1_end, arm2_end, use_end_alternative_solution);
+				}
 			}
 		}
 	}
@@ -229,9 +310,37 @@ void KinematicChainScene::UpdateConfigurationSpace()
 	a2 = (int)(arm2_end->angle / glm::two_pi<float>() * 360);
 	int end_idx = a1 * size + a2;
 
-	configuration_space.fill(0);
 	// set blocks
-	// TODO
+	auto angle1_tmp = arm1_animation->angle;
+	auto angle2_tmp = arm2_animation->angle;
+	configuration_space.fill(0);
+	for (int idx = 0; idx < size_pow_two; ++idx)
+	{
+		float a1_deg = idx / size;
+		float a2_deg = idx % size;
+		float a1_rad = a1_deg / 180 * glm::pi<float>();
+		float a2_rad = a2_deg / 180 * glm::pi<float>();
+		arm1_animation->SetAngle(a1_rad);
+		arm2_animation->SetAngle(a2_rad);
+		auto pt1 = arm1_animation->GetAnchorPoint();
+		auto pt2 = arm2_animation->GetAnchorPoint();
+		auto pt3 = arm2_animation->GetEffectorPoint();
+
+		bool arm1_intersected = false;
+		bool arm2_intersected = false;
+		for (const auto& block : blocks)
+		{
+			arm1_intersected |= block->HasIntersection(pt1, pt2);
+			arm2_intersected |= block->HasIntersection(pt2, pt3);
+		}
+		if (arm1_intersected || arm2_intersected)
+		{
+			texture[3 * idx] = 0;
+			texture[3 * idx + 1] = 255;
+			texture[3 * idx + 2] = 0;
+			configuration_space[idx] = blocked_value;
+		}
+	}
 	
 	// Flood fill algorithm	
 	bfs_queue.push(start_idx);
@@ -301,40 +410,48 @@ void KinematicChainScene::UpdateConfigurationSpace()
 
 	// retrive path - reverse path - from end to start
 	path.clear();
-	path.push_back(end_idx);
-	while (configuration_space[path.back()] != 1) // top != start_idx
+	if (configuration_space[end_idx] < 1)
 	{
-		int idx = path.back();
-		const auto& wanted_val = configuration_space[path.back()] - 1;
-		a1 = idx / size;
-		a2 = idx % size;
-
-		int w1 = ((a1 + 1) % size) * size + a2;
-		int w2 = a1 * size + ((a2 + 1) % size);
-		int w3 = ((size + a1 - 1) % size) * size + a2;
-		int w4 = a1 * size + ((size + a2 - 1) % size);
-		if (configuration_space[w1] == wanted_val)
-		{
-			path.push_back(w1);
-		}
-		else if (configuration_space[w2] == wanted_val)
-		{
-			path.push_back(w2);
-		}
-		else if (configuration_space[w3] == wanted_val)
-		{
-			path.push_back(w3);
-		}
-		else if (configuration_space[w4] == wanted_val)
-		{
-			path.push_back(w4);
-		}
-		else
-		{
-			throw new exception("error in retriving path");
-		}
+		path_exists = false;
 	}
-	std::reverse(path.begin(), path.end());
+	else
+	{
+		path.push_back(end_idx);
+		while (configuration_space[path.back()] != 1) // top != start_idx
+		{
+			int idx = path.back();
+			const auto& wanted_val = configuration_space[path.back()] - 1;
+			a1 = idx / size;
+			a2 = idx % size;
+
+			int w1 = ((a1 + 1) % size) * size + a2;
+			int w2 = a1 * size + ((a2 + 1) % size);
+			int w3 = ((size + a1 - 1) % size) * size + a2;
+			int w4 = a1 * size + ((size + a2 - 1) % size);
+			if (configuration_space[w1] == wanted_val)
+			{
+				path.push_back(w1);
+			}
+			else if (configuration_space[w2] == wanted_val)
+			{
+				path.push_back(w2);
+			}
+			else if (configuration_space[w3] == wanted_val)
+			{
+				path.push_back(w3);
+			}
+			else if (configuration_space[w4] == wanted_val)
+			{
+				path.push_back(w4);
+			}
+			else
+			{
+				throw new exception("error in retriving path");
+			}
+		}
+		std::reverse(path.begin(), path.end());
+		path_exists = true;
+	}
 
 	// set path on texture
 	for(const auto& idx : path)
@@ -499,8 +616,6 @@ void KinematicChainScene::UpdateAnimationArms()
 
 	arm1_animation->SetAngle(angle1_rad);
 	arm2_animation->SetAngle(angle2_rad);
-
-
 }
 
 void KinematicChainScene::UpdateAnimationInConfigurationSpace()
