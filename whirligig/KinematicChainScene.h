@@ -90,7 +90,7 @@ private:
 	std::queue<int> bfs_queue{};
 	std::vector<int> path{};
 	int animation_frame;
-	bool draw_animation = false;
+	bool pause = false;
 
 	float screen_xpos, screen_ypos;
 	bool add_new_block{}, path_exists = false;

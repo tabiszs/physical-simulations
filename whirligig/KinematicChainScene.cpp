@@ -8,7 +8,7 @@ void KinematicChainScene::DrawOn(std::shared_ptr<Device> device)
 	arm1_end->DrawModelOn(device);
 	arm2_start->DrawModelOn(device);
 	arm2_end->DrawModelOn(device);
-	if (draw_animation)
+	if (start)
 	{
 		arm1_animation->DrawModelOn(device);
 		arm2_animation->DrawModelOn(device);
@@ -180,27 +180,21 @@ void KinematicChainScene::Menu()
 			ImGui::Separator();
 
 			if (ImGui::Button("Start")) {
-				if (draw_animation)
-				{
-					start = true;
-					time = glfwGetTime();
-					dt = 0;
-				}
-				else
-				{
-					start = draw_animation = true;
-					animation_frame = 0;
-					time_start = time = glfwGetTime();
-					dt = 0;
-				}
+				start = true;
+				pause = false;
+				dt = 0;
+				animation_frame = 0;
+				time_start = time = glfwGetTime();
+				arm1_animation->SetAngle(arm1_start->angle);
+				arm2_animation->SetAngle(arm2_start->angle);
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Pause")) {
-				start = false;
+				pause = !pause;
 			}
 			ImGui::SameLine();
 			if (ImGui::Button("Reset")) {
-				start = draw_animation = false;
+				start = pause = false;
 			}
 			ImGui::Separator();
 			ImGui::PushItemFlag(ImGuiItemFlags_Disabled, start);
@@ -311,8 +305,6 @@ void KinematicChainScene::UpdateConfigurationSpace()
 	int end_idx = a1 * size + a2;
 
 	// set blocks
-	auto angle1_tmp = arm1_animation->angle;
-	auto angle2_tmp = arm2_animation->angle;
 	configuration_space.fill(0);
 	for (int idx = 0; idx < size_pow_two; ++idx)
 	{
@@ -588,7 +580,15 @@ void KinematicChainScene::UpdateAnimation()
 	auto current_time = glfwGetTime();
 	auto time_from_start = current_time - time_start;
 	auto dfl_dt = (current_time - time);
-	dt += dfl_dt * speed;
+	if (pause)
+	{
+		time_start += dfl_dt;
+	}
+	else
+	{
+		dt += dfl_dt * speed;
+	}
+	
 	if (start && (time_from_start - dfl_dt) <= animation_time)
 	{
 		const auto& step = animation_time / path.size();
@@ -602,6 +602,10 @@ void KinematicChainScene::UpdateAnimation()
 			}
 			dt -= step;
 		}
+	}
+	else
+	{
+		start = pause = false;
 	}
 	time = current_time;
 }
