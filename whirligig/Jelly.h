@@ -4,10 +4,10 @@
 #include <list>
 #include <set>
 
-class BezierCube : public Cube
+class Jelly : public Cube
 {
 public:
-	BezierCube()
+	Jelly()
 	{
 		SetVerticesAndLines();
 		SetTreeOfCongruence();

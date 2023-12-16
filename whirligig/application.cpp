@@ -41,7 +41,7 @@ Application::Application()
 	auto control_cube = make_shared<ControlCube>();
 	control_cube->LoadMeshTo(device);
 	jelly_scene->control_cube = control_cube;
-	auto bezier_cube = make_shared<BezierCube>();
+	auto bezier_cube = make_shared<Jelly>();
 	bezier_cube->LoadMeshTo(device);
 	jelly_scene->bezier_cube = bezier_cube;
 

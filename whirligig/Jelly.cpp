@@ -1,11 +1,11 @@
-#include "BezierCube.h"
+#include "Jelly.h"
 
-glm::mat4 BezierCube::ModelMatrix()
+glm::mat4 Jelly::ModelMatrix()
 {
     return Mat::identity();
 }
 
-void BezierCube::LoadMeshTo(std::shared_ptr<Device> device)
+void Jelly::LoadMeshTo(std::shared_ptr<Device> device)
 {
     device->LoadMesh((Object*)this);
     shader->use();
@@ -17,41 +17,41 @@ void BezierCube::LoadMeshTo(std::shared_ptr<Device> device)
        
 }
 
-void BezierCube::UpdateMeshTo(std::shared_ptr<Device> device)
+void Jelly::UpdateMeshTo(std::shared_ptr<Device> device)
 {
     UpdateBuffer();
     device->UpdateMesh((Object*)this);
 }
 
-void BezierCube::DrawModelOn(std::shared_ptr<Device> device)
+void Jelly::DrawModelOn(std::shared_ptr<Device> device)
 {
     shader->use();
     device->DrawPatches16((Object*)this, 16*6, 288, false); // only on edge surfaces
 }
 
-void BezierCube::DrawPointsOn(std::shared_ptr<Device> device)
+void Jelly::DrawPointsOn(std::shared_ptr<Device> device)
 {
     point_shader->use();
     device->DrawPoints((Object*)this);
 }
 
-void BezierCube::DrawEdgesOn(std::shared_ptr<Device> device)
+void Jelly::DrawEdgesOn(std::shared_ptr<Device> device)
 {
     point_shader->use();
     device->DrawLines((Object*)this);
 }
 
-void BezierCube::Update()
+void Jelly::Update()
 {
 
 }
 
-std::array<int, 8> BezierCube::GetCornersPositions()
+std::array<int, 8> Jelly::GetCornersPositions()
 {
     return { 0,3,12,15,48,51,60,63 };
 }
 
-void BezierCube::ComputeForce(const std::array<glm::vec3, 8>& cc_corners)
+void Jelly::ComputeForce(const std::array<glm::vec3, 8>& cc_corners)
 {
     const int corner_count = 8;
     auto jelly_corners_idx = GetCornersPositions();
@@ -83,7 +83,7 @@ void BezierCube::ComputeForce(const std::array<glm::vec3, 8>& cc_corners)
     need_update = true;
 }
 
-void BezierCube::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
+void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
 {
     for (int i = 0; i < n_pow_three; ++i)
     {
@@ -146,7 +146,7 @@ void BezierCube::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
     }
 }
 
-void BezierCube::SetVerticesAndLines()
+void Jelly::SetVerticesAndLines()
 {
     int i = 0;
     vertices.reserve(3 * n * n * n);
@@ -222,7 +222,7 @@ void BezierCube::SetVerticesAndLines()
     {
         for (int k = 0; k < n; ++k)
         {
-            indices.push_back((i * n + j) * n + k); // y face
+            indices.push_back((i * n + j) * n + k); // x face
         }
     }
     
@@ -257,7 +257,7 @@ void BezierCube::SetVerticesAndLines()
     }
 }
 
-void BezierCube::SetTreeOfCongruence()
+void Jelly::SetTreeOfCongruence()
 {
     for (int i = 0; i < n - 1; ++i) //x
     {
@@ -336,7 +336,7 @@ void BezierCube::SetTreeOfCongruence()
     }
 }
 
-void BezierCube::SetCornersPositions()
+void Jelly::SetCornersPositions()
 {
     auto jelly_corners_idx = GetCornersPositions();
     for (int i = 0, j = 0; i < n_pow_three; ++i)
@@ -349,7 +349,7 @@ void BezierCube::SetCornersPositions()
     }
 }
 
-void BezierCube::SetNeighbours()
+void Jelly::SetNeighbours()
 {
     for (int i = 0; i < tree_of_congruence_vertices.size(); ++i)
     {
@@ -364,7 +364,7 @@ void BezierCube::SetNeighbours()
     }
 }
 
-void BezierCube::UpdateBuffer()
+void Jelly::UpdateBuffer()
 {
     for (int i = 0; i < n; ++i)
     {
@@ -382,7 +382,7 @@ void BezierCube::UpdateBuffer()
     }
 }
 
-void BezierCube::RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt, const glm::vec3& cc, bool corner)
+void Jelly::RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt, const glm::vec3& cc, bool corner)
 {
     auto dxtdt = [this](const glm::vec3& cc, int current_idx, const glm::vec3& x, const glm::vec3& xt, bool corner) {
         glm::vec3 f = glm::vec3(0,0,0);
@@ -426,6 +426,6 @@ void BezierCube::RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec
     dx[current_idx] = (k0_x + 2.0f * k1_x + 2.0f * k2_x + k3_x) / 6.0f;
 }
 
-void BezierCube::CheckCollisions()
+void Jelly::CheckCollisions()
 {
 }

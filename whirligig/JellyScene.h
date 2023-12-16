@@ -2,7 +2,7 @@
 #include "scene.h"
 #include "Cube.h"
 #include "ControlCube.h"
-#include "BezierCube.h"
+#include "Jelly.h"
 
 class JellyScene : public Scene
 {
@@ -17,7 +17,7 @@ public:
 
 	shared_ptr<Cube> bounding_cube;
 	shared_ptr<ControlCube> control_cube;
-	shared_ptr<BezierCube> bezier_cube;
+	shared_ptr<Jelly> bezier_cube;
 	
 	
 
