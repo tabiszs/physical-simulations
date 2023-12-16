@@ -43,7 +43,7 @@ Application::Application()
 	jelly_scene->control_cube = control_cube;
 	auto bezier_cube = make_shared<Jelly>();
 	bezier_cube->LoadMeshTo(device);
-	jelly_scene->bezier_cube = bezier_cube;
+	jelly_scene->jelly = bezier_cube;
 
 	//interpolation_scene = std::make_shared<InterpolationScene>(camera, light, viewFrustum);
 	////interpolation_scene->SetDevice(device);

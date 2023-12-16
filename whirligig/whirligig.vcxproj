@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="application.cpp" />
     <ClCompile Include="Arm.cpp" />
+    <ClCompile Include="BezierCube.cpp" />
     <ClCompile Include="Jelly.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Cube.cpp" />
@@ -65,6 +66,7 @@
   <ItemGroup>
     <ClInclude Include="application.h" />
     <ClInclude Include="Arm.h" />
+    <ClInclude Include="BezierCube.h" />
     <ClInclude Include="Jelly.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Cube.h" />
@@ -112,6 +114,8 @@
     <None Include="Shaders\cursorVS.glsl" />
     <None Include="Shaders\deCasteljauTES.glsl" />
     <None Include="Shaders\jellyCS.glsl" />
+    <None Include="Shaders\phongFS.glsl" />
+    <None Include="Shaders\phongVS.glsl" />
     <None Include="Shaders\point.fs" />
     <None Include="Shaders\point.vs" />
     <None Include="Shaders\pointFS.glsl" />

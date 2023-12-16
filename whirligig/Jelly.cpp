@@ -8,36 +8,34 @@ glm::mat4 Jelly::ModelMatrix()
 void Jelly::LoadMeshTo(std::shared_ptr<Device> device)
 {
     device->LoadMesh((Object*)this);
+    bezier_cube->LoadMeshTo(device);
     shader->use();
-    shader->set4Float("objectColor", yellow);
-    shader->setMatrix4F("modelMtx", ModelMatrix());
-    point_shader->use();
-    point_shader->set4Float("objectColor", blue);
-    point_shader->setMatrix4F("modelMtx", ModelMatrix());
-       
+    shader->set4Float("objectColor", blue);
+    shader->setMatrix4F("modelMtx", ModelMatrix());       
 }
 
 void Jelly::UpdateMeshTo(std::shared_ptr<Device> device)
 {
     UpdateBuffer();
     device->UpdateMesh((Object*)this);
+    bezier_cube->UpdateBuffer(vertices);
+    bezier_cube->UpdateMeshTo(device);
 }
 
 void Jelly::DrawModelOn(std::shared_ptr<Device> device)
 {
-    shader->use();
-    device->DrawPatches16((Object*)this, 16*6, 288, false); // only on edge surfaces
+    bezier_cube->DrawModelOn(device);
 }
 
 void Jelly::DrawPointsOn(std::shared_ptr<Device> device)
 {
-    point_shader->use();
+    shader->use();
     device->DrawPoints((Object*)this);
 }
 
 void Jelly::DrawEdgesOn(std::shared_ptr<Device> device)
 {
-    point_shader->use();
+    shader->use();
     device->DrawLines((Object*)this);
 }
 
@@ -210,51 +208,7 @@ void Jelly::SetVerticesAndLines()
         }
     }
 
-    // bezier patches    
-    for (int i = 0, j = 0; j < n; ++j)
-    {
-        for (int k = 0; k < n; ++k)
-        {
-            indices.push_back((i * n + j) * n + k); // -x face
-        }
-    }
-    for (int i = 3, j = 0; j < n; ++j)
-    {
-        for (int k = 0; k < n; ++k)
-        {
-            indices.push_back((i * n + j) * n + k); // x face
-        }
-    }
-    
-    for (int j = 0, i = 0; i < n; ++i)
-    {
-        for (int k = 0; k < n; ++k)
-        {
-            indices.push_back((i * n + j) * n + k); // -y face
-        }
-    }
-    for (int j = 3, i = 0; i < n; ++i)
-    {
-        for (int k = 0; k < n; ++k)
-        {
-            indices.push_back((i * n + j) * n + k); // y face
-        }
-    }
 
-    for (int k = 0, i = 0; i < n; ++i)
-    {
-        for (int j = 0; j < n; ++j)
-        {
-            indices.push_back((i * n + j) * n + k); // -z face
-        }
-    }
-    for (int k = 3, i = 0; i < n; ++i)
-    {
-        for (int j = 0; j < n; ++j)
-        {
-            indices.push_back((i * n + j) * n + k); // z face
-        }
-    }
 }
 
 void Jelly::SetTreeOfCongruence()

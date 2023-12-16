@@ -33,8 +33,8 @@ void Scene::ProcessMouseCursorPosCallback(GLFWwindow* m_Window, float xpos, floa
     ImGuiIO& io = ImGui::GetIO();
     if (!io.WantCaptureMouse && camera_movement)
     {
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos;
+        float xoffset = lastX - xpos;
+        float yoffset = ypos - lastY;
         if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
         {
             camera->Rotate(xoffset * ROTATION_SPEED, yoffset * ROTATION_SPEED);
@@ -46,13 +46,21 @@ void Scene::ProcessMouseCursorPosCallback(GLFWwindow* m_Window, float xpos, floa
 
 void Scene::UpdateProjViewMtx()
 {
-	m_viewProjMtx = viewFrustrum->getProjectionMatrix() * camera->ViewMatrix();	
+    const auto viewMtx = camera->ViewMatrix();
+	m_viewProjMtx = viewFrustrum->getProjectionMatrix() * viewMtx;
+    m_invViewMtx = glm::inverse(viewMtx);
 }
 
 void Scene::SetProjViewMtx(const std::shared_ptr<Shader> shader)
 {
 	shader->use();
 	shader->setMatrix4F("projViewMtx", m_viewProjMtx);
+}
+
+void Scene::SetInvViewMtx(const std::shared_ptr<Shader> shader)
+{
+    shader->use();
+    shader->setMatrix4F("invViewMtx", m_invViewMtx);
 }
 
 glm::vec4 Scene::ClipToWorldSpace(glm::vec4 clipPos)

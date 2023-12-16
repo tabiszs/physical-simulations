@@ -13,6 +13,7 @@ public:
 	void LoadPositionsAndTextureCoords(Object* model);
 	void LoadPositionsAndColor(Object* model);
 	void LoadUniformBufferObject(int index, int size, void* data);
+	void LoadPositionsAndNormals(Object* model);
 	void UpdateMesh(Object* model);
 	void DrawTriangles(Object* model);
 	void DrawTriangles(Object* model, int count, int offset);

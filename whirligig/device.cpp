@@ -112,6 +112,11 @@ void Device::LoadUniformBufferObject(int index, int size, void* data)
 	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uniform_block, 0, 1024);
 }
 
+void Device::LoadPositionsAndNormals(Object* model)
+{
+	LoadPositionsAndColor(model);
+}
+
 void Device::UpdateMesh(Object* model)
 {
 	glBindVertexArray(model->VAO);

@@ -3,6 +3,7 @@
 #include <tuple>
 #include <list>
 #include <set>
+#include "BezierCube.h"
 
 class Jelly : public Cube
 {
@@ -13,9 +14,8 @@ public:
 		SetTreeOfCongruence();
 		SetCornersPositions();
 		SetNeighbours();
-		shader = ShaderHolder::Get().surfaceC0Shader;
-		point_shader = ShaderHolder::Get().pointShader;
-		compute_shader = ShaderHolder::Get().computeShader;
+		shader = ShaderHolder::Get().pointShader;
+		bezier_cube = std::make_shared<BezierCube>(vertices);
 	}
 
 	glm::mat4 ModelMatrix() override;
@@ -41,10 +41,7 @@ public:
 	std::array<glm::vec3, 64> velocities{};
 	std::array<glm::vec3, 64> dx{};
 	std::array<glm::vec3, 64> dxt{};
-	float blue[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
-	float yellow[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
-	std::shared_ptr<Shader> point_shader;
-	std::shared_ptr<Shader> compute_shader;
+	std::shared_ptr<BezierCube> bezier_cube;
 private:
     void SetVerticesAndLines();
 	void SetTreeOfCongruence();

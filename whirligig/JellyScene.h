@@ -17,7 +17,7 @@ public:
 
 	shared_ptr<Cube> bounding_cube;
 	shared_ptr<ControlCube> control_cube;
-	shared_ptr<Jelly> bezier_cube;
+	shared_ptr<Jelly> jelly;
 	
 	
 
