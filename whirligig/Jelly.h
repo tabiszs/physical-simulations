@@ -24,18 +24,23 @@ public:
 	void DrawModelOn(std::shared_ptr<Device> device) override;
 	void DrawPointsOn(std::shared_ptr<Device> device);
 	void DrawEdgesOn(std::shared_ptr<Device> device);
-	void Update();
 	void ComputeForce(const std::array<glm::vec3, 8>& cc_corners);
-	void TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions);
+	void IncludeCollisions(glm::vec3 boundings_dimensions);
+	void Pinch(int idx);
+	void Punch(int idx);
+	void Restart();
 
 	float dt = 0.01f;
-	float gravitation[3] = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 gravitation = { 0.0f, 0.0f, 0.0f };
 	int use_whole_vector_velocities = 0;
 	float mass = 1.0f;
-	float k = 1.0f;
-	float c1 = 1.0f;
-	float c2 = 10.0f;
+	float k = 3.0f;
+	float c1 = 50.0f;
+	float c2 = 70.0f;
 	bool depth_on;
+	bool include_control_cube = true;
+	float pinch = 0, punch = 0;
+	float rebound_factor = 0.5f;
 
 	std::array<glm::vec3, 64> positions{};
 	std::array<glm::vec3, 64> velocities{};

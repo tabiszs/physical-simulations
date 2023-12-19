@@ -325,10 +325,16 @@
     <None Include="Shaders\jellyCS.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\phongFS.glsl">
+    <None Include="Shaders\bezier_cubeTCS.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Shaders\phongVS.glsl">
+    <None Include="Shaders\bezier_cubeTES.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\bezier_cubeFS.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Shaders\bezier_cubeVS.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

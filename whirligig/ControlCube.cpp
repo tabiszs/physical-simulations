@@ -3,7 +3,7 @@
 
 glm::mat4 ControlCube::ModelMatrix()
 {
-    auto t = Mat::translation(glm::vec3(position[0], position[1], position[2]));
+    auto t = Mat::translation(position);
     auto r = glm::eulerAngleXYZ(euler_angles[0], euler_angles[1], euler_angles[2]);
     return t * r ;
 }
@@ -21,4 +21,11 @@ std::array<glm::vec3, 8> ControlCube::GetCornersPositions()
     corners[6] = mtx * glm::vec4(xMax, yMax, zMin, 1);
     corners[7] = mtx * glm::vec4(xMax, yMax, zMax, 1);
     return corners;
+}
+
+void ControlCube::Restart()
+{
+    position = { 1.0f, 0.0f, 0.0f };
+    euler_angles = { 0.0f, 0.0f, 0.0f };
+    need_update = true;
 }

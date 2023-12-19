@@ -39,11 +39,6 @@ void Jelly::DrawEdgesOn(std::shared_ptr<Device> device)
     device->DrawLines((Object*)this);
 }
 
-void Jelly::Update()
-{
-
-}
-
 std::array<int, 8> Jelly::GetCornersPositions()
 {
     return { 0,3,12,15,48,51,60,63 };
@@ -81,7 +76,7 @@ void Jelly::ComputeForce(const std::array<glm::vec3, 8>& cc_corners)
     need_update = true;
 }
 
-void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
+void Jelly::IncludeCollisions(glm::vec3 boundings_dimensions)
 {
     for (int i = 0; i < n_pow_three; ++i)
     {
@@ -96,6 +91,14 @@ void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
                 auto diff = pos.x - boundings_dimensions.x;
                 pos.x -= 2 * diff;
                 vel.x = -vel.x;
+                if (use_whole_vector_velocities)
+                {
+                    vel *= rebound_factor;
+                }
+                else
+                {
+                    vel.x *= rebound_factor;
+                }
                 has_collision = true;
             }
             else if (pos.x < -boundings_dimensions.x)
@@ -103,6 +106,14 @@ void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
                 auto diff = -boundings_dimensions.x - pos.x;
                 pos.x += 2 * diff;
                 vel.x = -vel.x;
+                if (use_whole_vector_velocities)
+                {
+                    vel *= rebound_factor;
+                }
+                else
+                {
+                    vel.x *= rebound_factor;
+                }
                 has_collision = true;
             }
             else if (pos.y > boundings_dimensions.y)
@@ -110,6 +121,15 @@ void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
                 auto diff = pos.y - boundings_dimensions.y;
                 pos.y -= 2 * diff;
                 vel.y = -vel.y;
+                vel.x = -vel.x;
+                if (use_whole_vector_velocities)
+                {
+                    vel *= rebound_factor;
+                }
+                else
+                {
+                    vel.y *= rebound_factor;
+                }
                 has_collision = true;
             }
             else if (pos.y < -boundings_dimensions.y)
@@ -117,6 +137,14 @@ void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
                 auto diff = -boundings_dimensions.y - pos.y;
                 pos.y += 2 * diff;
                 vel.y = -vel.y;
+                if (use_whole_vector_velocities)
+                {
+                    vel *= rebound_factor;
+                }
+                else
+                {
+                    vel.y *= rebound_factor;
+                }
                 has_collision = true;
             }
             else if (pos.z > boundings_dimensions.z)
@@ -124,6 +152,14 @@ void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
                 auto diff = pos.z - boundings_dimensions.z;
                 pos.z -= 2 * diff;
                 vel.z = -vel.z;
+                if (use_whole_vector_velocities)
+                {
+                    vel *= rebound_factor;
+                }
+                else
+                {
+                    vel.z *= rebound_factor;
+                }
                 has_collision = true;
             }
             else if (pos.z < -boundings_dimensions.z)
@@ -131,6 +167,14 @@ void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
                 auto diff = -boundings_dimensions.z - pos.z;
                 pos.z += 2 * diff;
                 vel.z = -vel.z;
+                if (use_whole_vector_velocities)
+                {
+                    vel *= rebound_factor;
+                }
+                else
+                {
+                    vel.z *= rebound_factor;
+                }
                 has_collision = true;
             }
             else
@@ -139,13 +183,36 @@ void Jelly::TakeCollisionsIntoAccount(glm::vec3 boundings_dimensions)
             }
 
         } while (has_collision);
-
-
     }
+}
+
+void Jelly::Pinch(int idx)
+{
+    if(idx < 16) // on -x face
+        positions[idx].x -= pinch;
+    if(idx >= 64-16) // on +x face
+        positions[idx].x += pinch;
+
+    need_update = true;
+}
+
+void Jelly::Punch(int idx)
+{
+    velocities[idx].x = punch;
+    need_update = true;
+}
+
+void Jelly::Restart()
+{
+    SetVerticesAndLines();
+    need_update = true;
 }
 
 void Jelly::SetVerticesAndLines()
 {
+    indices.clear();
+    vertices.clear();
+
     int i = 0;
     vertices.reserve(3 * n * n * n);
     for (float x = 0.0f; x <= 1.0f; x += 1.0f / (n - 1))
@@ -163,8 +230,6 @@ void Jelly::SetVerticesAndLines()
             }
         }
     }
-
-    vertices[15] -= 1.0f;
 
     // z-axis
     for (int i = 0; i < n; ++i)
@@ -207,8 +272,6 @@ void Jelly::SetVerticesAndLines()
             }
         }
     }
-
-
 }
 
 void Jelly::SetTreeOfCongruence()
@@ -340,7 +403,7 @@ void Jelly::RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt
 {
     auto dxtdt = [this](const glm::vec3& cc, int current_idx, const glm::vec3& x, const glm::vec3& xt, bool corner) {
         glm::vec3 f = glm::vec3(0,0,0);
-        if (corner)
+        if (corner && include_control_cube)
         {
             auto distance_diff = cc - x;
             f = (glm::vec3(c2, c2, c2) *  distance_diff);
@@ -355,8 +418,9 @@ void Jelly::RungeKutta4(int current_idx, const glm::vec3& x, const glm::vec3& xt
             auto distance_norm_l = (distance_norm - l);
             f += abs(distance_norm_l) < FLT_EPSILON ? glm::vec3() : (glm::vec3(c1, c1, c1) * distance_norm_l * distance_diff / distance_norm);
         }
+        auto h = gravitation * mass;
         auto g = -glm::vec3(k, k, k) * xt;
-        auto F = f + g;
+        auto F = f + g + h;
         return F / mass;
     };
 

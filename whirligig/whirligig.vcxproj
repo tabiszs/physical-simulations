@@ -107,6 +107,10 @@
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\bezier_cubeFS.glsl" />
+    <None Include="Shaders\bezier_cubeTCS.glsl" />
+    <None Include="Shaders\bezier_cubeTES.glsl" />
+    <None Include="Shaders\bezier_cubeVS.glsl" />
     <None Include="Shaders\bicubicFS.glsl" />
     <None Include="Shaders\bicubicTCS.glsl" />
     <None Include="Shaders\bicubicVS.glsl" />
@@ -114,8 +118,6 @@
     <None Include="Shaders\cursorVS.glsl" />
     <None Include="Shaders\deCasteljauTES.glsl" />
     <None Include="Shaders\jellyCS.glsl" />
-    <None Include="Shaders\phongFS.glsl" />
-    <None Include="Shaders\phongVS.glsl" />
     <None Include="Shaders\point.fs" />
     <None Include="Shaders\point.vs" />
     <None Include="Shaders\pointFS.glsl" />

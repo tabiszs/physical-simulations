@@ -32,18 +32,8 @@ Application::Application()
 	trajectory->LoadMeshTo(device);
 	whirligig_scene->trajectory = trajectory;
 
-	jelly_scene = std::make_shared<JellyScene>(camera, light, viewFrustum);
-	jelly_scene->SetDevice(device);
+	jelly_scene = std::make_shared<JellyScene>(camera, light, viewFrustum, device);
 	window->ImportScene(jelly_scene);
-	auto bounding_cube = make_shared<Cube>(5.0f);
-	bounding_cube->LoadMeshTo(device);
-	jelly_scene->bounding_cube = bounding_cube;
-	auto control_cube = make_shared<ControlCube>();
-	control_cube->LoadMeshTo(device);
-	jelly_scene->control_cube = control_cube;
-	auto bezier_cube = make_shared<Jelly>();
-	bezier_cube->LoadMeshTo(device);
-	jelly_scene->jelly = bezier_cube;
 
 	//interpolation_scene = std::make_shared<InterpolationScene>(camera, light, viewFrustum);
 	////interpolation_scene->SetDevice(device);

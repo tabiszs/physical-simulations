@@ -31,6 +31,7 @@ public:
 	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> stereoscopyShader;
 	std::shared_ptr<Shader> bezierCubeShader;
+	std::shared_ptr<Shader> surfaceC0Shader;
 	std::shared_ptr<Shader> surfaceC2Shader;
 	std::shared_ptr<Shader> gregoryShader;
 
