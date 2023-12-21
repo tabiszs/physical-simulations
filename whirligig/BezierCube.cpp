@@ -150,7 +150,7 @@ void BezierCube::UpdateBuffer(const std::vector<GLfloat>& vertices)
             this->vertices[c++] = vertices[3 * idx + 2];
 
             // normals
-            this->vertices[c++] = -1.0f;
+            this->vertices[c++] = 1.0f;
             this->vertices[c++] = 0.0f;
             this->vertices[c++] = 0.0f;
         }
@@ -167,7 +167,7 @@ void BezierCube::UpdateBuffer(const std::vector<GLfloat>& vertices)
             this->vertices[c++] = vertices[3 * idx + 2];
 
             // normals
-            this->vertices[c++] = 1.0f;
+            this->vertices[c++] = -1.0f;
             this->vertices[c++] = 0.0f;
             this->vertices[c++] = 0.0f;
         }
@@ -222,7 +222,7 @@ void BezierCube::UpdateBuffer(const std::vector<GLfloat>& vertices)
             // normals
             this->vertices[c++] = 0.0f;
             this->vertices[c++] = 0.0f;
-            this->vertices[c++] = -1.0f;
+            this->vertices[c++] = 1.0f;
         }
     }
     for (int k = 3, i = 0; i < n; ++i)
@@ -239,7 +239,7 @@ void BezierCube::UpdateBuffer(const std::vector<GLfloat>& vertices)
             // normals
             this->vertices[c++] = 0.0f;
             this->vertices[c++] = 0.0f;
-            this->vertices[c++] = 1.0f;
+            this->vertices[c++] = -1.0f;
         }
     }
 }

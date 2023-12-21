@@ -27,6 +27,6 @@ void main() {
 	nh *= ks;
 	color += lightColor * nh;
 	
-	color = clamp(color, 0.0, 1.0);
+	color = normal;// clamp(color, 0.0, 1.0);
 	//color = objectColor.xyz;
 }

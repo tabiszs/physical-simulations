@@ -77,7 +77,7 @@ vec3 BezierNormalVector(float u, float v, vec3[16] p) {
 
     dPdu = normalize(dPdu);
     dPdv = normalize(dPdv);
-    return abs(normalize(cross(dPdv, dPdu)));
+    return normalize(cross(dPdv, dPdu));
 }
 
 void main()
@@ -114,5 +114,5 @@ void main()
 	tes_worldPos = pos.xyz;
 	tes_viewVec = normalize(camPos - tes_worldPos);
     //tes_normal = tcs_normal[0];
-    tes_normal = BezierNormalVector(u,v,p);
+    tes_normal = tcs_normal[0] * BezierNormalVector(u,v,p);
 }
