@@ -34,45 +34,36 @@
     <Filter Include="Resource Files\Textures">
       <UniqueIdentifier>{61ed3108-c6fc-45d2-8169-8eb4f5c490ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Jelly">
+      <UniqueIdentifier>{1369b684-b877-4949-ad1d-66c2f6b30b34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Whirligig">
+      <UniqueIdentifier>{43a9e04f-661b-4b10-908c-be903ac1b26e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\KinematicChain">
+      <UniqueIdentifier>{cb3769b1-6800-40bd-a529-d0811871e01f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Spring">
+      <UniqueIdentifier>{a9023169-d3bb-4957-adc6-8806ef074375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interpolation">
+      <UniqueIdentifier>{c34fff13-5d5e-4f23-adb3-f1904d166254}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{d0c62202-a5c6-43ec-bc2c-30688eea7c92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Puma">
+      <UniqueIdentifier>{5824ead5-aed6-4a55-bfa6-3047ed8cfd69}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="device.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderHolder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewFrustrum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="light.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="imGuiBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Imgui\imgui.cpp">
@@ -99,9 +90,6 @@
     <ClCompile Include="Imgui\imgui_widgets.cpp">
       <Filter>Source Files\Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Implot\implot.cpp">
       <Filter>Source Files\Implot</Filter>
     </ClCompile>
@@ -111,61 +99,100 @@
     <ClCompile Include="Implot\implot_items.cpp">
       <Filter>Source Files\Implot</Filter>
     </ClCompile>
-    <ClCompile Include="SpringSimulator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WhirligigSimulator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="WhirligigCube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Plane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Trajectory.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Duck.cpp">
+      <Filter>Source Files\Jelly</Filter>
     </ClCompile>
-    <ClCompile Include="WhirligigScene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Jelly.cpp">
+      <Filter>Source Files\Jelly</Filter>
     </ClCompile>
     <ClCompile Include="JellyScene.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Jelly</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlCube.cpp">
+      <Filter>Source Files\Jelly</Filter>
+    </ClCompile>
+    <ClCompile Include="BezierCube.cpp">
+      <Filter>Source Files\Jelly</Filter>
+    </ClCompile>
+    <ClCompile Include="WhirligigScene.cpp">
+      <Filter>Source Files\Whirligig</Filter>
+    </ClCompile>
+    <ClCompile Include="WhirligigSimulator.cpp">
+      <Filter>Source Files\Whirligig</Filter>
+    </ClCompile>
+    <ClCompile Include="WhirligigCube.cpp">
+      <Filter>Source Files\Whirligig</Filter>
+    </ClCompile>
+    <ClCompile Include="Arm.cpp">
+      <Filter>Source Files\KinematicChain</Filter>
+    </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>Source Files\KinematicChain</Filter>
+    </ClCompile>
+    <ClCompile Include="KinematicChainScene.cpp">
+      <Filter>Source Files\KinematicChain</Filter>
+    </ClCompile>
+    <ClCompile Include="Trajectory.cpp">
+      <Filter>Source Files\Whirligig</Filter>
+    </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Source Files\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="InterpolationScene.cpp">
+      <Filter>Source Files\Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="SpringSimulator.cpp">
+      <Filter>Source Files\Spring</Filter>
+    </ClCompile>
+    <ClCompile Include="Cursor.cpp">
+      <Filter>Source Files\Interpolation</Filter>
     </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ControlCube.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="light.cpp">
+      <Filter>Source Files\Jelly</Filter>
     </ClCompile>
-    <ClCompile Include="BezierCube.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="InterpolationScene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="device.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Cursor.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="imGuiBuilder.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Quaternion.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="glad.c">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="KinematicChainScene.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="mat.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Arm.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="scene.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="shader.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Jelly.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="utils.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Duck.cpp">
+    <ClCompile Include="ViewFrustrum.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="window.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="PumaScene.cpp">
+      <Filter>Source Files\Puma</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -294,6 +321,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Duck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PumaScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

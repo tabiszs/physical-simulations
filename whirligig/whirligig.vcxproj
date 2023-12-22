@@ -23,6 +23,7 @@
     <ClCompile Include="Arm.cpp" />
     <ClCompile Include="BezierCube.cpp" />
     <ClCompile Include="Duck.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Jelly.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Cube.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="Cursor.cpp" />
     <ClCompile Include="InterpolationScene.cpp" />
     <ClCompile Include="KinematicChainScene.cpp" />
+    <ClCompile Include="PumaScene.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="WhirligigCube.cpp" />
     <ClCompile Include="camera.cpp" />
@@ -69,6 +71,7 @@
     <ClInclude Include="Arm.h" />
     <ClInclude Include="BezierCube.h" />
     <ClInclude Include="Duck.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Jelly.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Cube.h" />
@@ -76,6 +79,7 @@
     <ClInclude Include="Cursor.h" />
     <ClInclude Include="InterpolationScene.h" />
     <ClInclude Include="KinematicChainScene.h" />
+    <ClInclude Include="PumaScene.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="WhirligigCube.h" />
     <ClInclude Include="camera.h" />

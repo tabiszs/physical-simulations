@@ -29,6 +29,7 @@ void ShaderHolder::Init()
 	final_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
 	euler_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
 	quat_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
+	gridShader = std::make_shared<Shader>("shaders/planeVS.glsl", "shaders/planeFS.glsl");
 
 	armShader = std::make_shared<Shader>("shaders/pointVS.glsl", "shaders/pointFS.glsl");
 	blockShader = std::make_shared<Shader>("shaders/simple.vs", "shaders/simple.fs");
@@ -60,6 +61,8 @@ void ShaderHolder::Delete()
 
 	if (armShader != nullptr) glDeleteProgram(armShader->ID);
 	if (blockShader != nullptr) glDeleteProgram(blockShader->ID);
+
+	if (gridShader != nullptr) glDeleteProgram(gridShader->ID);
 
 	if (oldPointShader != nullptr)	glDeleteProgram(oldPointShader->ID);
 	if (bezierShader != nullptr)	glDeleteProgram(bezierShader->ID);

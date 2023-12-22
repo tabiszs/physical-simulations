@@ -22,6 +22,7 @@
 #include "JellyScene.h"
 #include "InterpolationScene.h"
 #include "KinematicChainScene.h"
+#include "PumaScene.h"
 
 
 using namespace std;
@@ -54,9 +55,11 @@ private:
 
 	shared_ptr<Window> window;
 	shared_ptr<Device> device;
+	shared_ptr<Scene> selected_scene;
 	shared_ptr<WhirligigScene> whirligig_scene;
 	shared_ptr<JellyScene> jelly_scene;
 	shared_ptr<InterpolationScene> interpolation_scene;
 	shared_ptr<KinematicChainScene> kinematic_chain_scene;
+	shared_ptr<PumaScene> puma_scene;
 	SpringSimulator ss = SpringSimulator();
 };

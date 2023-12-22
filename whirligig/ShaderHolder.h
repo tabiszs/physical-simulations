@@ -28,6 +28,9 @@ public:
 	std::shared_ptr<Shader> armShader;
 	std::shared_ptr<Shader> blockShader;
 
+	std::shared_ptr<Shader> gridShader;
+	std::shared_ptr<Shader> pumaShader;
+
 	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> stereoscopyShader;
 	std::shared_ptr<Shader> bezierCubeShader;

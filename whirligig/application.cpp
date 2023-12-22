@@ -25,12 +25,18 @@ Application::Application()
 	//jelly_scene = std::make_shared<JellyScene>(camera, light, viewFrustum, device);
 	//window->ImportScene(jelly_scene);
 
-	interpolation_scene = std::make_shared<InterpolationScene>(camera, light, viewFrustum, device);
-	interpolation_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
-	window->ImportScene(interpolation_scene);
+	//interpolation_scene = std::make_shared<InterpolationScene>(camera, light, viewFrustum, device);
+	//interpolation_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
+	//window->ImportScene(interpolation_scene);
 
 	//kinematic_chain_scene = std::make_shared<KinematicChainScene>(camera, light, viewFrustum, device);
 	//window->ImportScene(kinematic_chain_scene);
+
+	puma_scene = std::make_shared<PumaScene>(camera, light, viewFrustum, device);
+	puma_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
+	window->ImportScene(puma_scene);
+
+	selected_scene = puma_scene;
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }
@@ -51,28 +57,18 @@ void Application::Menu()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-
-	//whirligig_scene->Menu();
-	//jelly_scene->Menu();
-	interpolation_scene->Menu();
-	//kinematic_chain_scene->Menu();
+	selected_scene->Menu();
 }
 
 void Application::Update()
 {
 	device->CleanColor(backgroundColor);
-	//whirligig_scene->Update();
-	//jelly_scene->Update();
-	interpolation_scene->Update();
-	//kinematic_chain_scene->Update();
+	selected_scene->Update();
 }
 
 void Application::Render()
 {
-	//whirligig_scene->DrawOn(device);
-	//jelly_scene->DrawOn(device);
-	interpolation_scene->DrawOn(device);		
-	//kinematic_chain_scene->DrawOn(device);
+	selected_scene->DrawOn(device);
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
