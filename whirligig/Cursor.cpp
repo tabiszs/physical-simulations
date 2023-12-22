@@ -8,7 +8,7 @@ glm::mat4 Cursor::ModelMatrix()
     float s = 1.0f / (maxPt - minPt);
     auto scale = Mat::scale(s, s, s);
     auto t = Mat::translation({ position[0],position[1] ,position[2] });
-    auto r = glm::eulerAngleXYZ(euler_angles[0], euler_angles[1], euler_angles[2]);
+    auto r = glm::toMat4(quaternion);
     return t * r * scale;
 }
 
@@ -17,8 +17,7 @@ glm::mat4 Cursor::ModelMatrixQuat()
     float s = 1.0f / (maxPt - minPt);
     auto scale = Mat::scale(s, s, s);
     auto t = Mat::translation({ position[0],position[1] ,position[2] });
-    auto euler_angles = Quaternion::ToEulerAngles(quaternion);
-    auto r = glm::eulerAngleXYZ(euler_angles[0], euler_angles[1], euler_angles[2]);
+    auto r = glm::toMat4(quaternion);
     return t * r * scale;
 }
 
@@ -48,13 +47,11 @@ void Cursor::SetPosition(const glm::vec3& position)
 
 void Cursor::SetRotation(const glm::vec3& euler_angles)
 {
-    this->euler_angles[0] = euler_angles[0];
-    this->euler_angles[1] = euler_angles[1];
-    this->euler_angles[2] = euler_angles[2];
+    this->euler_angles = euler_angles;
     need_update = true;
 }
 
-void Cursor::SetRotation(const glm::vec4& quaternion)
+void Cursor::SetRotation(const glm::quat& quaternion)
 {
     this->quaternion = quaternion;
     need_update = true;
@@ -83,16 +80,16 @@ void Cursor::ImproveShortestPath(const glm::vec3& euler_angles)
     SetQuaternion(this->euler_angles);
 }
 
-void Cursor::SetQuaternion(const glm::vec3& euler_angles)
+void Cursor::SetQuaternion(const glm::quat& euler_angles)
 {
-    quaternion = Quaternion::ToQuaternion(euler_angles);
+    quaternion = glm::quat(euler_angles);
     need_update = true;
 }
 
-void Cursor::SetEulerAngles(const glm::vec4& quaternion)
+void Cursor::SetEulerAngles(const glm::quat& quaternion)
 {
-    this->quaternion = Quaternion::Normalize(quaternion);
-    euler_angles = Quaternion::ToEulerAngles(quaternion);
+    this->quaternion = glm::normalize(quaternion);
+    euler_angles = glm::eulerAngles(this->quaternion);
     need_update = true;
 }
 

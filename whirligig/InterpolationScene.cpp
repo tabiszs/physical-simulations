@@ -128,7 +128,7 @@ void InterpolationScene::Menu()
 	if (initial_euler_angles_changed) 
 		initial_cursor->SetQuaternion(initial_cursor->euler_angles);
 	ImGui::Text("Quaternion");
-	bool initial_quaternion_changed = ImGui::InputFloat4("Qxyzw##0", (float*)&initial_cursor->quaternion);
+	bool initial_quaternion_changed = ImGui::InputFloat4("Qwxyz##0", (float*)&initial_cursor->quaternion);
 	if (initial_quaternion_changed) 
 		initial_cursor->SetEulerAngles(initial_cursor->quaternion);
 	ImGui::Separator();
@@ -143,7 +143,7 @@ void InterpolationScene::Menu()
 	if (final_euler_angles_changed)
 		final_cursor->SetQuaternion(final_cursor->euler_angles);
 	ImGui::Text("Quaternion");
-	bool final_quaternion_changed = ImGui::InputFloat4("Qxyzw##1", (float*)&final_cursor->quaternion);
+	bool final_quaternion_changed = ImGui::InputFloat4("Qwxyz##1", (float*)&final_cursor->quaternion);
 	if (final_quaternion_changed)
 		final_cursor->SetEulerAngles(final_cursor->quaternion);
 	ImGui::Separator();
@@ -228,13 +228,10 @@ void InterpolationScene::UpdateInterpolation()
 void InterpolationScene::UpdateEulerInterpolation(double time_from_start)
 {
 	float animation_part = std::min(1.0, time_from_start / animation_time);
-	euler_cursor->position[0] = initial_cursor->position[0] * (1 - animation_part) + final_cursor->position[0] * animation_part;
-	euler_cursor->position[1] = initial_cursor->position[1] * (1 - animation_part) + final_cursor->position[1] * animation_part;
-	euler_cursor->position[2] = initial_cursor->position[2] * (1 - animation_part) + final_cursor->position[2] * animation_part;
+	euler_cursor->position = initial_cursor->position * (1 - animation_part) + final_cursor->position * animation_part;
 
-	euler_cursor->euler_angles[0] = initial_cursor->euler_angles[0] * (1 - animation_part) + final_cursor->euler_angles[0] * animation_part;
-	euler_cursor->euler_angles[1] = initial_cursor->euler_angles[1] * (1 - animation_part) + final_cursor->euler_angles[1] * animation_part;
-	euler_cursor->euler_angles[2] = initial_cursor->euler_angles[2] * (1 - animation_part) + final_cursor->euler_angles[2] * animation_part;
+	euler_cursor->euler_angles = initial_cursor->euler_angles * (1 - animation_part) + final_cursor->euler_angles * animation_part;
+	euler_cursor->SetQuaternion(euler_cursor->euler_angles);
 
 	euler_cursor->need_update = true;
 }
@@ -242,17 +239,15 @@ void InterpolationScene::UpdateEulerInterpolation(double time_from_start)
 void InterpolationScene::UpdateQuaternionInterpolation(double time_from_start)
 {
 	float animation_part = std::min(1.0, time_from_start / animation_time);
-	quat_cursor->position[0] = initial_cursor->position[0] * (1 - animation_part) + final_cursor->position[0] * animation_part;
-	quat_cursor->position[1] = initial_cursor->position[1] * (1 - animation_part) + final_cursor->position[1] * animation_part;
-	quat_cursor->position[2] = initial_cursor->position[2] * (1 - animation_part) + final_cursor->position[2] * animation_part;
+	quat_cursor->position = initial_cursor->position * (1 - animation_part) + final_cursor->position * animation_part;
 
 	if (use_slerp_quaternion_interpolation)
 	{
-		quat_cursor->quaternion = Quaternion::SLERP(initial_cursor->quaternion, final_cursor->quaternion, animation_part);
+		quat_cursor->quaternion = glm::normalize(glm::slerp(initial_cursor->quaternion, final_cursor->quaternion, animation_part));
 	}
 	else
 	{
-		quat_cursor->quaternion = Quaternion::LERP(initial_cursor->quaternion, final_cursor->quaternion, animation_part);
+		quat_cursor->quaternion = glm::normalize(glm::lerp(initial_cursor->quaternion, final_cursor->quaternion, animation_part));
 	}
 
 	quat_cursor->need_update = true;

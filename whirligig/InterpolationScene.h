@@ -7,7 +7,6 @@ public:
 	InterpolationScene(shared_ptr<FpsCamera> c, shared_ptr<Light> l, shared_ptr<ViewFrustrum> vf, shared_ptr<Device> device)
 		: Scene(c, l, vf)
 	{	
-		camera_movement = false;
 		SetDevice(device);
 		euler_cursor = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
 		euler_cursor->LoadMeshTo(device);
