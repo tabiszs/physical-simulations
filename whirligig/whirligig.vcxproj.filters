@@ -25,6 +25,15 @@
     <Filter Include="Source Files\Implot">
       <UniqueIdentifier>{fb4a6ded-4352-4a4e-a1a1-cd1aa6217b92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{dba32e77-50eb-40db-8bdf-9570eccccd19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Models">
+      <UniqueIdentifier>{c4d513fe-9fe8-4bc3-9b58-8be0fc2808dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Textures">
+      <UniqueIdentifier>{61ed3108-c6fc-45d2-8169-8eb4f5c490ed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp">
@@ -156,6 +165,9 @@
     <ClCompile Include="Jelly.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Duck.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -281,61 +293,74 @@
     <ClInclude Include="Jelly.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Duck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\simple.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\simple.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\pointFS.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\pointVS.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\point.fs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\point.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\bicubicFS.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\bicubicTCS.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\bicubicVS.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\deCasteljauTES.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\pointSizeVS.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\cursorFS.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\cursorVS.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\jellyCS.glsl">
-      <Filter>Resource Files</Filter>
+    <None Include="Shaders\bezier_cubeFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="Shaders\bezier_cubeTCS.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="Shaders\bezier_cubeTES.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\bezier_cubeFS.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="Shaders\bezier_cubeVS.glsl">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\bicubicFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\bicubicTCS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\bicubicVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\cursorFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\cursorVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\deCasteljauTES.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\jellyCS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\point.fs">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\point.vs">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\pointFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\pointSizeVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\pointVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\simple.fs">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Shaders\simple.vs">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Models\duck.txt">
+      <Filter>Resource Files\Models</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\ducktex.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
