@@ -9,7 +9,7 @@ public:
 	Trajectory()
 	{
 		shader = ShaderHolder::Get().trajectoryShader;
-		vertices.reserve((GLfloat)3 * max_trajectory);
+		vertices.reserve(3 * max_trajectory);
 		indices = std::vector<GLuint>(max_trajectory);
 		std::iota(std::begin(indices), std::end(indices), 0);
 	}

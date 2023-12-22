@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "device.h"
+#include <array>
 
 class Cube : public Object
 {
@@ -33,13 +34,12 @@ public:
         shader = ShaderHolder::Get().boxShader;
     }
 
-    virtual glm::mat4 ModelMatrix();
+    glm::mat4 ModelMatrix() override;
     virtual void LoadMeshTo(std::shared_ptr<Device> device);
     virtual void UpdateMeshTo(std::shared_ptr<Device> device);
     virtual void DrawModelOn(std::shared_ptr<Device> device);
-    virtual void Update(float t)
-    {
-    }
+    virtual void Update(float t) {}
+    glm::vec3 GetDimensions();
 
 protected:
     void SetBoundings(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax);

@@ -18,14 +18,19 @@ public:
 	std::shared_ptr<Shader> frameShader;
 	std::shared_ptr<Shader> pointShader;
 	std::shared_ptr<Shader> bezierShader;
+	std::shared_ptr<Shader> computeShader;
 
 	std::shared_ptr<Shader> initial_cursorShader;
 	std::shared_ptr<Shader> final_cursorShader;
 	std::shared_ptr<Shader> euler_cursorShader;
 	std::shared_ptr<Shader> quat_cursorShader;
 
+	std::shared_ptr<Shader> armShader;
+	std::shared_ptr<Shader> blockShader;
+
 	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> stereoscopyShader;
+	std::shared_ptr<Shader> bezierCubeShader;
 	std::shared_ptr<Shader> surfaceC0Shader;
 	std::shared_ptr<Shader> surfaceC2Shader;
 	std::shared_ptr<Shader> gregoryShader;

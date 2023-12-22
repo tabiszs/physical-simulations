@@ -14,7 +14,7 @@ float SpringSimulator::selectable_fun(const float& time, const int& type, const 
 		return params.A;
 		break;
 	case Sharp:
-		return time < params.t ? 0 : params.A;
+		return time < params.t ? 0.0f : params.A;
 		break;
 	case Sign:
 		return glm::sign(sinusoidal(time, params));
@@ -23,4 +23,5 @@ float SpringSimulator::selectable_fun(const float& time, const int& type, const 
 		return sinusoidal(time, params);
 		break;
 	}
+	return 0.0f;
 }

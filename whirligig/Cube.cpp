@@ -25,6 +25,11 @@ void Cube::DrawModelOn(std::shared_ptr<Device> device)
     device->DrawLines((Object*)this);
 }
 
+glm::vec3 Cube::GetDimensions()
+{
+    return glm::vec3(xMax-xMin,yMax-yMin,zMax-zMin)/2.0f;
+}
+
 void Cube::SetBoundings(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax)
 {
     vertices.clear();

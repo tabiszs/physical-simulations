@@ -12,6 +12,8 @@ public:
 	void LoadMesh(Object* model);
 	void LoadPositionsAndTextureCoords(Object* model);
 	void LoadPositionsAndColor(Object* model);
+	void LoadUniformBufferObject(int index, int size, void* data);
+	void LoadPositionsAndNormals(Object* model);
 	void UpdateMesh(Object* model);
 	void DrawTriangles(Object* model);
 	void DrawTriangles(Object* model, int count, int offset);
@@ -31,6 +33,8 @@ public:
 	void DrawPatches20(Object* model, int count, int offset);
 	void DrawPatches(int points, Object* model, int count, int offset, bool mesh = true);
 	void CleanColor(float color[4]);
+	void CreateTexture(GLuint& image_texture);
+	void UpdateTexture(GLuint& image_texture, int width, int height, const void* data);
 private:
 
 };

@@ -17,6 +17,7 @@ class Shader
 {
 public:
     unsigned int ID;
+    Shader(const char* computePath);
     Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath = nullptr);
     Shader(const char* vertexPath, const char* fragmentPath, const char* tessControlPath, const char* tessEvaluationPath);
     void use();
@@ -28,8 +29,9 @@ public:
     void set3Float(const std::string& name, glm::vec3 value) const;
     void setVec2(const std::string& name, float x, float y) const;
     void setMatrix4F(const std::string& name, glm::mat4 value) const;
+    void setTexture1D(const std::string& name, void* data, int size) const;
     void setTextureAtUnit(const std::string& name, int value) const;
-    void activateTexture(int i, int texture) const;
+    void activateTexture2D(int i, int texture) const;
 private:
     
     void checkCompileErrors(unsigned int shader, std::string type);

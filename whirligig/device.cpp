@@ -101,6 +101,22 @@ void Device::LoadPositionsAndColor(Object* model)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void Device::LoadUniformBufferObject(int index, int size, void* data)
+{
+	unsigned int uniform_block;
+	glGenBuffers(1, &uniform_block);
+	glBindBuffer(GL_UNIFORM_BUFFER, uniform_block);
+	glBufferData(GL_UNIFORM_BUFFER, 1024, (GLuint*) data, GL_STATIC_DRAW);
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	// define the range of the buffer that links to a uniform binding point
+	glBindBufferRange(GL_UNIFORM_BUFFER, 0, uniform_block, 0, 1024);
+}
+
+void Device::LoadPositionsAndNormals(Object* model)
+{
+	LoadPositionsAndColor(model);
+}
+
 void Device::UpdateMesh(Object* model)
 {
 	glBindVertexArray(model->VAO);
@@ -238,4 +254,27 @@ void Device::CleanColor(float color[4])
 {
 	glClearColor(color[0], color[1], color[2], color[3]);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Device::CreateTexture(GLuint& image_texture)
+{
+	// Create a OpenGL texture identifier
+	glGenTextures(1, &image_texture);
+	glBindTexture(GL_TEXTURE_2D, image_texture);
+
+	// Setup filtering parameters for display
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Device::UpdateTexture(GLuint& image_texture, int width, int height, const void* data)
+{
+	// Upload pixels into texture
+	glBindTexture(GL_TEXTURE_2D, image_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

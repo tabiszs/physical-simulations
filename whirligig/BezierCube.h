@@ -1,37 +1,24 @@
 #pragma once
-#include "Cube.h"
-class BezierCube : public Cube
+#include "Object.h"
+#include "device.h"
+class BezierCube : public Object
 {
 public:
-	BezierCube()
+	BezierCube(const std::vector<GLfloat>& vertices)
 	{
-		SetVerticlesAndLines();
-		shader = ShaderHolder::Get().surfaceC0Shader;
-		point_shader = ShaderHolder::Get().pointShader;
+		FillBuffer(vertices);
+		shader = ShaderHolder::Get().bezierCubeShader;
+		for (int i = 0; i < size; ++i) indices.push_back(i);
 	}
 
 	glm::mat4 ModelMatrix() override;
-	void LoadMeshTo(std::shared_ptr<Device> device) override;
-	void UpdateMeshTo(std::shared_ptr<Device> device) override;
-	void DrawModelOn(std::shared_ptr<Device> device) override;
-	void DrawPointsOn(std::shared_ptr<Device> device);
-	void DrawEdgesOn(std::shared_ptr<Device> device);
-	void Update(float t) override;
+	void LoadMeshTo(std::shared_ptr<Device> device);
+	void UpdateMeshTo(std::shared_ptr<Device> device);
+	void DrawModelOn(std::shared_ptr<Device> device);
+	void FillBuffer(const std::vector<GLfloat>& vertices);
+	void UpdateBuffer(const std::vector<GLfloat>& vertices);
 
-	float dt = 0.1f;
-	float gravitation[3] = { 0.0f, 0.0f, 0.0f };
-	int use_whole_vector_velocities = 0;
-	float mass = 1.0f;
-	float k = 4.0f;
-	float c1 = 32.0f;
-	float c2 = 32.0f;
-	bool depth_on;
-
-
-	float blue[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
-	float yellow[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
-	std::shared_ptr<Shader> point_shader;
-private:
-    void SetVerticlesAndLines();
+	static const int n = 4;
+	static const int size = 16 * 6;
 };
 

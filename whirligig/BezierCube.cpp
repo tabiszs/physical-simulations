@@ -7,11 +7,10 @@ glm::mat4 BezierCube::ModelMatrix()
 
 void BezierCube::LoadMeshTo(std::shared_ptr<Device> device)
 {
-    device->LoadMesh((Object*)this);
+    device->LoadPositionsAndNormals((Object*)this);
     shader->use();
     shader->set4Float("objectColor", yellow);
-    point_shader->use();
-    point_shader->set4Float("objectColor", blue);
+    shader->setMatrix4F("modelMtx", ModelMatrix());
 }
 
 void BezierCube::UpdateMeshTo(std::shared_ptr<Device> device)
@@ -22,114 +21,80 @@ void BezierCube::UpdateMeshTo(std::shared_ptr<Device> device)
 void BezierCube::DrawModelOn(std::shared_ptr<Device> device)
 {
     shader->use();
-    device->DrawPatches16((Object*)this, 16*6, 288, false); // only on edge surfaces
+    device->DrawPatches16((Object*)this, 16 * 6, 0, false);
 }
 
-void BezierCube::DrawPointsOn(std::shared_ptr<Device> device)
+void BezierCube::FillBuffer(const std::vector<GLfloat>& vertices)
 {
-    point_shader->use();
-    device->DrawPoints((Object*)this);
-}
-
-void BezierCube::DrawEdgesOn(std::shared_ptr<Device> device)
-{
-    point_shader->use();
-    device->DrawLines((Object*)this);
-}
-
-void BezierCube::Update(float t)
-{
-}
-
-void BezierCube::SetVerticlesAndLines()
-{
-    const int n = 4;
-    vertices.reserve(n * n * n);
-    for (float x = 0.0f; x <= 1.0f; x += 1.0f / (n - 1))
-    {
-        for (float y = 0.0f; y <= 1.0f; y += 1.0f / (n - 1))
-        {
-            for (float z = 0.0f; z <= 1.0f; z += 1.0f / (n - 1))
-            {
-                vertices.push_back(x);
-                vertices.push_back(y);
-                vertices.push_back(z);
-            }
-        }
-    }
-
-    vertices[15] -= 1.0f;
-
-    // z-axis
-    for (int i = 0; i < n; ++i)
-    {
-        for (int j = 0; j < n; ++j)
-        {
-            for (int k = 0; k < n - 1; ++k)
-            {
-                int idx = (i * n + j) * n + k;
-                indices.push_back(idx);
-                indices.push_back(idx + 1);
-            }
-        }
-    }
-
-    // y-axis
-    for (int i = 0; i < n; ++i)
-    {
-        for (int j = 0; j < n - 1; ++j)
-        {
-            for (int k = 0; k < n; ++k)
-            {
-                int idx = (i * n + j) * n + k;
-                indices.push_back(idx);
-                indices.push_back(idx + n);
-            }
-        }
-    }
-
-    // x-axis
-    for (int i = 0; i < n - 1; ++i)
-    {
-        for (int j = 0; j < n; ++j)
-        {
-            for (int k = 0; k < n; ++k)
-            {
-                int idx = (i * n + j) * n + k;
-                indices.push_back(idx);
-                indices.push_back(idx + n * n);
-            }
-        }
-    }
-
-    // bezier patches    
+    // bezier patches
+    int idx;
     for (int i = 0, j = 0; j < n; ++j)
     {
         for (int k = 0; k < n; ++k)
         {
-            indices.push_back((i * n + j) * n + k); // -x face
+            idx = (i * n + j) * n + k; // -x face
+
+            // position
+            this->vertices.push_back(vertices[3 * idx]);
+            this->vertices.push_back(vertices[3 * idx + 1]);
+            this->vertices.push_back(vertices[3 * idx + 2]);
+
+            // normals
+            this->vertices.push_back(-1.0f);
+            this->vertices.push_back(0.0f);
+            this->vertices.push_back(0.0f);
         }
     }
     for (int i = 3, j = 0; j < n; ++j)
     {
         for (int k = 0; k < n; ++k)
         {
-            indices.push_back((i * n + j) * n + k); // y face
+            idx = (i * n + j) * n + k; // x face
+
+            // position
+            this->vertices.push_back(vertices[3 * idx]);
+            this->vertices.push_back(vertices[3 * idx + 1]);
+            this->vertices.push_back(vertices[3 * idx + 2]);
+
+            // normals
+            this->vertices.push_back(1.0f);
+            this->vertices.push_back(0.0f);
+            this->vertices.push_back(0.0f);
         }
     }
-    
+
     for (int j = 0, i = 0; i < n; ++i)
     {
         for (int k = 0; k < n; ++k)
         {
-            indices.push_back((i * n + j) * n + k); // -y face
+            idx = (i * n + j) * n + k; // -y face
+
+            // position
+            this->vertices.push_back(vertices[3 * idx]);
+            this->vertices.push_back(vertices[3 * idx + 1]);
+            this->vertices.push_back(vertices[3 * idx + 2]);
+
+            // normals
+            this->vertices.push_back(0.0f);
+            this->vertices.push_back(-1.0f);
+            this->vertices.push_back(0.0f);
         }
     }
     for (int j = 3, i = 0; i < n; ++i)
     {
         for (int k = 0; k < n; ++k)
         {
-            indices.push_back((i * n + j) * n + k); // y face
+            idx = ((i * n + j) * n + k); // y face
+
+            // position
+            this->vertices.push_back(vertices[3 * idx]);
+            this->vertices.push_back(vertices[3 * idx + 1]);
+            this->vertices.push_back(vertices[3 * idx + 2]);
+
+            // normals
+            this->vertices.push_back(0.0f);
+            this->vertices.push_back(1.0f);
+            this->vertices.push_back(0.0f);
         }
     }
 
@@ -137,14 +102,144 @@ void BezierCube::SetVerticlesAndLines()
     {
         for (int j = 0; j < n; ++j)
         {
-            indices.push_back((i * n + j) * n + k); // -z face
+            idx = ((i * n + j) * n + k); // -z face
+
+            // position
+            this->vertices.push_back(vertices[3 * idx]);
+            this->vertices.push_back(vertices[3 * idx + 1]);
+            this->vertices.push_back(vertices[3 * idx + 2]);
+
+            // normals
+            this->vertices.push_back(0.0f);
+            this->vertices.push_back(0.0f);
+            this->vertices.push_back(-1.0f);
         }
     }
     for (int k = 3, i = 0; i < n; ++i)
     {
         for (int j = 0; j < n; ++j)
         {
-            indices.push_back((i * n + j) * n + k); // z face
+            idx = ((i * n + j) * n + k); // z face
+
+            // position
+            this->vertices.push_back(vertices[3 * idx]);
+            this->vertices.push_back(vertices[3 * idx + 1]);
+            this->vertices.push_back(vertices[3 * idx + 2]);
+
+            // normals
+            this->vertices.push_back(0.0f);
+            this->vertices.push_back(0.0f);
+            this->vertices.push_back(1.0f);
+        }
+    }
+}
+
+void BezierCube::UpdateBuffer(const std::vector<GLfloat>& vertices)
+{
+    // bezier patches
+    int idx, c = 0;
+    for (int i = 0, j = 0; j < n; ++j)
+    {
+        for (int k = 0; k < n; ++k)
+        {
+            idx = (i * n + j) * n + k; // -x face
+
+            // position
+            this->vertices[c++] = vertices[3 * idx];
+            this->vertices[c++] = vertices[3 * idx + 1];
+            this->vertices[c++] = vertices[3 * idx + 2];
+
+            // normals
+            this->vertices[c++] = 1.0f;
+            this->vertices[c++] = 0.0f;
+            this->vertices[c++] = 0.0f;
+        }
+    }
+    for (int i = 3, j = 0; j < n; ++j)
+    {
+        for (int k = 0; k < n; ++k)
+        {
+            idx = (i * n + j) * n + k; // x face
+
+            // position
+            this->vertices[c++] = vertices[3 * idx];
+            this->vertices[c++] = vertices[3 * idx + 1];
+            this->vertices[c++] = vertices[3 * idx + 2];
+
+            // normals
+            this->vertices[c++] = -1.0f;
+            this->vertices[c++] = 0.0f;
+            this->vertices[c++] = 0.0f;
+        }
+    }
+
+    for (int j = 0, i = 0; i < n; ++i)
+    {
+        for (int k = 0; k < n; ++k)
+        {
+            idx = (i * n + j) * n + k; // -y face
+
+            // position
+            this->vertices[c++] = vertices[3 * idx];
+            this->vertices[c++] = vertices[3 * idx + 1];
+            this->vertices[c++] = vertices[3 * idx + 2];
+
+            // normals
+            this->vertices[c++] = 0.0f;
+            this->vertices[c++] = -1.0f;
+            this->vertices[c++] = 0.0f;
+        }
+    }
+    for (int j = 3, i = 0; i < n; ++i)
+    {
+        for (int k = 0; k < n; ++k)
+        {
+            idx = ((i * n + j) * n + k); // y face
+
+            // position
+            this->vertices[c++] = vertices[3 * idx];
+            this->vertices[c++] = vertices[3 * idx + 1];
+            this->vertices[c++] = vertices[3 * idx + 2];
+
+            // normals
+            this->vertices[c++] = 0.0f;
+            this->vertices[c++] = 1.0f;
+            this->vertices[c++] = 0.0f;
+        }
+    }
+
+    for (int k = 0, i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            idx = ((i * n + j) * n + k); // -z face
+
+            // position
+            this->vertices[c++] = vertices[3 * idx];
+            this->vertices[c++] = vertices[3 * idx + 1];
+            this->vertices[c++] = vertices[3 * idx + 2];
+
+            // normals
+            this->vertices[c++] = 0.0f;
+            this->vertices[c++] = 0.0f;
+            this->vertices[c++] = 1.0f;
+        }
+    }
+    for (int k = 3, i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < n; ++j)
+        {
+            idx = ((i * n + j) * n + k); // z face
+
+            // position
+            this->vertices[c++] = vertices[3 * idx];
+            this->vertices[c++] = vertices[3 * idx + 1];
+            this->vertices[c++] = vertices[3 * idx + 2];
+
+            // normals
+            this->vertices[c++] = 0.0f;
+            this->vertices[c++] = 0.0f;
+            this->vertices[c++] = -1.0f;
         }
     }
 }

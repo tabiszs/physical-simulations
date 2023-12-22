@@ -87,9 +87,9 @@ void Window::static_WindowSizeCallback(GLFWwindow* window, int width, int height
 
 void Window::windowSizeCallback(int width, int height) {
     glfwSetWindowSize(m_Window, width, height);
-    scene->SetViewport(width, height);// glViewport(0, 0, width, height);
-    m_Height = height;
-    m_Width = width;
+    scene->SetViewport((float)width, (float)height);
+    m_Height = (float)height;
+    m_Width = (float)width;
     scene->UpdateViewFrustum(m_Width, m_Height);
 }
 
@@ -144,19 +144,7 @@ void Window::static_MouseCursorPosCallback(GLFWwindow* window, double xpos, doub
 
 void Window::mouseCursorPosCallback(double xpos, double ypos)
 {
-    ImGuiIO& io = ImGui::GetIO();
-    if (!io.WantCaptureMouse && scene->camera_movement)
-    {
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos;
-        if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-        {
-            auto& camera = scene->camera;
-            camera->Rotate(xoffset * ROTATION_SPEED, yoffset * ROTATION_SPEED);
-        }
-    }
-    lastX = xpos;
-    lastY = ypos;
+    scene->ProcessMouseCursorPosCallback(m_Window, (float)xpos, (float)ypos);
 }
 
 void Window::static_MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
@@ -169,7 +157,7 @@ void Window::static_MouseButtonCallback(GLFWwindow* window, int button, int acti
 
 void Window::mouseButtonCallback(int button, int action, int mods, double xpos, double ypos)
 {
-
+    scene->ProcessMouseButtonCallback(button, action, mods, (float)xpos, (float)ypos);
 }
 
 void Window::setScrollCallback()
@@ -189,7 +177,7 @@ void Window::scrollCallback(double xoffset, double yoffset)
     if (!io.WantCaptureMouse && scene->camera_movement)
     {
         auto& camera = scene->camera;
-        camera->Zoom(yoffset * ZOOM_SPEED);
+        camera->Zoom((float)yoffset * ZOOM_SPEED);
     }
 }
 

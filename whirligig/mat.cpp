@@ -30,36 +30,39 @@ glm::mat4 Mat::rotationX(float alpha)
 {
 	float c = cos(alpha);
 	float s = sin(alpha);
-	return glm::mat4(
-		1, 0,  0, 0,
-		0, c, -s, 0,
-		0, s,  c, 0,
-		0, 0,  0, 1
-	);
+	return glm::transpose(
+		glm::mat4(
+			1, 0, 0, 0,
+			0, c, -s, 0,
+			0, s, c, 0,
+			0, 0, 0, 1
+		));
 }
 
 glm::mat4 Mat::rotationY(float alpha)
 {
 	float c = cos(alpha);
 	float s = sin(alpha);
-	return glm::mat4(
-		c, 0, -s, 0,
-		0, 1,  0, 0,
-		s, 0,  c, 0,
-		0, 0,  0, 1
-	);
+	return glm::transpose(
+		glm::mat4(
+			c, 0, -s, 0,
+			0, 1, 0, 0,
+			s, 0, c, 0,
+			0, 0, 0, 1
+		));
 }
 
 glm::mat4 Mat::rotationZ(float alpha)
 {
 	float c = cos(alpha);
 	float s = sin(alpha);
-	return glm::mat4(
-		c, -s, 0, 0,
-		s,  c, 0, 0,
-		0,  0, 1, 0,
-		0,  0, 0, 1
-	);
+	return glm::transpose(
+		glm::mat4(
+			c, -s, 0, 0,
+			s, c, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		));
 }
 
 glm::mat4 Mat::scale(float sx, float sy, float sz)
