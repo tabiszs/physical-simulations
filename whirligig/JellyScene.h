@@ -17,7 +17,7 @@ public:
 		control_cube->LoadMeshTo(device);
 		jelly = make_shared<Jelly>();
 		jelly->LoadMeshTo(device);
-		light = make_shared<Light>(glm::vec3(0, 4, 0));
+		light = make_shared<Light>(glm::vec3(0, 3, 0));
 		const auto& shader = jelly->bezier_cube->shader;
 		shader->use();
 		shader->set3Float("lightPosition", light->position);

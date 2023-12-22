@@ -40,10 +40,6 @@ vec3 deCasteljauPatch(float u, float v, vec3[16] p) {
 }
 
 float factorial(int k) {
-    if (k <= 0) {
-        return 1;
-    }
-    
     float result = 1;
     while (k > 0) {
         result *= k;
@@ -56,28 +52,28 @@ float B(int n, int i, float t) {
     float nfactorial = factorial(n);
     float ifactorial = factorial(i);
     float nifactorial = factorial(n-i);
-    return (nfactorial/(ifactorial*nifactorial)) * pow(t, i) * pow(1-t,n-1);
+    float pt = t <= 0 ? 1 : pow(t, i);
+    float p1t = t >= 1 ? 1 : pow(1-t,n-1);
+    return (nfactorial/(ifactorial*nifactorial)) * pt * p1t;
 }
 
 vec3 BezierNormalVector(float u, float v, vec3[16] p) {
-
+    
     vec3 dPdu = vec3(0,0,0);
-    for (int i=0; i < 3; ++i) {
-        for (int j=0; j < 4; ++j) {
-            dPdu += 3 * (p[4*(i+1) + j] - p[4*i + j]) * B(3,i,u) * B(4,j,v);
+    for (int i=0; i < 4; ++i) {
+        for (int j=0; j < 3; ++j) {
+            dPdu += (p[4*i + j+1] - p[4*i + j]) * B(3,i,u) * B(4,j,v);
         }
     }
 
     vec3 dPdv = vec3(0,0,0);
-    for (int i=0; i < 4; ++i) {
-        for (int j=0; j < 3; ++j) {
-            dPdv += 3 * (p[4*i + j+1] - p[4*i + j]) * B(4,i,u) * B(3,j,v);
+    for (int i=0; i < 3; ++i) {
+        for (int j=0; j < 4; ++j) {
+            dPdv += (p[4*(i+1) + j] - p[4*i + j]) * B(4,i,u) * B(3,j,v);
         }
     }
 
-    dPdu = normalize(dPdu);
-    dPdv = normalize(dPdv);
-    return normalize(cross(dPdv, dPdu));
+    return normalize(cross(dPdu, dPdv));
 }
 
 void main()
@@ -113,6 +109,5 @@ void main()
 	vec3 camPos = (invViewMtx * vec4(0,0,0,1)).xyz;
 	tes_worldPos = pos.xyz;
 	tes_viewVec = normalize(camPos - tes_worldPos);
-    //tes_normal = tcs_normal[0];
     tes_normal = tcs_normal[0] * BezierNormalVector(u,v,p);
 }

@@ -23,10 +23,9 @@ void main() {
 	color += lightColor * objectColor.rgb * kd * clamp(dot(normal, lightVec), 0.0, 1.0); //diffuse color
 	float nh = dot(normal, halfVec);
 	nh = clamp(nh, 0.0, 1.0);
-	nh = pow(nh, m);
+	nh = nh > 0 ? pow(nh, m) : 0;
 	nh *= ks;
 	color += lightColor * nh;
 	
-	color = normal;// clamp(color, 0.0, 1.0);
-	//color = objectColor.xyz;
+	color = clamp(color, 0.0, 1.0);
 }
