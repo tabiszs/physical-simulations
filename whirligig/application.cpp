@@ -19,44 +19,18 @@ Application::Application()
 	auto camera = shared_ptr<FpsCamera>(new FpsCamera(initTarget, initMinDist, initMaxDist, initDistance));
 	auto light = shared_ptr<Light>(new Light((camera->Center())));
 
-	whirligig_scene = std::make_shared<WhirligigScene>(camera, light, viewFrustum);
-	whirligig_scene->SetDevice(device);
-	window->ImportScene(whirligig_scene);
-	auto cube = make_shared<WhirligigCube>();
-	cube->LoadMeshTo(device);
-	whirligig_scene->cube = cube;
-	auto plane = make_shared<Plane>();
-	plane->LoadMeshTo(device);
-	whirligig_scene->plane = plane;
-	auto trajectory = make_shared<Trajectory>();
-	trajectory->LoadMeshTo(device);
-	whirligig_scene->trajectory = trajectory;
+	//whirligig_scene = std::make_shared<WhirligigScene>(camera, light, viewFrustum, device);
+	//window->ImportScene(whirligig_scene);
 
-	jelly_scene = std::make_shared<JellyScene>(camera, light, viewFrustum, device);
-	window->ImportScene(jelly_scene);
+	//jelly_scene = std::make_shared<JellyScene>(camera, light, viewFrustum, device);
+	//window->ImportScene(jelly_scene);
 
-	//interpolation_scene = std::make_shared<InterpolationScene>(camera, light, viewFrustum);
-	////interpolation_scene->SetDevice(device);
-	////interpolation_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
+	//interpolation_scene = std::make_shared<InterpolationScene>(camera, light, viewFrustum, device);
+	//interpolation_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
 	//window->ImportScene(interpolation_scene);
-	//auto cursor = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
-	//cursor->LoadMeshTo(device);
-	//interpolation_scene->euler_cursor = cursor;
-	//cursor = make_shared<Cursor>(ShaderHolder::Get().quat_cursorShader);
-	//cursor->LoadMeshTo(device);
-	//interpolation_scene->quat_cursor = cursor;
-	//cursor = make_shared<Cursor>(ShaderHolder::Get().initial_cursorShader);
-	//cursor->LoadMeshTo(device);
-	//interpolation_scene->initial_cursor = cursor;
-	//cursor = make_shared<Cursor>(ShaderHolder::Get().final_cursorShader);
-	//cursor->LoadMeshTo(device);
-	//cursor->position[2] = -0.5f;
-	//cursor->position[2] = 2.0f;
-	//interpolation_scene->final_cursor = cursor;
 
 	//kinematic_chain_scene = std::make_shared<KinematicChainScene>(camera, light, viewFrustum, device);
 	//window->ImportScene(kinematic_chain_scene);
-
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }

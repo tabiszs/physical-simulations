@@ -4,10 +4,21 @@
 class InterpolationScene : public Scene
 {
 public:
-	InterpolationScene(shared_ptr<FpsCamera> c, shared_ptr<Light> l, shared_ptr<ViewFrustrum> vf)
+	InterpolationScene(shared_ptr<FpsCamera> c, shared_ptr<Light> l, shared_ptr<ViewFrustrum> vf, shared_ptr<Device> device)
 		: Scene(c, l, vf)
 	{	
-		//camera_movement = false;
+		camera_movement = false;
+		SetDevice(device);
+		euler_cursor = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
+		euler_cursor->LoadMeshTo(device);
+		quat_cursor = make_shared<Cursor>(ShaderHolder::Get().quat_cursorShader);
+		quat_cursor->LoadMeshTo(device);
+		initial_cursor = make_shared<Cursor>(ShaderHolder::Get().initial_cursorShader);
+		initial_cursor->LoadMeshTo(device);
+		final_cursor = make_shared<Cursor>(ShaderHolder::Get().final_cursorShader);
+		final_cursor->LoadMeshTo(device);
+		final_cursor->position[2] = -0.5f;
+		final_cursor->position[2] = 2.0f;
 	}
 
 	void SetViewport(float width, float height) override;
