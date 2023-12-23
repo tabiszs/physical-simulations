@@ -9,7 +9,7 @@ void Grid::LoadMeshTo(std::shared_ptr<Device> device)
 {
 	device->LoadMesh((Object*)this);
 	shader->use();
-	shader->set4Float("objectColor", grey);
+	shader->set4Float("objectColor", (float*) &grey);
 	shader->setMatrix4F("modelMtx", ModelMatrix());
 }
 

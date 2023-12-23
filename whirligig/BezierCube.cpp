@@ -9,7 +9,7 @@ void BezierCube::LoadMeshTo(std::shared_ptr<Device> device)
 {
     device->LoadPositionsAndNormals((Object*)this);
     shader->use();
-    shader->set4Float("objectColor", yellow);
+    shader->set4Float("objectColor", (float*) &yellow);
     shader->setMatrix4F("modelMtx", ModelMatrix());
 }
 

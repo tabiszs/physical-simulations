@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <vector>
 #include "shader.h"
 
 class ShaderHolder
@@ -8,6 +9,7 @@ public:
 	static ShaderHolder& Get();
 	void Init();
 	void Delete();
+	std::shared_ptr<Shader> NewSimpleShader();
 
 	std::shared_ptr<Shader> cubeShader;
 	std::shared_ptr<Shader> planeShader;
@@ -29,7 +31,6 @@ public:
 	std::shared_ptr<Shader> blockShader;
 
 	std::shared_ptr<Shader> gridShader;
-	std::shared_ptr<Shader> pumaShader;
 
 	std::shared_ptr<Shader> oldPointShader;
 	std::shared_ptr<Shader> stereoscopyShader;
@@ -37,6 +38,8 @@ public:
 	std::shared_ptr<Shader> surfaceC0Shader;
 	std::shared_ptr<Shader> surfaceC2Shader;
 	std::shared_ptr<Shader> gregoryShader;
+
+	std::vector<std::shared_ptr<Shader>> shaders{};
 
 protected:
 	explicit ShaderHolder() = default;

@@ -29,7 +29,8 @@ void ShaderHolder::Init()
 	final_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
 	euler_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
 	quat_cursorShader = std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl");
-	gridShader = std::make_shared<Shader>("shaders/planeVS.glsl", "shaders/planeFS.glsl");
+
+	gridShader = std::make_shared<Shader>("shaders/simple.vs", "shaders/simple.fs");
 
 	armShader = std::make_shared<Shader>("shaders/pointVS.glsl", "shaders/pointFS.glsl");
 	blockShader = std::make_shared<Shader>("shaders/simple.vs", "shaders/simple.fs");
@@ -39,6 +40,12 @@ void ShaderHolder::Init()
 	stereoscopyShader = std::shared_ptr<Shader>(new Shader("shaders/stereoscopyVS.glsl", "shaders/stereoscopyFS.glsl"));
 	surfaceC2Shader = std::make_shared<Shader>("shaders/bicubicVS.glsl", "shaders/bicubicFS.glsl", "shaders/bicubicTCS.glsl", "shaders/deBoorTES.glsl");
 	gregoryShader = std::make_shared<Shader>("shaders/bicubicVS.glsl", "shaders/bicubicFS.glsl", "shaders/gregoryTCS.glsl", "shaders/gregoryTES.glsl");
+}
+
+std::shared_ptr<Shader> ShaderHolder::NewSimpleShader()
+{
+	shaders.emplace_back(std::make_shared<Shader>("shaders/simple.vs", "shaders/simple.fs"));
+	return shaders.back();
 }
 
 void ShaderHolder::Delete()
@@ -69,4 +76,9 @@ void ShaderHolder::Delete()
 	if (surfaceC0Shader != nullptr)	glDeleteProgram(surfaceC0Shader->ID);
 	if (surfaceC2Shader != nullptr) glDeleteProgram(surfaceC2Shader->ID);
 	if (gregoryShader != nullptr) glDeleteProgram(gregoryShader->ID);
+
+	for (const auto& shader : shaders)
+	{
+		if (shader != nullptr) glDeleteProgram(shader->ID);
+	}
 }

@@ -15,7 +15,7 @@ void Duck::LoadMeshTo(std::shared_ptr<Device> device)
 {
 	device->LoadPositionsAndNormals((Object*)this);
 	shader->use();
-	shader->set4Float("objectColor", blue);
+	shader->set4Float("objectColor", (float*) &blue);
 	shader->setMatrix4F("modelMtx", ModelMatrix());
 }
 

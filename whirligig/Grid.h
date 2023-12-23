@@ -8,7 +8,7 @@ public:
     Grid()
     {
         position = { -xSize / 2.0f, 0.0f, -zSize / 2.0f };
-        shader = ShaderHolder::Get().planeShader;
+        shader = ShaderHolder::Get().gridShader;
         GenerateMesh();
     }
 

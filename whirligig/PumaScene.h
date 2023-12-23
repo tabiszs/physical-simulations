@@ -2,6 +2,7 @@
 #include "scene.h"
 #include "Cursor.h"
 #include "Grid.h"
+#include "Puma.h"
 
 class PumaScene : public Scene
 {
@@ -11,36 +12,36 @@ public:
 	{
 		camera->Rotate(0.0f, 0.5f);
 		SetDevice(device);
-		euler_cursor = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
-		euler_cursor->LoadMeshTo(device);
-		quat_cursor = make_shared<Cursor>(ShaderHolder::Get().quat_cursorShader);
-		quat_cursor->LoadMeshTo(device);
+		cursor_interpolation = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
+		cursor_interpolation->LoadMeshTo(device);
+		cursor_reverse = make_shared<Cursor>(ShaderHolder::Get().quat_cursorShader);
+		cursor_reverse->LoadMeshTo(device);
 		initial_cursor = make_shared<Cursor>(ShaderHolder::Get().initial_cursorShader);
 		initial_cursor->LoadMeshTo(device);
 		initial_cursor->position = { -1.0f, 0.0f, 0.0f };
 		final_cursor = make_shared<Cursor>(ShaderHolder::Get().final_cursorShader);
 		final_cursor->LoadMeshTo(device);
 		final_cursor->position = { 1.0f, 2.0f, 2.0f };
-
-		// add left puma
-		// add right puma
-		// add plane
+		puma_interpolation = make_shared<Puma>();
+		puma_interpolation->LoadMeshTo(device);
+		puma_reverse_kinematic = make_shared<Puma>();
+		puma_reverse_kinematic->LoadMeshTo(device);
 		grid = make_shared<Grid>();
 		grid->LoadMeshTo(device);
 	}
 
 	void SetViewport(float width, float height) override;
 	void UpdateViewFrustum(int width, int height) override;
-	void PerformAllFramesOn(std::shared_ptr<Device> device);
-	void PerformOneFrameOn(std::shared_ptr<Device> device);
 	void DrawOn(std::shared_ptr<Device> device) override;
 	void Update() override;
 	void Menu() override;
 
-	shared_ptr<Cursor> euler_cursor;
-	shared_ptr<Cursor> quat_cursor;
+	shared_ptr<Cursor> cursor_interpolation;
+	shared_ptr<Cursor> cursor_reverse;
 	shared_ptr<Cursor> initial_cursor;
 	shared_ptr<Cursor> final_cursor;
+	shared_ptr<Puma> puma_reverse_kinematic;
+	shared_ptr<Puma> puma_interpolation;
 	shared_ptr<Grid> grid;
 private:
 	const float menu_width = 300.0f;
@@ -48,10 +49,15 @@ private:
 	int frame_count = 10;
 	float step{};
 	bool draw_animation = false;
-	bool draw_all_frames = false;
-	int use_slerp_quaternion_interpolation = 0;
 
-	void UpdateObjects();
+	glm::vec3 start_position{};
+	glm::vec3 start_euler_angles{};
+	glm::quat start_quaternion{};
+	glm::vec3 end_position{};
+	glm::vec3 end_euler_angles{};
+	glm::quat end_quaternion{};
+	float l1{ 1 }, l3{ 1 }, l4{ 1 }, q1{}, q2{};
+
 	void UpdateInterpolation();
 	void UpdateQuaternionInterpolation(double current_time);
 	void SetLeftViewport();

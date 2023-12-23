@@ -5,6 +5,12 @@
 #include "ShaderHolder.h"
 #include "mat.h"
 
+const glm::vec4 grey = { 0.5f, 0.5f, 0.5f, 1.0f };
+const glm::vec4 blue = { 0.0f, 0.0f, 1.0f, 1.0f };
+const glm::vec4 yellow = { 1.0f, 1.0f, 0.0f, 1.0f };
+const glm::vec4 red = { 1.0f, 0.0f, 0.0f, 1.0f };
+const glm::vec4 green = { 0.0f, 1.0f, 0.0f, 1.0f };
+
 class Object
 {
 public:
@@ -17,11 +23,6 @@ public:
 	bool need_update = true;
 
 protected:
-	float grey[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-	float blue[4] = { 0.0f, 0.0f, 1.0f, 1.0f };
-	float yellow[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
-
-private:
-	
+	glm::vec4 color;
 };
 

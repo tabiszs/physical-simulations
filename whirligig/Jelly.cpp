@@ -10,7 +10,7 @@ void Jelly::LoadMeshTo(std::shared_ptr<Device> device)
     device->LoadMesh((Object*)this);
     bezier_cube->LoadMeshTo(device);
     shader->use();
-    shader->set4Float("objectColor", blue);
+    shader->set4Float("objectColor", (float*) &blue);
     shader->setMatrix4F("modelMtx", ModelMatrix());       
 }
 
