@@ -15,23 +15,22 @@ public:
         this->shader = shader;
 	}
 
-    glm::mat4 ModelMatrix();
-    glm::mat4 ModelMatrixQuat();
-    void LoadMeshTo(std::shared_ptr<Device> device);
-    void UpdateMeshTo(std::shared_ptr<Device> device);
+    virtual glm::mat4 ModelMatrix() const;
+    virtual void LoadMeshTo(std::shared_ptr<Device> device);
+    virtual void UpdateMeshTo(std::shared_ptr<Device> device);
     void DrawModelOn(std::shared_ptr<Device> device);
 
     void SetPosition(const glm::vec3& position);
     void SetRotation(const glm::vec3& euler_angles);
     void SetRotation(const glm::quat& quaternion);
     void ImproveShortestPath(const glm::vec3& euler_angles);
-    void SetQuaternion(const glm::quat& euler_angles);
-    void SetEulerAngles(const glm::quat& quaternion);
+    void SetEulerAngles(const glm::vec3& euler_angles);
+    void SetQuaternion(const glm::quat& quaternion);
     
     glm::vec3 position = { 0.0f, 0.0f, 0.0f };
     glm::vec3 euler_angles = { 0.0f, 0.0f, 0.0f };
     glm::quat quaternion = { 1.0f, 0.0f, 0.0f, 0.0f }; // w, x, y, z
-private:
+protected:
     float xMin, yMin, zMin, xMax, yMax, zMax, minPt, maxPt;
     float color[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
 

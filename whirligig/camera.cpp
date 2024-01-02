@@ -35,7 +35,7 @@ void OrbitCamera::MoveTarget(glm::vec3 delta_target) noexcept
     needUpdate = true;
 }
 
-void OrbitCamera::Rotate(float d_ax, float d_ay) noexcept
+void OrbitCamera::ObjectRotation(float d_ax, float d_ay) noexcept
 {
     yaw = ScalarModAngle(yaw + d_ax);
     pitch = ScalarModAngle(pitch + d_ay);

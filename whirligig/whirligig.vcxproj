@@ -22,6 +22,7 @@
     <ClCompile Include="application.cpp" />
     <ClCompile Include="Arm.cpp" />
     <ClCompile Include="BezierCube.cpp" />
+    <ClCompile Include="Chain.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="Duck.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="InterpolationScene.cpp" />
     <ClCompile Include="KinematicChainScene.cpp" />
     <ClCompile Include="Puma.cpp" />
+    <ClCompile Include="PumaEffector.cpp" />
     <ClCompile Include="PumaScene.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="WhirligigCube.cpp" />
@@ -72,6 +74,7 @@
     <ClInclude Include="application.h" />
     <ClInclude Include="Arm.h" />
     <ClInclude Include="BezierCube.h" />
+    <ClInclude Include="Chain.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Duck.h" />
     <ClInclude Include="Grid.h" />
@@ -83,6 +86,7 @@
     <ClInclude Include="InterpolationScene.h" />
     <ClInclude Include="KinematicChainScene.h" />
     <ClInclude Include="Puma.h" />
+    <ClInclude Include="PumaEffector.h" />
     <ClInclude Include="PumaScene.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="WhirligigCube.h" />

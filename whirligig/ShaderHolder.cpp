@@ -48,6 +48,13 @@ std::shared_ptr<Shader> ShaderHolder::NewSimpleShader()
 	return shaders.back();
 }
 
+std::shared_ptr<Shader> ShaderHolder::NewCursorShader()
+{
+	shaders.emplace_back(std::make_shared<Shader>("shaders/cursorVS.glsl", "shaders/cursorFS.glsl"));
+	return shaders.back();
+}
+
+
 void ShaderHolder::Delete()
 {
 	if (cubeShader != nullptr)	glDeleteProgram(cubeShader->ID);

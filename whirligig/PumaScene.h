@@ -10,18 +10,18 @@ public:
 	PumaScene(shared_ptr<FpsCamera> c, shared_ptr<Light> l, shared_ptr<ViewFrustrum> vf, shared_ptr<Device> device)
 		: Scene(c, l, vf)
 	{
-		camera->Rotate(0.0f, 0.5f);
+		camera->ObjectRotation(0.0f, 0.5f);
 		SetDevice(device);
-		cursor_interpolation = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
-		cursor_interpolation->LoadMeshTo(device);
-		cursor_reverse = make_shared<Cursor>(ShaderHolder::Get().quat_cursorShader);
-		cursor_reverse->LoadMeshTo(device);
+		//cursor_interpolation = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
+		//cursor_interpolation->LoadMeshTo(device);
+		//cursor_reverse = make_shared<Cursor>(ShaderHolder::Get().quat_cursorShader);
+		//cursor_reverse->LoadMeshTo(device);
 		initial_cursor = make_shared<Cursor>(ShaderHolder::Get().initial_cursorShader);
 		initial_cursor->LoadMeshTo(device);
-		initial_cursor->position = { -1.0f, 0.0f, 0.0f };
+		initial_cursor->position = start_position;
 		final_cursor = make_shared<Cursor>(ShaderHolder::Get().final_cursorShader);
 		final_cursor->LoadMeshTo(device);
-		final_cursor->position = { 1.0f, 2.0f, 2.0f };
+		final_cursor->position = end_position;
 		puma_interpolation = make_shared<Puma>();
 		puma_interpolation->LoadMeshTo(device);
 		puma_reverse_kinematic = make_shared<Puma>();
@@ -36,8 +36,8 @@ public:
 	void Update() override;
 	void Menu() override;
 
-	shared_ptr<Cursor> cursor_interpolation;
-	shared_ptr<Cursor> cursor_reverse;
+	//shared_ptr<Cursor> cursor_interpolation;
+	//shared_ptr<Cursor> cursor_reverse;
 	shared_ptr<Cursor> initial_cursor;
 	shared_ptr<Cursor> final_cursor;
 	shared_ptr<Puma> puma_reverse_kinematic;
@@ -50,13 +50,14 @@ private:
 	float step{};
 	bool draw_animation = false;
 
-	glm::vec3 start_position{};
+	glm::vec3 start_position{ -3.0f, 1.0f, 0.0f };
 	glm::vec3 start_euler_angles{};
 	glm::quat start_quaternion{};
-	glm::vec3 end_position{};
+	glm::vec3 end_position{ 0.0f, 1.0f, 2.0f };
 	glm::vec3 end_euler_angles{};
 	glm::quat end_quaternion{};
-	float l1{ 1 }, l3{ 1 }, l4{ 1 }, q1{}, q2{};
+	float l1{ 1 }, l2{ 1 }, l3{ 1 }, l4{ 1 };
+	float q1{}, q2{}, q3{}, q4{}, q5{};
 
 	void UpdateInterpolation();
 	void UpdateQuaternionInterpolation(double current_time);

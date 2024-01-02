@@ -126,11 +126,11 @@ void InterpolationScene::Menu()
 	initial_euler_angles_changed |= ImGui::SliderAngle("Y##0", &initial_cursor->euler_angles[1], -180.0f, 180.0f, "%.0f deg", ImGuiSliderFlags_NoInput);
 	initial_euler_angles_changed |= ImGui::SliderAngle("Z##0", &initial_cursor->euler_angles[2], -180.0f, 180.0f, "%.0f deg", ImGuiSliderFlags_NoInput);
 	if (initial_euler_angles_changed) 
-		initial_cursor->SetQuaternion(initial_cursor->euler_angles);
+		initial_cursor->SetEulerAngles(initial_cursor->euler_angles);
 	ImGui::Text("Quaternion");
 	bool initial_quaternion_changed = ImGui::InputFloat4("Qwxyz##0", (float*)&initial_cursor->quaternion);
 	if (initial_quaternion_changed) 
-		initial_cursor->SetEulerAngles(initial_cursor->quaternion);
+		initial_cursor->SetQuaternion(initial_cursor->quaternion);
 	ImGui::Separator();
 
 	ImGui::Text("Final configuration"); 
@@ -141,11 +141,11 @@ void InterpolationScene::Menu()
 	final_euler_angles_changed |= ImGui::SliderAngle("Y##1", &final_cursor->euler_angles[1], -180.0f, 180.0f, "%.0f deg", ImGuiSliderFlags_NoInput);
 	final_euler_angles_changed |= ImGui::SliderAngle("Z##1", &final_cursor->euler_angles[2], -180.0f, 180.0f, "%.0f deg", ImGuiSliderFlags_NoInput);
 	if (final_euler_angles_changed)
-		final_cursor->SetQuaternion(final_cursor->euler_angles);
+		final_cursor->SetEulerAngles(final_cursor->euler_angles);
 	ImGui::Text("Quaternion");
 	bool final_quaternion_changed = ImGui::InputFloat4("Qwxyz##1", (float*)&final_cursor->quaternion);
 	if (final_quaternion_changed)
-		final_cursor->SetEulerAngles(final_cursor->quaternion);
+		final_cursor->SetQuaternion(final_cursor->quaternion);
 	ImGui::Separator();
 	ImGui::Text("Quaternion Interpolation:");
 	ImGui::RadioButton("LERP", &use_slerp_quaternion_interpolation, 0);
@@ -170,7 +170,7 @@ void InterpolationScene::UpdateObjects()
 	{
 		shader = quat_cursor->shader;
 		shader->use();
-		shader->setMatrix4F("modelMtx", quat_cursor->ModelMatrixQuat());
+		shader->setMatrix4F("modelMtx", quat_cursor->ModelMatrix());
 		quat_cursor->need_update = false;
 	}
 
@@ -231,7 +231,7 @@ void InterpolationScene::UpdateEulerInterpolation(double time_from_start)
 	euler_cursor->position = initial_cursor->position * (1 - animation_part) + final_cursor->position * animation_part;
 
 	euler_cursor->euler_angles = initial_cursor->euler_angles * (1 - animation_part) + final_cursor->euler_angles * animation_part;
-	euler_cursor->SetQuaternion(euler_cursor->euler_angles);
+	euler_cursor->SetEulerAngles(euler_cursor->euler_angles);
 
 	euler_cursor->need_update = true;
 }

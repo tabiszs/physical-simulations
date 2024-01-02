@@ -67,7 +67,7 @@ public:
 
     void SetTarget(glm::vec3 target) noexcept;
     void MoveTarget(glm::vec3 delta_target) noexcept;
-    void Rotate(float d_ax, float d_ay) noexcept;
+    void ObjectRotation(float d_ax, float d_ay) noexcept;
     constexpr void Zoom(float d_distance) noexcept
     {
         distance -= d_distance; // Zoom in mean getting smaller distance 
@@ -116,7 +116,7 @@ public:
 
     void MoveTarget(Camera_Movement action, float deltaTime) noexcept;
     using OrbitCamera::MoveTarget;
-    using OrbitCamera::Rotate;
+    using OrbitCamera::ObjectRotation;
     using OrbitCamera::Angle_y;
     using OrbitCamera::Angle_x;
     using OrbitCamera::Center;

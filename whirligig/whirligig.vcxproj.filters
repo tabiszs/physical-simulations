@@ -195,11 +195,17 @@
     <ClCompile Include="Grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Puma.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Chain.cpp">
+      <Filter>Source Files\Puma</Filter>
     </ClCompile>
     <ClCompile Include="Cylinder.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Puma</Filter>
+    </ClCompile>
+    <ClCompile Include="Puma.cpp">
+      <Filter>Source Files\Puma</Filter>
+    </ClCompile>
+    <ClCompile Include="PumaEffector.cpp">
+      <Filter>Source Files\Puma</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -339,6 +345,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cylinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Chain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PumaEffector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

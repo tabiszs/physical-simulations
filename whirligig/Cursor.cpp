@@ -3,16 +3,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include "Quaternion.h"
 
-glm::mat4 Cursor::ModelMatrix()
-{
-    float s = 1.0f / (maxPt - minPt);
-    auto scale = Mat::scale(s, s, s);
-    auto t = Mat::translation({ position[0],position[1] ,position[2] });
-    auto r = glm::toMat4(quaternion);
-    return t * r * scale;
-}
-
-glm::mat4 Cursor::ModelMatrixQuat()
+glm::mat4 Cursor::ModelMatrix() const
 {
     float s = 1.0f / (maxPt - minPt);
     auto scale = Mat::scale(s, s, s);
@@ -77,16 +68,17 @@ void Cursor::ImproveShortestPath(const glm::vec3& euler_angles)
         if (d2 > 0) this->euler_angles[2] -= glm::two_pi<float>();
         if (d2 < 0) this->euler_angles[2] += glm::two_pi<float>();
     }
-    SetQuaternion(this->euler_angles);
+    SetEulerAngles(this->euler_angles);
 }
 
-void Cursor::SetQuaternion(const glm::quat& euler_angles)
+void Cursor::SetEulerAngles(const glm::vec3& euler_angles)
 {
+    this->euler_angles = euler_angles;
     quaternion = glm::quat(euler_angles);
     need_update = true;
 }
 
-void Cursor::SetEulerAngles(const glm::quat& quaternion)
+void Cursor::SetQuaternion(const glm::quat& quaternion)
 {
     this->quaternion = glm::normalize(quaternion);
     euler_angles = glm::eulerAngles(this->quaternion);

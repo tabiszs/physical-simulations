@@ -10,6 +10,7 @@ public:
 	void Init();
 	void Delete();
 	std::shared_ptr<Shader> NewSimpleShader();
+	std::shared_ptr<Shader> NewCursorShader();
 
 	std::shared_ptr<Shader> cubeShader;
 	std::shared_ptr<Shader> planeShader;

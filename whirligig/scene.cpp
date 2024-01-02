@@ -37,7 +37,7 @@ void Scene::ProcessMouseCursorPosCallback(GLFWwindow* m_Window, float xpos, floa
         float yoffset = ypos - lastY;
         if (glfwGetMouseButton(m_Window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
         {
-            camera->Rotate(xoffset * ROTATION_SPEED, yoffset * ROTATION_SPEED);
+            camera->ObjectRotation(xoffset * ROTATION_SPEED, yoffset * ROTATION_SPEED);
         }
     }
     lastX = xpos;
