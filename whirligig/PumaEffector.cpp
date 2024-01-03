@@ -9,6 +9,8 @@ glm::mat4 PumaEffector::ModelMatrix() const
 	auto t = Mat::translation({ position[0],position[1] ,position[2] });
 	auto r = glm::toMat4(quaternion);
 	glm::mat4 transformation = t * r * scale;
+	const auto rot = glm::toMat4(glm::quat({ 0.0f, 0.0f, glm::half_pi<float>() }));
+	transformation = rot * transformation;
 	if (parent != nullptr)
 	{
 		transformation = parent->Frame() * transformation;

@@ -35,7 +35,7 @@ public:
 		arm3 = std::make_shared<Cylinder>(yellow, glm::vec3(0, 0, 0), 0.15f, l3);
 		joint4 = std::make_shared<CenterCylinder>(red, glm::vec3(0, 0, 0), 0.2f, 0.4f);
 		arm4 = std::make_shared<Cylinder>(yellow, glm::vec3(0, 0, 0), 0.15f, l4);
-		arm4->ObjectRotation({ 0.0f, 0.0f, glm::half_pi<float>() });
+		arm4->ObjectRotation({ 0.0f, 0.0f, -glm::half_pi<float>() });
 		joint5 = std::make_shared<CenterCylinder>(red, glm::vec3(0, 0, 0), 0.2f, 0.2f); // TODO
 		effector = std::make_shared<PumaEffector>();
 
