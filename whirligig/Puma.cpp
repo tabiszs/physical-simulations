@@ -95,3 +95,13 @@ void Puma::SetAngleOfJoint5(float r)
 	q5 = r;
 	joint5->SetAngle(r);
 }
+
+void Puma::SetParams(PumaParameters pp)
+{
+	SetLengthOfArm2(pp.l2);
+	SetAngleOfJoint1(pp.q1);
+	SetAngleOfJoint2(pp.q2);
+	SetAngleOfJoint3(pp.q3);
+	SetAngleOfJoint4(pp.q4);
+	SetAngleOfJoint5(pp.q5);
+}

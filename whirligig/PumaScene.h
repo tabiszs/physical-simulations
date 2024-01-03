@@ -12,13 +12,9 @@ public:
 	{
 		camera->ObjectRotation(0.0f, 0.5f);
 		SetDevice(device);
-		//cursor_interpolation = make_shared<Cursor>(ShaderHolder::Get().euler_cursorShader);
-		//cursor_interpolation->LoadMeshTo(device);
-		//cursor_reverse = make_shared<Cursor>(ShaderHolder::Get().quat_cursorShader);
-		//cursor_reverse->LoadMeshTo(device);
-		initial_cursor = make_shared<Cursor>(ShaderHolder::Get().initial_cursorShader);
-		initial_cursor->LoadMeshTo(device);
-		initial_cursor->position = start_position;
+		start_cursor = make_shared<Cursor>(ShaderHolder::Get().initial_cursorShader);
+		start_cursor->LoadMeshTo(device);
+		start_cursor->position = start_position;
 		final_cursor = make_shared<Cursor>(ShaderHolder::Get().final_cursorShader);
 		final_cursor->LoadMeshTo(device);
 		final_cursor->position = end_position;
@@ -35,20 +31,26 @@ public:
 	void DrawOn(std::shared_ptr<Device> device) override;
 	void Update() override;
 	void Menu() override;
+	void StartAnimation();
+	PumaParameters InverseKinematic(std::shared_ptr<Cursor> curor);
 
-	//shared_ptr<Cursor> cursor_interpolation;
-	//shared_ptr<Cursor> cursor_reverse;
-	shared_ptr<Cursor> initial_cursor;
+	shared_ptr<Cursor> start_cursor;
 	shared_ptr<Cursor> final_cursor;
 	shared_ptr<Puma> puma_reverse_kinematic;
 	shared_ptr<Puma> puma_interpolation;
 	shared_ptr<Grid> grid;
+	PumaParameters start_params{};
+	PumaParameters final_params{};
+	PumaParameters interpolation_params{};
+	PumaParameters kinematic_params{};
+
 private:
 	const float menu_width = 300.0f;
 	float time_start, animation_time = 5.0f;
-	int frame_count = 10;
+	int frame_count = 100;
 	float step{};
-	bool draw_animation = false;
+	bool pause = false;
+	int animation_frame;
 
 	glm::vec3 start_position{ -3.0f, 1.0f, 0.0f };
 	glm::vec3 start_euler_angles{};
@@ -59,8 +61,8 @@ private:
 	float l1{ 1 }, l2{ 1 }, l3{ 1 }, l4{ 1 };
 	float q1{}, q2{}, q3{}, q4{}, q5{};
 
-	void UpdateInterpolation();
-	void UpdateQuaternionInterpolation(double current_time);
+	void UpdateAnimation();
+	void UpdateInterpolationPuma(float current_frame);
 	void SetLeftViewport();
 	void SetRightViewport();
 	void DrawInitialCursor();

@@ -18,5 +18,6 @@ public:
 	static glm::mat4 perspective(float fovy, float aspect, float zNear, float zFar);
 	static glm::mat4 shiftedPerspective(float n, float f, float r, float l, float t, float b);
 	static glm::mat4 powerToBernsteinBaseChangeMtx();
+	static float lerp(float a, float b, float t);
 };
 

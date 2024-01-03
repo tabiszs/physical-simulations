@@ -4,6 +4,22 @@
 #include "Cylinder.h"
 #include "PumaEffector.h"
 
+struct PumaParameters
+{
+	float l2{ 1 };
+	float q1{}, q2{}, q3{}, q4{}, q5{};
+
+	void Interpolation(PumaParameters pp1, PumaParameters pp2, float t)
+	{
+		l2 = Mat::lerp(pp1.l2, pp2.l2, t);
+		q1 = Mat::lerp(pp1.q1, pp2.q1, t);
+		q2 = Mat::lerp(pp1.q2, pp2.q2, t);
+		q3 = Mat::lerp(pp1.q3, pp2.q3, t);
+		q4 = Mat::lerp(pp1.q4, pp2.q4, t);
+		q5 = Mat::lerp(pp1.q5, pp2.q5, t);
+	}
+};
+
 class Puma
 {
 public: 
@@ -47,6 +63,7 @@ public:
 	void SetAngleOfJoint3(float r);
 	void SetAngleOfJoint4(float r);
 	void SetAngleOfJoint5(float r);
+	void SetParams(PumaParameters pp);
 
 	std::shared_ptr<Cylinder> arm1;
 	std::shared_ptr<Cylinder> arm2;

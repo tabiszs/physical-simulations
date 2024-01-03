@@ -147,3 +147,9 @@ glm::mat4 Mat::powerToBernsteinBaseChangeMtx()
 		1,    1,    1,	1
 	);
 }
+
+float Mat::lerp(float a, float b, float t)
+{
+	t = glm::clamp(t, 0.0f, 1.0f);
+	return a * (1 - t) + b * t;
+}
