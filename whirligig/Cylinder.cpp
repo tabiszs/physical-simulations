@@ -142,7 +142,10 @@ glm::mat4 CenterCylinder::ObjectTransformation()
 
 void CenterCylinder::SetAngle(float angle)
 {
-	quaternion = glm::conjugate(object_rotation) * glm::quat({ 0, angle, 0 }) * object_rotation;
+	// without object_rotation -> applied rotation Y axis
+	// with object_rotation {0,0,90} = {x,y,z} -> applied rotation -X axis
+	// https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation#Rotation_identity
+	quaternion = object_rotation * glm::quat({ 0, angle, 0 }) * glm::conjugate(object_rotation);
 	need_update = true;
 	UpdateChildren();
 }

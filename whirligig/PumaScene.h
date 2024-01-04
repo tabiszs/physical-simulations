@@ -24,6 +24,14 @@ public:
 		puma_reverse_kinematic->LoadMeshTo(device);
 		grid = make_shared<Grid>();
 		grid->LoadMeshTo(device);
+
+		start_cursor->SetEulerAngles({ 0, -glm::quarter_pi<float>(), -glm::quarter_pi<float>() });
+		//start_cursor->SetPosition({ 0,2,2 });
+		start_params = InverseKinematicFor(start_cursor);
+		final_params = InverseKinematicFor(final_cursor);
+		puma_interpolation->SetParams(start_params);
+		puma_reverse_kinematic->SetParams(start_params);
+		SetGuiParams(start_params);
 	}
 
 	void SetViewport(float width, float height) override;
@@ -52,7 +60,7 @@ private:
 	bool pause = false;
 	int animation_frame;
 
-	glm::vec3 start_position{ -3.0f, 1.0f, 0.0f };
+	glm::vec3 start_position{ -1.0f, 1.0f, 1.0f };
 	glm::vec3 start_euler_angles{};
 	glm::quat start_quaternion{};
 	glm::vec3 end_position{ 0.0f, 1.0f, 2.0f };
@@ -60,9 +68,16 @@ private:
 	glm::quat end_quaternion{};
 	float l1{ 1 }, l2{ 1 }, l3{ 1 }, l4{ 1 };
 	float q1{}, q2{}, q3{}, q4{}, q5{};
+	const glm::vec4 initial_puma_pos{};
 
+	void SetGuiParams(const PumaParameters& pp);
 	void UpdateAnimation();
 	void UpdateInterpolationPuma(float current_frame);
+	void UpdateKinematicPuma(float current_frame);
+	PumaParameters InverseKinematicFor(std::shared_ptr<Cursor> cursor);
+	PumaParameters SetParametersFromPoints(const glm::vec3 p0, 
+		const glm::vec3 p1, const glm::vec3 p2, const glm::vec3 p3, 
+		const glm::vec3 p4, const glm::mat4 effector_frame);
 	void SetLeftViewport();
 	void SetRightViewport();
 	void DrawInitialCursor();

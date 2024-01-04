@@ -26,6 +26,7 @@ public:
     void ImproveShortestPath(const glm::vec3& euler_angles);
     void SetEulerAngles(const glm::vec3& euler_angles);
     void SetQuaternion(const glm::quat& quaternion);
+    glm::mat4 GetFrame();
     
     glm::vec3 position = { 0.0f, 0.0f, 0.0f };
     glm::vec3 euler_angles = { 0.0f, 0.0f, 0.0f };

@@ -29,15 +29,15 @@ public:
 	void ObjectRotation(glm::vec3 euler_angles);
 	void SetHeight(float height);
 	void SetCenterPosition(glm::vec3 p);
-
+	float GetHeight() const { return height; }
+	glm::mat4 Frame() override;
 	glm::vec3 GetEndPoint();
 
 protected:
 	void GenerateMesh(float radius, float height, int n);
 	void GenerateIndices();
 	void UpdateBuffer();
-	virtual glm::mat4 ObjectTransformation();
-	glm::mat4 Frame() override;
+	virtual glm::mat4 ObjectTransformation();	
 
 	std::vector<glm::vec3> vert{};
 

@@ -7,7 +7,7 @@ glm::mat4 Cursor::ModelMatrix() const
 {
     float s = 1.0f / (maxPt - minPt);
     auto scale = Mat::scale(s, s, s);
-    auto t = Mat::translation({ position[0],position[1] ,position[2] });
+    auto t = Mat::translation(position);
     auto r = glm::toMat4(quaternion);
     return t * r * scale;
 }
@@ -83,6 +83,13 @@ void Cursor::SetQuaternion(const glm::quat& quaternion)
     this->quaternion = glm::normalize(quaternion);
     euler_angles = glm::eulerAngles(this->quaternion);
     need_update = true;
+}
+
+glm::mat4 Cursor::GetFrame()
+{
+    auto t = Mat::translation(position);
+    auto r = glm::toMat4(quaternion);
+    return t * r;
 }
 
 void Cursor::AddAxis(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax, glm::vec3 color)

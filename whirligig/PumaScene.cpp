@@ -1,5 +1,6 @@
 #include "PumaScene.h"
 #include "Quaternion.h"
+#include <glm/gtc/matrix_access.hpp>
 
 void PumaScene::SetViewport(float width, float height)
 {
@@ -184,11 +185,11 @@ void PumaScene::Menu()
 			puma_interpolation->SetLengthOfArm1(l1);
 			puma_reverse_kinematic->SetLengthOfArm1(l1);
 		}
-		/*if (ImGui::InputFloat("l2", &l2, 0.1f))
+		if (ImGui::InputFloat("l2", &l2, 0.1f))
 		{
 			puma_interpolation->SetLengthOfArm2(l2);
 			puma_reverse_kinematic->SetLengthOfArm2(l2);
-		}*/
+		}
 		if (ImGui::InputFloat("l3", &l3, 0.1f))
 		{
 			puma_interpolation->SetLengthOfArm3(l3);
@@ -199,7 +200,7 @@ void PumaScene::Menu()
 			puma_interpolation->SetLengthOfArm4(l4);
 			puma_reverse_kinematic->SetLengthOfArm4(l4);
 		}
-		/*if (ImGui::InputFloat("q1", &q1, 0.1f))
+		if (ImGui::InputFloat("q1", &q1, 0.1f))
 		{
 			puma_interpolation->SetAngleOfJoint1(q1);
 			puma_reverse_kinematic->SetAngleOfJoint1(q1);
@@ -223,7 +224,7 @@ void PumaScene::Menu()
 		{
 			puma_interpolation->SetAngleOfJoint5(q5);
 			puma_reverse_kinematic->SetAngleOfJoint5(q5);
-		}*/
+		}
 		ImGui::Separator();
 	}
 	ImGui::PopItemFlag();
@@ -239,7 +240,10 @@ void PumaScene::StartAnimation()
 	final_params.q4 = 2;
 	// popraw katy do zakresu gwaratujacego najkrotsza interpolacje
 	// odwrotna kinematyka dla pozycji startowej i koncowej ->
-	
+	start_params = InverseKinematicFor(start_cursor);
+	SetGuiParams(start_params);
+	final_params = InverseKinematicFor(final_cursor);
+
 	start = true;
 	pause = false;
 	dt = 0;
@@ -252,6 +256,15 @@ void PumaScene::StartAnimation()
 PumaParameters PumaScene::InverseKinematic(std::shared_ptr<Cursor> curor)
 {
 	return PumaParameters();
+}
+
+void PumaScene::SetGuiParams(const PumaParameters& pp)
+{
+	q1 = pp.q1;
+	q2 = pp.q2;
+	q3 = pp.q3;
+	q4 = pp.q4;
+	l2 = pp.l2;
 }
 
 void PumaScene::UpdateAnimation()
@@ -276,7 +289,7 @@ void PumaScene::UpdateAnimation()
 			if (animation_frame < frame_count)
 			{
 				UpdateInterpolationPuma((float)animation_frame);
-				//UpdateKinematicPuma(time_from_start);
+				UpdateKinematicPuma((float)animation_frame);
 				animation_frame++;
 			}
 			dt -= step;
@@ -294,6 +307,113 @@ void PumaScene::UpdateInterpolationPuma(float current_frame)
 	float animation_part = std::min(1.0f, current_frame / frame_count);
 	interpolation_params.Interpolation(start_params, final_params, animation_part);
 	puma_interpolation->SetParams(interpolation_params);
+}
+
+void PumaScene::UpdateKinematicPuma(float current_frame)
+{
+	// TODO
+}
+
+PumaParameters PumaScene::InverseKinematicFor(std::shared_ptr<Cursor> cursor)
+{
+	const glm::mat4 frame = cursor->GetFrame();
+	const glm::vec3 axisZ = glm::column(frame, 2);
+	const glm::vec3 effector_pos = glm::column(frame, 3);
+
+	glm::vec3 p0, p1, p2, p3, p4;
+	const auto l4 = puma_reverse_kinematic->arm4->GetHeight();
+	const auto l3 = puma_reverse_kinematic->arm3->GetHeight();
+	p0 = initial_puma_pos;
+	p4 = effector_pos;
+	p1 = puma_reverse_kinematic->arm1->GetEndPoint();
+	p3 = p4 - axisZ * l4;
+
+	// compute p2
+	const auto p43 = p4 - p3;
+	const auto n = glm::cross(p1 - p3, p1 - p0);
+	// jesli wspolliniowe -> zamiast p3 wez p4 -> nie wsm to cos prostrzego -> mozna juz cos powiedziec od p2
+
+	// jakie warunki, zeby moc obliczac
+	auto fun_p2y = [p3, p43, n](float p2z) {
+		float mianownik = (p43.y * n.x - n.y * p43.x);
+		mianownik = abs(mianownik) < FLT_EPSILON ? FLT_EPSILON : mianownik;
+		return p3.y + (p2z - p3.z) * (n.z * p43.x - p43.z * n.x) / mianownik;
+	};
+	auto fun_p2x = [p3, p43](float p2y, float p2z) {
+		float p43x = abs(p43.x) < FLT_EPSILON ? FLT_EPSILON : p43.x;
+		return p3.x + ((p2y - p3.y) * p43.y + (p2z - p3.z) * p43.z) / p43x;
+	};
+
+	float mb = n.x * n.x * p3.z * (p43.y * p43.y + p43.z * p43.z) - 2 * p43.x * n.x * p3.z * (p43.y * n.y + p43.z * n.z) + p3.z * ((n.y * p43.z - p43.y * n.z) * (n.y * p43.z - p43.y * n.z) + p43.x * p43.x * (n.y * n.y + n.z * n.z));
+	float licznik = l3 * l3 * (n.x * n.x * (p43.y * p43.y + p43.z * p43.z) + (n.y * p43.z - p43.y * n.z) * (n.y * p43.z - p43.y * n.z) - 2 * p43.x * n.x * (p43.y * n.y + p43.z * n.z) + p43.x * p43.x * (n.y * n.y + n.z * n.z));
+	float mianownik = (n.x * p43.y - p43.x * n.y) * (n.x * p43.y - p43.x * n.y);
+	mianownik = mianownik < FLT_EPSILON ? FLT_EPSILON : mianownik; // TODO ??? CHECK
+	float sqt = std::sqrtf(licznik / mianownik);
+	float sqrt_delta = n.x * n.x * p43.y * p43.y * sqt - 2 * p43.x * n.x * p43.y * n.y * sqt + p43.x * p43.x * n.y * n.y * sqt;
+	float two_a = n.x * n.x * (p43.y * p43.y + p43.z * p43.z) + (n.y * p43.z - p43.y * n.z) * (n.y * p43.z - p43.y * n.z) - 2 * p43.x * n.x * (p43.y * n.y + p43.z * n.z) + p43.x * p43.x * (n.y * n.y + n.z * n.z);
+	float z2_1 = (mb + sqrt_delta) / two_a;
+	float z2_2 = (mb - sqrt_delta) / two_a;
+	float y2_1 = fun_p2y(z2_1);
+	float y2_2 = fun_p2y(z2_2);
+	float x2_1 = fun_p2x(y2_1, z2_1);
+	float x2_2 = fun_p2x(y2_1, z2_2);
+	float x2_3 = fun_p2x(y2_2, z2_1);
+	float x2_4 = fun_p2x(y2_2, z2_2);
+	
+	glm::vec3 p2_1 = { 0, 1, 1 };
+	//glm::vec3 p2_1 = { x2_1, y2_2, z2_2 };
+	//glm::vec3 p2_1 = { x2_1, y2_1, z2_1 };
+	//glm::vec3 p2_2 = { x2_2, y2_2, z2_2 };
+
+		// + rozne warianty p2
+
+	// mamy pkt 
+	// testowo -3,1,1 i 180stZ
+	// wyznaczamy parametry
+
+	return SetParametersFromPoints(p0, p1, p2_1, p3, p4, frame);
+}
+
+PumaParameters PumaScene::SetParametersFromPoints(const glm::vec3 p0, const glm::vec3 p1, const glm::vec3 p2, const glm::vec3 p3, const glm::vec3 p4, const glm::mat4 effector_frame)
+{
+	PumaParameters pp{};
+	const auto p43 = p4 - p3;
+	const auto n = glm::cross(p1 - p3, p1 - p0);
+	const glm::vec3 axisX = glm::column(effector_frame, 0);
+
+	// q1
+	pp.q1 = atan2f(-n.z, n.x); // for each position give good solution
+	// const glm::vec3 default_a1_dir = { 1,0,0 };
+	// auto a1 = acosf(glm::dot(default_a1_dir, n) / (1 * glm::l2Norm(n)));
+
+	// q2
+	const auto v21 = p2 - p1;
+	const auto F01 = Mat::rotationY(pp.q1);
+	const glm::vec3 v_f2 = F01 * glm::vec4(v21, 0);
+	pp.q2 = atan2f(v_f2.y, v_f2.z);
+	//const auto v21_2 = p2_2 - p1;
+	//const float a2_x = glm::length(glm::vec2(v21.x, v21.z));
+	//const float a2 = atan2f(v21.y, a2_x);
+
+	// l3
+	pp.l2 = glm::length(v21);
+
+	// q3
+	const auto v32 = glm::normalize(p3 - p2);
+	const auto F02 = Mat::rotationX(-pp.q2) * F01;
+	const glm::vec3 v_f3 = F02 * glm::vec4(v32, 0);
+	pp.q3 = atan2f(-v_f3.z, -v_f3.y);
+
+	// q4
+	const auto F03 = Mat::rotationX(-pp.q3) * F02;
+	const glm::vec3 v_f4 = F03 * glm::vec4(p43, 0);
+	pp.q4 = atan2f(v_f4.x, v_f4.z);
+
+	// q5
+	const auto F04 = Mat::rotationY(pp.q4) * F02;
+	const glm::vec3 v_f5 = F04 * glm::vec4(axisX, 0);
+	pp.q5 = atan2f(v_f5.y, v_f5.x);
+	return pp;
 }
 
 void PumaScene::SetLeftViewport()

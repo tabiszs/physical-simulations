@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Object.h"
 #include "device.h"
 #include "Cylinder.h"
@@ -28,14 +28,16 @@ public:
 		joint1 = std::make_shared<CenterCylinder>(red, glm::vec3(0,0,0), 0.2f, 0.4f);
 		arm1 = std::make_shared<Cylinder>(yellow, glm::vec3(0, 0, 0), 0.15f, l1);
 		joint2 = std::make_shared<CenterCylinder>(red, glm::vec3(0, 0, 0), 0.2f, 0.4f);
-		joint2->ObjectRotation({ 0.0f, 0.0f, glm::half_pi<float>() });
+		joint2->ObjectRotation({ 0.0f, 0.0f, glm::half_pi<float>() }); // wplywa na wyswietlanie obiektu i os obrotu
 		arm2 = std::make_shared<Cylinder>(green, glm::vec3(0, 0, 0), 0.15f, l2);
+		arm2->ObjectRotation({ glm::half_pi<float>(), 0.0f, 0 }); // wplywa tylko na wyswietlanie obiektu
 		joint3 = std::make_shared<CenterCylinder>(red, glm::vec3(0, 0, 0), 0.2f, 0.4f);
 		joint3->ObjectRotation({ 0.0f, 0.0f, glm::half_pi<float>() });
 		arm3 = std::make_shared<Cylinder>(yellow, glm::vec3(0, 0, 0), 0.15f, l3);
+		arm3->ObjectRotation({ glm::half_pi<float>(), 0.0f, 0 });
 		joint4 = std::make_shared<CenterCylinder>(red, glm::vec3(0, 0, 0), 0.2f, 0.4f);
 		arm4 = std::make_shared<Cylinder>(yellow, glm::vec3(0, 0, 0), 0.15f, l4);
-		arm4->ObjectRotation({ 0.0f, 0.0f, -glm::half_pi<float>() });
+		arm4->ObjectRotation({ -glm::half_pi<float>(), 0.0f, 0 });
 		joint5 = std::make_shared<CenterCylinder>(red, glm::vec3(0, 0, 0), 0.2f, 0.2f); // TODO
 		effector = std::make_shared<PumaEffector>();
 

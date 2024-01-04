@@ -6,10 +6,10 @@ glm::mat4 PumaEffector::ModelMatrix() const
 {
 	float s = 1.0f / (maxPt - minPt);
 	auto scale = Mat::scale(s, s, s);
-	auto t = Mat::translation({ position[0],position[1] ,position[2] });
+	auto t = Mat::translation(position);
 	auto r = glm::toMat4(quaternion);
 	glm::mat4 transformation = t * r * scale;
-	const auto rot = glm::toMat4(glm::quat({ 0.0f, 0.0f, glm::half_pi<float>() }));
+	const auto rot = glm::toMat4(glm::quat({ -glm::half_pi<float>(), 0, 0 }));
 	transformation = rot * transformation;
 	if (parent != nullptr)
 	{
