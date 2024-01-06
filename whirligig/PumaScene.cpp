@@ -234,9 +234,10 @@ void PumaScene::Menu()
 
 void PumaScene::StartAnimation()
 {
-	// TODO popraw katy do zakresu gwaratujacego najkrotsza interpolacje
+	ReduceAngles();
 	final_params = InverseKinematicFor(final_cursor);
 	start_params = InverseKinematicFor(start_cursor);
+	ReduceParameters();
 	puma_interpolation->SetParams(start_params);
 	puma_kinematic->SetParams(start_params);
 	SetGuiParams(start_params);
@@ -363,6 +364,25 @@ void PumaScene::SetGuiParams(const PumaParameters& pp)
 	l2 = pp.l2;
 }
 
+void PumaScene::ReduceAngles()
+{
+	auto euler_angles = end_euler_angles;
+	auto d_angle = euler_angles - start_euler_angles;
+	if (abs(d_angle.x) > glm::pi<float>())
+	{
+		euler_angles.x += euler_angles.x > 0 ? -glm::two_pi<float>() : glm::two_pi<float>();
+	}
+	if (abs(d_angle.y) > glm::pi<float>())
+	{
+		euler_angles.y += euler_angles.y > 0 ? -glm::two_pi<float>() : glm::two_pi<float>();
+	}
+	if (abs(d_angle.z) > glm::pi<float>())
+	{
+		euler_angles.z += euler_angles.z > 0 ? -glm::two_pi<float>() : glm::two_pi<float>();
+	}
+	final_cursor->SetEulerAngles(euler_angles);
+}
+
 void PumaScene::UpdateAnimation()
 {
 	auto current_time = glfwGetTime();
@@ -412,7 +432,7 @@ void PumaScene::UpdateKinematicPuma(float current_frame)
 	const auto rotation = glm::slerp(start_quaternion, end_quaternion, fraction);
 	interpolation_cursor->SetPosition(position);
 	interpolation_cursor->SetQuaternion(rotation);
-	const auto params = InverseKinematicFor(interpolation_cursor);
+	params = InverseKinematicFor(interpolation_cursor);
 	puma_kinematic->SetParams(params);
 }
 
@@ -429,7 +449,7 @@ PumaParameters PumaScene::InverseKinematicFor(std::shared_ptr<Cursor> cursor)
 	p1 = puma_kinematic->arm1->GetEndPoint();
 	p3 = p4 - axisZ * l4;
 
-	const auto [p2_1, p2_2] = SetP2(p3, p4);
+	const auto [p2_1, p2_2] = SetP2(p0, p1, p3, p4);
 	const float norm_1 = glm::length(p2_1 - last_p2);
 	const float norm_2 = glm::length(p2_2 - last_p2);
 	last_p2 = p2 = norm_1 < norm_2 ? p2_1 : p2_2;
@@ -437,7 +457,8 @@ PumaParameters PumaScene::InverseKinematicFor(std::shared_ptr<Cursor> cursor)
 	return SetParametersFromPoints(p0, p1, p2, p3, p4, frame);
 }
 
-std::pair<glm::vec3, glm::vec3> PumaScene::SetP2(const glm::vec3 p3, const glm::vec3 p4)
+std::pair<glm::vec3, glm::vec3> PumaScene::SetP2(
+	const glm::vec3 p0, const glm::vec3 p1, const glm::vec3 p3, const glm::vec3 p4)
 {
 	glm::vec3 p2_1{}, p2_2{};
 	float x2_1{}, x2_2{}, y2_1{}, y2_2{}, z2_1, z2_2{};
@@ -449,18 +470,16 @@ std::pair<glm::vec3, glm::vec3> PumaScene::SetP2(const glm::vec3 p3, const glm::
 
 	const auto p43 = p4 - p3;
 
-	if (p43.y == 0)
+	if (abs(p43.y) < FLT_EPSILON)
 	{
-		// inf solution
 		x2_1 = x2_2 = p3.x;
 		z2_1 = z2_2 = p3.z;
 		y2_1 = p3.y + l3;
 		y2_2 = p3.y - l3;
-		// get the same as in last p2
 	}
 	else
 	{
-		if (p3.x == 0)
+		if (abs(p3.x) < FLT_EPSILON)
 		{
 			x2_1 = x2_2 = 0;
 
@@ -470,7 +489,7 @@ std::pair<glm::vec3, glm::vec3> PumaScene::SetP2(const glm::vec3 p3, const glm::
 			const auto b = 2 * (p43.z * (p3.y / p43.y - 1 / (p43.y * p43.y)) - p3.z);
 			const auto c = W + K * K / (p43.y * p43.y) - 2 * K * p3.y / p43.y;
 			const auto delta = b * b - 4 * a * c;
-			if (delta < 0)
+			if (delta < FLT_EPSILON)
 			{
 				return { last_p2 , last_p2 };
 			}
@@ -493,7 +512,7 @@ std::pair<glm::vec3, glm::vec3> PumaScene::SetP2(const glm::vec3 p3, const glm::
 			const auto b = -2 * p3.x - 2 * K * P / (p43.y * p43.y) + 2 * P * p3.y / p43.y - 2 * p3.z * p3.z / p3.x;
 			const auto c = W + K * K / (p43.y * p43.y) - 2 * K * p3.y / p43.y;
 			const auto delta = b * b - 4 * a * c;
-			if (delta < 0)
+			if (delta < FLT_EPSILON)
 			{
 				return { last_p2 , last_p2 };
 			}
@@ -513,6 +532,35 @@ std::pair<glm::vec3, glm::vec3> PumaScene::SetP2(const glm::vec3 p3, const glm::
 	p2_1 = { x2_1, y2_1, z2_1 };
 	p2_2 = { x2_2, y2_2, z2_2 };
 	return { p2_1, p2_2 };
+}
+
+void PumaScene::ReduceParameters()
+{
+	auto delta = final_params.q1 - start_params.q1;
+	if (abs(delta) > glm::pi<float>())
+	{
+		final_params.q1 += final_params.q1 > 0 ? -glm::two_pi<float>() : glm::two_pi<float>();
+	}
+	delta = final_params.q2 - start_params.q2;
+	if (abs(delta) > glm::pi<float>())
+	{
+		final_params.q2 += final_params.q2 > 0 ? -glm::two_pi<float>() : glm::two_pi<float>();
+	}
+	delta = final_params.q3 - start_params.q3;
+	if (abs(delta) > glm::pi<float>())
+	{
+		final_params.q3 += final_params.q3 > 0 ? -glm::two_pi<float>() : glm::two_pi<float>();
+	}
+	delta = final_params.q4 - start_params.q4;
+	if (abs(delta) > glm::pi<float>())
+	{
+		final_params.q4 += final_params.q4 > 0 ? -glm::two_pi<float>() : glm::two_pi<float>();
+	}
+	delta = final_params.q5 - start_params.q5;
+	if (abs(delta) > glm::pi<float>())
+	{
+		final_params.q5 += final_params.q5 > 0 ? -glm::two_pi<float>() : glm::two_pi<float>();
+	}
 }
 
 PumaParameters PumaScene::SetParametersFromPoints(const glm::vec3 p0, const glm::vec3 p1, const glm::vec3 p2, const glm::vec3 p3, const glm::vec3 p4, const glm::mat4 effector_frame)

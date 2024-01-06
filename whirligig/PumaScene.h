@@ -50,6 +50,7 @@ public:
 	PumaParameters final_params{};
 	PumaParameters interpolation_params{};
 	PumaParameters kinematic_params{};
+	PumaParameters params;
 	shared_ptr<Cursor> interpolation_cursor;
 
 private:
@@ -71,12 +72,16 @@ private:
 	const glm::vec4 initial_puma_pos{};
 	glm::vec3 last_p2{};
 
+	void ReduceAngles();
 	void SetGuiParams(const PumaParameters& pp);
 	void UpdateAnimation();
 	void UpdateInterpolationPuma(float current_frame);
 	void UpdateKinematicPuma(float current_frame);
+	void ReduceParameters();
 	PumaParameters InverseKinematicFor(std::shared_ptr<Cursor> cursor);
-	std::pair<glm::vec3, glm::vec3> SetP2(const glm::vec3 p3, const glm::vec3 p4);
+	std::pair<glm::vec3, glm::vec3> SetP2(
+		const glm::vec3 p0, const glm::vec3 p1, 
+		const glm::vec3 p3, const glm::vec3 p4);
 	PumaParameters SetParametersFromPoints(const glm::vec3 p0, 
 		const glm::vec3 p1, const glm::vec3 p2, const glm::vec3 p3, 
 		const glm::vec3 p4, const glm::mat4 effector_frame);
