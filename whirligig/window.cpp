@@ -128,6 +128,7 @@ void Window::keyCallback(int key, int scancode, int action, int mods) {
         if (glfwGetKey(m_Window, GLFW_KEY_Q) == GLFW_PRESS)
             camera->MoveTarget(DOWN, deltaTime);
     }
+    scene->ProcessKeyCallback(m_Window);
 }
 
 void Window::setMouseCallback()

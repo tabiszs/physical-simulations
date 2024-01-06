@@ -78,11 +78,6 @@ void KinematicChainScene::Update()
 	{
 		UpdateProjViewMtx();
 
-		// czy to potrzebne - co jak dodajemy nowy obiekt
-		// tak - na poczatku potem juz nie 
-		// a co jesli dodamy nowy obiekt
-		// przy tworzeniu trzeba zadbac o dodanie macierzy
-		// - lub nie - ona jest na stale w shaderze
 		SetProjViewMtx(arm1_start->shader);
 		SetProjViewMtx(arm1_end->shader);
 		SetProjViewMtx(arm2_start->shader);

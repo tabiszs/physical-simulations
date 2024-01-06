@@ -34,6 +34,7 @@ public:
 	virtual void Menu();
 	virtual void ProcessMouseCursorPosCallback(GLFWwindow* m_Window, float xpos, float ypos);
 	virtual void ProcessMouseButtonCallback(int button, int action, int mods, float xpos, float ypos) {}
+	virtual void ProcessKeyCallback(GLFWwindow* m_Window);
 
 	shared_ptr<Light> light;
 	shared_ptr<FpsCamera> camera;
@@ -65,5 +66,7 @@ protected:
 	float lastX;
 	float lastY;
 	
+	float deltaTime = 0.0f;	// time between current frame and last frame
+	float lastFrame = 0.0f;
 };
 

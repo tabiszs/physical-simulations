@@ -26,7 +26,7 @@ void PumaScene::DrawOn(std::shared_ptr<Device> device)
 	grid->DrawModelOn(device);
 	start_cursor->DrawModelOn(device);
 	final_cursor->DrawModelOn(device);
-	puma_reverse_kinematic->DrawModelOn(device);
+	puma_kinematic->DrawModelOn(device);
 }
 
 void PumaScene::Update()
@@ -39,7 +39,7 @@ void PumaScene::Update()
 	std::shared_ptr<Shader> shader;
 
 	puma_interpolation->Update(device);
-	puma_reverse_kinematic->Update(device);
+	puma_kinematic->Update(device);
 
 	if (start_cursor->need_update)
 	{
@@ -76,16 +76,16 @@ void PumaScene::Update()
 		SetProjViewMtx(puma_interpolation->arm4->shader);
 		SetProjViewMtx(puma_interpolation->effector->shader);
 
-		SetProjViewMtx(puma_reverse_kinematic->joint1->shader);
-		SetProjViewMtx(puma_reverse_kinematic->joint2->shader);
-		SetProjViewMtx(puma_reverse_kinematic->joint3->shader);
-		SetProjViewMtx(puma_reverse_kinematic->joint4->shader);
-		SetProjViewMtx(puma_reverse_kinematic->joint5->shader);
-		SetProjViewMtx(puma_reverse_kinematic->arm1->shader);
-		SetProjViewMtx(puma_reverse_kinematic->arm2->shader);
-		SetProjViewMtx(puma_reverse_kinematic->arm3->shader);
-		SetProjViewMtx(puma_reverse_kinematic->arm4->shader);
-		SetProjViewMtx(puma_reverse_kinematic->effector->shader);
+		SetProjViewMtx(puma_kinematic->joint1->shader);
+		SetProjViewMtx(puma_kinematic->joint2->shader);
+		SetProjViewMtx(puma_kinematic->joint3->shader);
+		SetProjViewMtx(puma_kinematic->joint4->shader);
+		SetProjViewMtx(puma_kinematic->joint5->shader);
+		SetProjViewMtx(puma_kinematic->arm1->shader);
+		SetProjViewMtx(puma_kinematic->arm2->shader);
+		SetProjViewMtx(puma_kinematic->arm3->shader);
+		SetProjViewMtx(puma_kinematic->arm4->shader);
+		SetProjViewMtx(puma_kinematic->effector->shader);
 
 		camera->Updated();
 		viewFrustrum->Updated();
@@ -112,7 +112,7 @@ void PumaScene::Menu()
 		if (ImGui::Button("Reset")) {
 			start = pause = false;
 			puma_interpolation->SetParams(start_params);
-			puma_reverse_kinematic->SetParams(start_params);
+			puma_kinematic->SetParams(start_params);
 		}
 		ImGui::SliderInt("Speed", &speed, 1, 100);
 		ImGui::PushItemFlag(ImGuiItemFlags_Disabled, start);
@@ -151,10 +151,6 @@ void PumaScene::Menu()
 		if (ImGui::Button("Display##1"))
 		{
 			// start animation with quaternion rotation
-			// 1. reduce angles
-			// 2. compute inverse kinamatics for initial and final position
-			// 3a. interpolate via parameters
-			// 3b. interpolate via inverse kinematics
 		}
 		ImGui::Separator();
 	}
@@ -165,6 +161,11 @@ void PumaScene::Menu()
 		{
 			start_quaternion = glm::quat(start_euler_angles);
 			start_cursor->SetEulerAngles(start_euler_angles);
+
+			start_params = InverseKinematicFor(start_cursor);
+			puma_interpolation->SetParams(start_params);
+			puma_kinematic->SetParams(start_params);
+			SetGuiParams(start_params);
 		}
 		if (ImGui::SliderFloat3("End##2", (float*)&end_euler_angles, -glm::pi<float>(), glm::pi<float>()))
 		{
@@ -183,47 +184,47 @@ void PumaScene::Menu()
 		if (ImGui::InputFloat("l1", &l1, 0.1f))
 		{
 			puma_interpolation->SetLengthOfArm1(l1);
-			puma_reverse_kinematic->SetLengthOfArm1(l1);
+			puma_kinematic->SetLengthOfArm1(l1);
 		}
 		if (ImGui::InputFloat("l2", &l2, 0.1f))
 		{
 			puma_interpolation->SetLengthOfArm2(l2);
-			puma_reverse_kinematic->SetLengthOfArm2(l2);
+			puma_kinematic->SetLengthOfArm2(l2);
 		}
 		if (ImGui::InputFloat("l3", &l3, 0.1f))
 		{
 			puma_interpolation->SetLengthOfArm3(l3);
-			puma_reverse_kinematic->SetLengthOfArm3(l3);
+			puma_kinematic->SetLengthOfArm3(l3);
 		}
 		if (ImGui::InputFloat("l4", &l4, 0.1f))
 		{
 			puma_interpolation->SetLengthOfArm4(l4);
-			puma_reverse_kinematic->SetLengthOfArm4(l4);
+			puma_kinematic->SetLengthOfArm4(l4);
 		}
 		if (ImGui::InputFloat("q1", &q1, 0.1f))
 		{
 			puma_interpolation->SetAngleOfJoint1(q1);
-			puma_reverse_kinematic->SetAngleOfJoint1(q1);
+			puma_kinematic->SetAngleOfJoint1(q1);
 		}
 		if (ImGui::InputFloat("q2", &q2, 0.1f))
 		{
 			puma_interpolation->SetAngleOfJoint2(q2);
-			puma_reverse_kinematic->SetAngleOfJoint2(q2);
+			puma_kinematic->SetAngleOfJoint2(q2);
 		}
 		if (ImGui::InputFloat("q3", &q3, 0.1f))
 		{
 			puma_interpolation->SetAngleOfJoint3(q3);
-			puma_reverse_kinematic->SetAngleOfJoint3(q3);
+			puma_kinematic->SetAngleOfJoint3(q3);
 		}
 		if (ImGui::InputFloat("q4", &q4, 0.1f))
 		{
 			puma_interpolation->SetAngleOfJoint4(q4);
-			puma_reverse_kinematic->SetAngleOfJoint4(q4);
+			puma_kinematic->SetAngleOfJoint4(q4);
 		}
 		if (ImGui::InputFloat("q5", &q5, 0.1f))
 		{
 			puma_interpolation->SetAngleOfJoint5(q5);
-			puma_reverse_kinematic->SetAngleOfJoint5(q5);
+			puma_kinematic->SetAngleOfJoint5(q5);
 		}
 		ImGui::Separator();
 	}
@@ -233,16 +234,12 @@ void PumaScene::Menu()
 
 void PumaScene::StartAnimation()
 {
-	final_params.l2 = 2;
-	final_params.q1 = 1;
-	final_params.q2 = 2;
-	final_params.q3 = 1;
-	final_params.q4 = 2;
-	// popraw katy do zakresu gwaratujacego najkrotsza interpolacje
-	// odwrotna kinematyka dla pozycji startowej i koncowej ->
-	start_params = InverseKinematicFor(start_cursor);
-	SetGuiParams(start_params);
+	// TODO popraw katy do zakresu gwaratujacego najkrotsza interpolacje
 	final_params = InverseKinematicFor(final_cursor);
+	start_params = InverseKinematicFor(start_cursor);
+	puma_interpolation->SetParams(start_params);
+	puma_kinematic->SetParams(start_params);
+	SetGuiParams(start_params);
 
 	start = true;
 	pause = false;
@@ -250,12 +247,110 @@ void PumaScene::StartAnimation()
 	animation_frame = 0;
 	time_start = time = glfwGetTime();
 	puma_interpolation->SetParams(start_params);
-	puma_reverse_kinematic->SetParams(start_params);
+	puma_kinematic->SetParams(start_params);
 }
 
-PumaParameters PumaScene::InverseKinematic(std::shared_ptr<Cursor> curor)
+void PumaScene::ProcessKeyCallback(GLFWwindow* m_Window)
 {
-	return PumaParameters();
+	ImGuiIO& io = ImGui::GetIO();
+	if (!io.WantCaptureKeyboard)
+	{
+		float currentFrame = static_cast<float>(glfwGetTime());
+		deltaTime = std::min(currentFrame - lastFrame, 0.1f);
+		lastFrame = currentFrame;
+		const auto position = start_cursor->position;
+		const auto euler_angles = start_euler_angles;
+		bool pressed = false;
+		
+		if (glfwGetKey(m_Window, GLFW_KEY_R) == GLFW_PRESS)
+		{
+			start_position += glm::vec3(1, 0, 0) * deltaTime * MOVEMENT_SPEED;
+			start_cursor->SetPosition(start_position);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_F) == GLFW_PRESS)
+		{
+			start_position += glm::vec3(-1, 0, 0) * deltaTime * MOVEMENT_SPEED;
+			start_cursor->SetPosition(start_position);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_T) == GLFW_PRESS)
+		{
+			start_position += glm::vec3(0, 1, 0) * deltaTime * MOVEMENT_SPEED;
+			start_cursor->SetPosition(start_position);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_G) == GLFW_PRESS)
+		{
+			start_position += glm::vec3(0, -1, 0) * deltaTime * MOVEMENT_SPEED;
+			start_cursor->SetPosition(start_position);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_Y) == GLFW_PRESS)
+		{
+			start_position += glm::vec3(0, 0, 1) * deltaTime * MOVEMENT_SPEED;
+			start_cursor->SetPosition(start_position);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_H) == GLFW_PRESS)
+		{
+			start_position += glm::vec3(0, 0, -1) * deltaTime * MOVEMENT_SPEED;
+			start_cursor->SetPosition(start_position);
+			pressed = true;
+		}
+
+
+		if (glfwGetKey(m_Window, GLFW_KEY_U) == GLFW_PRESS)
+		{
+			start_euler_angles += glm::vec3(1, 0, 0) * deltaTime * OBJECT_ROTATION_SPEED;
+			start_quaternion = glm::quat(start_euler_angles);
+			start_cursor->SetEulerAngles(start_euler_angles);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_J) == GLFW_PRESS)
+		{
+			start_euler_angles += glm::vec3(-1, 0, 0) * deltaTime * OBJECT_ROTATION_SPEED;
+			start_quaternion = glm::quat(start_euler_angles);
+			start_cursor->SetEulerAngles(start_euler_angles);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_I) == GLFW_PRESS)
+		{
+			start_euler_angles += glm::vec3(0, 1, 0) * deltaTime * OBJECT_ROTATION_SPEED;
+			start_quaternion = glm::quat(start_euler_angles);
+			start_cursor->SetEulerAngles(start_euler_angles);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_K) == GLFW_PRESS)
+		{
+			start_euler_angles += glm::vec3(0, -1, 0) * deltaTime * OBJECT_ROTATION_SPEED;
+			start_quaternion = glm::quat(start_euler_angles);
+			start_cursor->SetEulerAngles(start_euler_angles);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_O) == GLFW_PRESS)
+		{
+			start_euler_angles += glm::vec3(0, 0, 1) * deltaTime * OBJECT_ROTATION_SPEED;
+			start_quaternion = glm::quat(start_euler_angles);
+			start_cursor->SetEulerAngles(start_euler_angles);
+			pressed = true;
+		}
+		if (glfwGetKey(m_Window, GLFW_KEY_L) == GLFW_PRESS)
+		{
+			start_euler_angles += glm::vec3(0, 0, -1) * deltaTime * OBJECT_ROTATION_SPEED;
+			start_quaternion = glm::quat(start_euler_angles);
+			start_cursor->SetEulerAngles(start_euler_angles);
+			pressed = true;
+		}
+
+		if (pressed)
+		{
+			start_params = InverseKinematicFor(start_cursor);
+			puma_interpolation->SetParams(start_params);
+			puma_kinematic->SetParams(start_params);
+			SetGuiParams(start_params);
+		}
+	}
 }
 
 void PumaScene::SetGuiParams(const PumaParameters& pp)
@@ -264,6 +359,7 @@ void PumaScene::SetGuiParams(const PumaParameters& pp)
 	q2 = pp.q2;
 	q3 = pp.q3;
 	q4 = pp.q4;
+	q5 = pp.q5;
 	l2 = pp.l2;
 }
 
@@ -304,14 +400,20 @@ void PumaScene::UpdateAnimation()
 
 void PumaScene::UpdateInterpolationPuma(float current_frame)
 {
-	float animation_part = std::min(1.0f, current_frame / frame_count);
-	interpolation_params.Interpolation(start_params, final_params, animation_part);
+	float fraction = std::min(1.0f, current_frame / frame_count);
+	interpolation_params.Interpolation(start_params, final_params, fraction);
 	puma_interpolation->SetParams(interpolation_params);
 }
 
 void PumaScene::UpdateKinematicPuma(float current_frame)
 {
-	// TODO
+	float fraction = std::min(1.0f, current_frame / frame_count);
+	const auto position = glm::lerp(start_position, end_position, fraction);
+	const auto rotation = glm::slerp(start_quaternion, end_quaternion, fraction);
+	interpolation_cursor->SetPosition(position);
+	interpolation_cursor->SetQuaternion(rotation);
+	const auto params = InverseKinematicFor(interpolation_cursor);
+	puma_kinematic->SetParams(params);
 }
 
 PumaParameters PumaScene::InverseKinematicFor(std::shared_ptr<Cursor> cursor)
@@ -321,57 +423,96 @@ PumaParameters PumaScene::InverseKinematicFor(std::shared_ptr<Cursor> cursor)
 	const glm::vec3 effector_pos = glm::column(frame, 3);
 
 	glm::vec3 p0, p1, p2, p3, p4;
-	const auto l4 = puma_reverse_kinematic->arm4->GetHeight();
-	const auto l3 = puma_reverse_kinematic->arm3->GetHeight();
+	const auto l4 = puma_kinematic->arm4->GetHeight();
 	p0 = initial_puma_pos;
 	p4 = effector_pos;
-	p1 = puma_reverse_kinematic->arm1->GetEndPoint();
+	p1 = puma_kinematic->arm1->GetEndPoint();
 	p3 = p4 - axisZ * l4;
 
-	// compute p2
+	const auto [p2_1, p2_2] = SetP2(p3, p4);
+	const float norm_1 = glm::length(p2_1 - last_p2);
+	const float norm_2 = glm::length(p2_2 - last_p2);
+	last_p2 = p2 = norm_1 < norm_2 ? p2_1 : p2_2;
+
+	return SetParametersFromPoints(p0, p1, p2, p3, p4, frame);
+}
+
+std::pair<glm::vec3, glm::vec3> PumaScene::SetP2(const glm::vec3 p3, const glm::vec3 p4)
+{
+	glm::vec3 p2_1{}, p2_2{};
+	float x2_1{}, x2_2{}, y2_1{}, y2_2{}, z2_1, z2_2{};
+
+	// warunki:
+	// 1. p0, p1, p2, p3 sa wspolplaszczyznowe
+	// 2. p43 i p32 sa prostopadle
+	// 3. dlugosc |p3-p2| = l3
+
 	const auto p43 = p4 - p3;
-	const auto n = glm::cross(p1 - p3, p1 - p0);
-	// jesli wspolliniowe -> zamiast p3 wez p4 -> nie wsm to cos prostrzego -> mozna juz cos powiedziec od p2
 
-	// jakie warunki, zeby moc obliczac
-	auto fun_p2y = [p3, p43, n](float p2z) {
-		float mianownik = (p43.y * n.x - n.y * p43.x);
-		mianownik = abs(mianownik) < FLT_EPSILON ? FLT_EPSILON : mianownik;
-		return p3.y + (p2z - p3.z) * (n.z * p43.x - p43.z * n.x) / mianownik;
-	};
-	auto fun_p2x = [p3, p43](float p2y, float p2z) {
-		float p43x = abs(p43.x) < FLT_EPSILON ? FLT_EPSILON : p43.x;
-		return p3.x + ((p2y - p3.y) * p43.y + (p2z - p3.z) * p43.z) / p43x;
-	};
+	if (p43.y == 0)
+	{
+		// inf solution
+		x2_1 = x2_2 = p3.x;
+		z2_1 = z2_2 = p3.z;
+		y2_1 = p3.y + l3;
+		y2_2 = p3.y - l3;
+		// get the same as in last p2
+	}
+	else
+	{
+		if (p3.x == 0)
+		{
+			x2_1 = x2_2 = 0;
 
-	float mb = n.x * n.x * p3.z * (p43.y * p43.y + p43.z * p43.z) - 2 * p43.x * n.x * p3.z * (p43.y * n.y + p43.z * n.z) + p3.z * ((n.y * p43.z - p43.y * n.z) * (n.y * p43.z - p43.y * n.z) + p43.x * p43.x * (n.y * n.y + n.z * n.z));
-	float licznik = l3 * l3 * (n.x * n.x * (p43.y * p43.y + p43.z * p43.z) + (n.y * p43.z - p43.y * n.z) * (n.y * p43.z - p43.y * n.z) - 2 * p43.x * n.x * (p43.y * n.y + p43.z * n.z) + p43.x * p43.x * (n.y * n.y + n.z * n.z));
-	float mianownik = (n.x * p43.y - p43.x * n.y) * (n.x * p43.y - p43.x * n.y);
-	mianownik = mianownik < FLT_EPSILON ? FLT_EPSILON : mianownik; // TODO ??? CHECK
-	float sqt = std::sqrtf(licznik / mianownik);
-	float sqrt_delta = n.x * n.x * p43.y * p43.y * sqt - 2 * p43.x * n.x * p43.y * n.y * sqt + p43.x * p43.x * n.y * n.y * sqt;
-	float two_a = n.x * n.x * (p43.y * p43.y + p43.z * p43.z) + (n.y * p43.z - p43.y * n.z) * (n.y * p43.z - p43.y * n.z) - 2 * p43.x * n.x * (p43.y * n.y + p43.z * n.z) + p43.x * p43.x * (n.y * n.y + n.z * n.z);
-	float z2_1 = (mb + sqrt_delta) / two_a;
-	float z2_2 = (mb - sqrt_delta) / two_a;
-	float y2_1 = fun_p2y(z2_1);
-	float y2_2 = fun_p2y(z2_2);
-	float x2_1 = fun_p2x(y2_1, z2_1);
-	float x2_2 = fun_p2x(y2_1, z2_2);
-	float x2_3 = fun_p2x(y2_2, z2_1);
-	float x2_4 = fun_p2x(y2_2, z2_2);
-	
-	glm::vec3 p2_1 = { 0, 1, 1 };
-	//glm::vec3 p2_1 = { x2_1, y2_2, z2_2 };
-	//glm::vec3 p2_1 = { x2_1, y2_1, z2_1 };
-	//glm::vec3 p2_2 = { x2_2, y2_2, z2_2 };
+			const auto W = p3.x * p3.x + p3.y * p3.y + p3.z * p3.z - l3 * l3;
+			const auto K = p43.x * p3.x + p43.y * p3.y + p43.z * p3.z;
+			const auto a = 1 + (p43.z * p43.z) / (p43.y * p43.y); // >0 only square vaule
+			const auto b = 2 * (p43.z * (p3.y / p43.y - 1 / (p43.y * p43.y)) - p3.z);
+			const auto c = W + K * K / (p43.y * p43.y) - 2 * K * p3.y / p43.y;
+			const auto delta = b * b - 4 * a * c;
+			if (delta < 0)
+			{
+				return { last_p2 , last_p2 };
+			}
+			else
+			{
+				const auto sqrt_delta = sqrtf(delta);
+				z2_1 = 0.5 * (-b + sqrt_delta) / a;
+				y2_1 = (K - p43.z * z2_1) / p43.y;
 
-		// + rozne warianty p2
+				z2_2 = 0.5 * (-b - sqrt_delta) / a;
+				y2_2 = (K - p43.z * z2_1) / p43.y;
+			}
+		}
+		else
+		{
+			const auto W = p3.x * p3.x + p3.y * p3.y + p3.z * p3.z - l3 * l3;
+			const auto K = p43.x * p3.x + p43.y * p3.y + p43.z * p3.z;
+			const auto P = p43.x + p43.z * p3.z / p3.x;
+			const auto a = (1 + P * P / (p43.y * p43.y) + (p3.z * p3.z) / (p3.x * p3.x)); // >0 only square vaule
+			const auto b = -2 * p3.x - 2 * K * P / (p43.y * p43.y) + 2 * P * p3.y / p43.y - 2 * p3.z * p3.z / p3.x;
+			const auto c = W + K * K / (p43.y * p43.y) - 2 * K * p3.y / p43.y;
+			const auto delta = b * b - 4 * a * c;
+			if (delta < 0)
+			{
+				return { last_p2 , last_p2 };
+			}
+			else
+			{
+				const auto sqrt_delta = sqrtf(delta);
+				x2_1 = 0.5 * (-b + sqrt_delta) / a;
+				y2_1 = (K - x2_1 * P) / p43.y;
+				z2_1 = p3.z / p3.x * x2_1;
 
-	// mamy pkt 
-	// testowo -3,1,1 i 180stZ
-	// wyznaczamy parametry
-
-	return SetParametersFromPoints(p0, p1, p2_1, p3, p4, frame);
+				x2_2 = 0.5 * (-b - sqrt_delta) / a;
+				y2_2 = (K - x2_2 * P) / p43.y;
+				z2_2 = p3.z / p3.x * x2_2;
+			}
+		}
+	}
+	p2_1 = { x2_1, y2_1, z2_1 };
+	p2_2 = { x2_2, y2_2, z2_2 };
+	return { p2_1, p2_2 };
 }
 
 PumaParameters PumaScene::SetParametersFromPoints(const glm::vec3 p0, const glm::vec3 p1, const glm::vec3 p2, const glm::vec3 p3, const glm::vec3 p4, const glm::mat4 effector_frame)
@@ -383,36 +524,31 @@ PumaParameters PumaScene::SetParametersFromPoints(const glm::vec3 p0, const glm:
 
 	// q1
 	pp.q1 = atan2f(-n.z, n.x); // for each position give good solution
-	// const glm::vec3 default_a1_dir = { 1,0,0 };
-	// auto a1 = acosf(glm::dot(default_a1_dir, n) / (1 * glm::l2Norm(n)));
 
 	// q2
 	const auto v21 = p2 - p1;
 	const auto F01 = Mat::rotationY(pp.q1);
 	const glm::vec3 v_f2 = F01 * glm::vec4(v21, 0);
 	pp.q2 = atan2f(v_f2.y, v_f2.z);
-	//const auto v21_2 = p2_2 - p1;
-	//const float a2_x = glm::length(glm::vec2(v21.x, v21.z));
-	//const float a2 = atan2f(v21.y, a2_x);
 
 	// l3
 	pp.l2 = glm::length(v21);
 
 	// q3
 	const auto v32 = glm::normalize(p3 - p2);
-	const auto F02 = Mat::rotationX(-pp.q2) * F01;
+	const auto F02 = Mat::rotationX(pp.q2) * F01;
 	const glm::vec3 v_f3 = F02 * glm::vec4(v32, 0);
-	pp.q3 = atan2f(-v_f3.z, -v_f3.y);
+	pp.q3 = -atan2f(-v_f3.z, -v_f3.y); // zeby obrot byl zgodny z rysunkiem
 
 	// q4
-	const auto F03 = Mat::rotationX(-pp.q3) * F02;
+	const auto F03 = Mat::rotationX(pp.q3) * F02;
 	const glm::vec3 v_f4 = F03 * glm::vec4(p43, 0);
 	pp.q4 = atan2f(v_f4.x, v_f4.z);
 
 	// q5
-	const auto F04 = Mat::rotationY(pp.q4) * F02;
+	const auto F04 = Mat::rotationY(pp.q4) * F03;
 	const glm::vec3 v_f5 = F04 * glm::vec4(axisX, 0);
-	pp.q5 = atan2f(v_f5.y, v_f5.x);
+	pp.q5 = atan2f(v_f5.y, v_f5.x); // przesztalcamy uklad zeby pasowal do efektora -> dlatego przeciwny kat	
 	return pp;
 }
 

@@ -44,6 +44,10 @@ void Scene::ProcessMouseCursorPosCallback(GLFWwindow* m_Window, float xpos, floa
     lastY = ypos;
 }
 
+void Scene::ProcessKeyCallback(GLFWwindow* m_Window)
+{
+}
+
 void Scene::UpdateProjViewMtx()
 {
     const auto viewMtx = camera->ViewMatrix();

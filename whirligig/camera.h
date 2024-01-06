@@ -7,6 +7,7 @@
 
 #include <vector>
 
+static constexpr float OBJECT_ROTATION_SPEED = 0.6f;
 static constexpr float ROTATION_SPEED = 0.01f;
 static constexpr float ZOOM_SPEED = 0.5f;
 static constexpr float MOVEMENT_SPEED = 1.0f;
