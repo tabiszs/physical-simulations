@@ -61,10 +61,10 @@ private:
 	bool pause = false;
 	int animation_frame;
 
-	glm::vec3 start_position{ -2.0f, 1.0f, 1.0f };
+	glm::vec3 start_position{ 0.0f, 2.0f, 0.0f };
 	glm::vec3 start_euler_angles{};
 	glm::quat start_quaternion = { 1,0,0,0 };
-	glm::vec3 end_position{ 0.0f, 1.0f, 2.0f };
+	glm::vec3 end_position{ 0.0f, 2.0f, 0.0f };
 	glm::vec3 end_euler_angles{};
 	glm::quat end_quaternion = { 1,0,0,0 };
 	float l1{ 1 }, l2{ 1 }, l3{ 1 }, l4{ 1 };

@@ -126,6 +126,11 @@ void PumaScene::Menu()
 		if (ImGui::InputFloat3("Start##0", (float*)&start_position))
 		{
 			start_cursor->SetPosition(start_position);
+
+			start_params = InverseKinematicFor(start_cursor);
+			puma_interpolation->SetParams(start_params);
+			puma_kinematic->SetParams(start_params);
+			SetGuiParams(start_params);
 		}
 		if (ImGui::InputFloat3("End##0", (float*)&end_position))
 		{
@@ -141,16 +146,17 @@ void PumaScene::Menu()
 			start_quaternion = glm::normalize(start_quaternion);
 			start_euler_angles = glm::eulerAngles(start_quaternion);
 			start_cursor->SetQuaternion(start_quaternion);
+
+			start_params = InverseKinematicFor(start_cursor);
+			puma_interpolation->SetParams(start_params);
+			puma_kinematic->SetParams(start_params);
+			SetGuiParams(start_params);
 		}
 		if (ImGui::SliderFloat4("End##1", (float*)&end_quaternion, -1, 1))
 		{
 			end_quaternion = glm::normalize(end_quaternion);
 			end_euler_angles = glm::eulerAngles(end_quaternion);
 			final_cursor->SetQuaternion(end_quaternion);
-		}
-		if (ImGui::Button("Display##1"))
-		{
-			// start animation with quaternion rotation
 		}
 		ImGui::Separator();
 	}
@@ -172,10 +178,6 @@ void PumaScene::Menu()
 			end_quaternion = glm::quat(end_euler_angles);
 			final_cursor->SetEulerAngles(end_euler_angles);
 		}
-		if (ImGui::Button("Display##2"))
-		{
-			// start animation with euler angles rotation
-		}
 		ImGui::Separator();
 	}
 
@@ -183,25 +185,28 @@ void PumaScene::Menu()
 	{
 		if (ImGui::InputFloat("l1", &l1, 0.1f))
 		{
+			if (l1 < 0.1f) l1 = 0.1f;
 			puma_interpolation->SetLengthOfArm1(l1);
 			puma_kinematic->SetLengthOfArm1(l1);
 		}
-		if (ImGui::InputFloat("l2", &l2, 0.1f))
+		/*if (ImGui::InputFloat("l2", &l2, 0.1f))
 		{
 			puma_interpolation->SetLengthOfArm2(l2);
 			puma_kinematic->SetLengthOfArm2(l2);
-		}
+		}*/
 		if (ImGui::InputFloat("l3", &l3, 0.1f))
 		{
+			if (l3 < 0.1f) l3 = 0.1f;
 			puma_interpolation->SetLengthOfArm3(l3);
 			puma_kinematic->SetLengthOfArm3(l3);
 		}
 		if (ImGui::InputFloat("l4", &l4, 0.1f))
 		{
+			if (l4 < 0.1f) l4 = 0.1f;
 			puma_interpolation->SetLengthOfArm4(l4);
 			puma_kinematic->SetLengthOfArm4(l4);
 		}
-		if (ImGui::InputFloat("q1", &q1, 0.1f))
+		/*if (ImGui::InputFloat("q1", &q1, 0.1f))
 		{
 			puma_interpolation->SetAngleOfJoint1(q1);
 			puma_kinematic->SetAngleOfJoint1(q1);
@@ -225,7 +230,7 @@ void PumaScene::Menu()
 		{
 			puma_interpolation->SetAngleOfJoint5(q5);
 			puma_kinematic->SetAngleOfJoint5(q5);
-		}
+		}*/
 		ImGui::Separator();
 	}
 	ImGui::PopItemFlag();
@@ -472,10 +477,95 @@ std::pair<glm::vec3, glm::vec3> PumaScene::SetP2(
 
 	if (abs(p43.y) < FLT_EPSILON)
 	{
-		x2_1 = x2_2 = p3.x;
-		z2_1 = z2_2 = p3.z;
-		y2_1 = p3.y + l3;
-		y2_2 = p3.y - l3;
+		const auto len30_xz = glm::length(glm::vec2(p3.x - p0.x, p3.z - p0.z));
+		if (len30_xz < 10*FLT_EPSILON)
+		{
+			// wspol x i z p3 pokrywaja sie z x i z p0
+			// infinty solutions
+			if (start)
+			{
+				// use last params
+				// set the same q2 as in last step
+				// wykorzystac prostopadlosc p43 do p32 gdy p3 jest na osi OY z p1
+
+				const float alpha = atan2f(p3.y - p1.y, len30_xz);
+				const float betha = params.q2 - alpha;
+				const float len31 = glm::length(p3 - p1);
+				const auto a = 1;
+				const auto b = -2 * len31 * cosf(betha);
+				const auto c = len31 * len31 - l3 * l3;
+				const auto delta = b * b - 4 * a * c;
+				if (delta < FLT_EPSILON)
+				{
+					return { last_p2 , last_p2 };
+				}
+				else
+				{
+					const auto v30_xz = glm::normalize(glm::vec2(p3.x - p1.x, p3.z - p1.z));
+					const auto sqrt_delta = sqrtf(delta);
+					const float len21_1 = 0.5 * (-b + sqrt_delta) / a;
+					const float d2y_1 = sinf(params.q2) * len21_1;
+					const float d2xz_1 = cosf(params.q2) * len21_1;
+					const glm::vec2 v21_xz_1 = v30_xz * d2xz_1;
+					y2_1 = p1.y + d2y_1;
+					x2_1 = p1.x + v21_xz_1.x;
+					z2_1 = p1.z + v21_xz_1.y;
+
+					const float len21_2 = 0.5 * (-b - sqrt_delta) / a;
+					const float d2y_2 = sinf(params.q2) * len21_2;
+					const float d2xz_2 = cosf(params.q2) * len21_2;
+					const glm::vec2 v21_xz_2 = v30_xz * d2xz_1;
+					y2_1 = p1.y + d2y_2;
+					x2_1 = p1.x + v21_xz_2.x;
+					z2_1 = p1.z + v21_xz_2.y;
+				}
+			}
+			else
+			{
+				// set start position
+				x2_1 = x2_2 = p3.x;
+				z2_1 = z2_2 = p3.z;
+				y2_1 = p3.y + l3;
+				y2_2 = p3.y - l3;
+			}
+		}
+		else
+		{
+			const auto len40_xz = glm::length(glm::vec2(p4.x - p0.x, p4.z - p0.z));
+			if (len40_xz < 10*FLT_EPSILON)
+			{
+				// wspol x i z efektora porywaja sie z x i z p0
+				x2_1 = x2_2 = p3.x;
+				z2_1 = z2_2 = p3.z;
+				y2_1 = p3.y + l3;
+				y2_2 = p3.y - l3;
+				// SINGULARITY POINT
+			}
+			else
+			{
+				const auto len43_xz = glm::length(glm::vec2(p4.x - p3.x, p4.z - p3.z));
+				const float covergent_to_half_pi_angle = len43_xz * len43_xz + len30_xz * len30_xz - len40_xz * len40_xz;
+				if (abs(covergent_to_half_pi_angle) < 10 * FLT_EPSILON)
+				{
+					const auto v30_xz = glm::normalize(glm::vec2(p3.x - p0.x, p3.z - p0.z));
+					const glm::vec2 v32 = v30_xz * l3;
+					x2_1 = p3.x + v32.x;
+					x2_2 = p3.x - v32.x;
+					z2_1 = p3.z + v32.y; // chodzi o druga wspolrzedna
+					z2_2 = p3.z - v32.y;
+					y2_1 = p3.y;
+					y2_2 = p3.y;
+				}
+				else
+				{
+					// ramie arm4 rownolegle do plaszczyzny xz ale nie w prostopadle do plaszczyzny p0-p1-p2-p3
+					x2_1 = x2_2 = p3.x;
+					z2_1 = z2_2 = p3.z;
+					y2_1 = p3.y + l3;
+					y2_2 = p3.y - l3;
+				}
+			}
+		}
 	}
 	else
 	{
