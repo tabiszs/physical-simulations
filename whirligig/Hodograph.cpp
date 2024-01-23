@@ -16,6 +16,8 @@ void Hodograph::Init()
 	UpdateRadianStep();
 	UpdateLines();
 	circle->Scale(R);
+
+	UpdateDistribution();
 }
 
 void Hodograph::Update()
@@ -30,8 +32,13 @@ void Hodograph::Update()
 	PositionPoC();
 
 	// PoP position
-	// + epsilon
-	glm::vec2 new_PoP{ PoC.x + sqrtf(L * L - PoC.y * PoC.y), 0 };
+	float eL = L;
+	if (eps > 0.0f)
+	{
+		float err = distribution(gen);
+		eL += err;
+	}	
+	glm::vec2 new_PoP{ PoC.x + sqrtf(eL * eL - PoC.y * PoC.y), 0 };
 
 	// numerical derivative computation
 	glm::vec2 new_dPoP = (new_PoP - PoP) / step;

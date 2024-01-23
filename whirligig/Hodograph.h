@@ -1,7 +1,8 @@
 #pragma once
-#include "Object.h"
 #include <array>
+#include <random>
 #include "device.h"
+#include "Object.h"
 #include "Line.h"
 #include "Circle.h"
 
@@ -23,6 +24,13 @@ public:
 	void Update();
 	void UpdateL();
 	void UpdateR();
+	void UpdateDistribution()
+	{
+		if (eps > 0.0f)
+		{
+			distribution = std::normal_distribution<float>(0.0, eps);
+		}		
+	}
 
 	void LoadMeshTo(std::shared_ptr<Device> device);
 	void UpdateMeshTo(std::shared_ptr<Device> device);
@@ -41,6 +49,7 @@ public:
 	float L = 2.0f; // length of arm <R, infinity>
 	float step = 0.01f; // simulation step
 	float omega = 1.0f;
+	float eps = 0.0f;
 
 	std::shared_ptr<Line> lineL;
 	std::shared_ptr<Line> lineR;
@@ -64,6 +73,9 @@ private:
 	std::array<float, SIZE> velocities{};
 	std::array<float, SIZE> accelerations{};
 
+	std::random_device rd{};
+	std::mt19937 gen{ rd() };
+	std::normal_distribution<float> distribution;
 
 	void UpdateLines();
 	void PositionPoC();

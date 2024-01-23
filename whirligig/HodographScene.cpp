@@ -78,6 +78,10 @@ void HodographScene::Menu()
 	{
 		hodograph->UpdateRadianStep();
 	}
+	if (ImGui::SliderFloat("Epsilon", &(hodograph->eps), 0.0f, 0.02f))
+	{
+		hodograph->UpdateDistribution();
+	}
 	ImGui::End();
 
 	// Plots
