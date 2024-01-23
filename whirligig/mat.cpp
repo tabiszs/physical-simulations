@@ -75,14 +75,14 @@ glm::mat4 Mat::scale(float sx, float sy, float sz)
 	);
 }
 
+glm::mat4 Mat::scale(float scale)
+{
+	return Mat::scale(scale, scale, scale);
+}
+
 glm::mat4 Mat::scale(glm::vec3 scale)
 {
-	return glm::mat4(
-		scale.x, 0, 0, 0,
-		0, scale.y, 0, 0,
-		0, 0, scale.z, 0,
-		0, 0, 0, 1
-	);
+	return Mat::scale(scale.x, scale.y, scale.z);
 }
 
 glm::mat4 Mat::perspective(float fovy, float aspect, float zNear, float zFar)

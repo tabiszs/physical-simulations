@@ -32,11 +32,14 @@ Application::Application()
 	//kinematic_chain_scene = std::make_shared<KinematicChainScene>(camera, light, viewFrustum, device);
 	//window->ImportScene(kinematic_chain_scene);
 
-	puma_scene = std::make_shared<PumaScene>(camera, light, viewFrustum, device);
-	puma_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
-	window->ImportScene(puma_scene);
+	//puma_scene = std::make_shared<PumaScene>(camera, light, viewFrustum, device);
+	//puma_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
+	//window->ImportScene(puma_scene);
 
-	selected_scene = puma_scene;
+	hodograph_scene = std::make_shared<HodographScene>(camera, light, viewFrustum, device);
+	window->ImportScene(hodograph_scene);
+
+	selected_scene = hodograph_scene;
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }

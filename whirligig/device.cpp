@@ -195,6 +195,18 @@ void Device::DrawLinesAdjacency(Object* model, int count, int offset)
 	glBindVertexArray(0);
 }
 
+void Device::DrawLineLoop(Object* model)
+{
+	DrawLineLoop(model, model->indices.size(), 0);
+}
+
+void Device::DrawLineLoop(Object* model, int count, int offset)
+{
+	glBindVertexArray(model->VAO);
+	glDrawElements(GL_LINE_LOOP, count, GL_UNSIGNED_INT, (void*)(offset * sizeof(unsigned int)));
+	glBindVertexArray(0);
+}
+
 void Device::DrawPoints(std::shared_ptr<Object> model)
 {
 	DrawPoints(model.get());

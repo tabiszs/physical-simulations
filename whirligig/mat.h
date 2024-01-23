@@ -14,7 +14,8 @@ public:
 	static glm::mat4 rotationY(float alpha);
 	static glm::mat4 rotationZ(float alpha);
 	static glm::mat4 scale(float sx, float sy, float sz);
-	static glm::mat4 scale(glm::vec3 scale);
+	static glm::mat4 scale(float scale);
+	static glm::mat4 scale(glm::vec3 scale);	
 	static glm::mat4 perspective(float fovy, float aspect, float zNear, float zFar);
 	static glm::mat4 shiftedPerspective(float n, float f, float r, float l, float t, float b);
 	static glm::mat4 powerToBernsteinBaseChangeMtx();

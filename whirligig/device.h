@@ -24,6 +24,8 @@ public:
 	void DrawLinesStrip(Object* model, int count, int offset);
 	void DrawLinesAdjacency(Object* model);
 	void DrawLinesAdjacency(Object* model, int count, int offset);
+	void DrawLineLoop(Object* model);
+	void DrawLineLoop(Object* model, int count, int offset);
 	void DrawPoints(std::shared_ptr<Object> model);
 	void DrawPoints(Object* model);
 	void DrawPoints(Object* model, int count, int offset);

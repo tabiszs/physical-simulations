@@ -23,6 +23,7 @@
 #include "InterpolationScene.h"
 #include "KinematicChainScene.h"
 #include "PumaScene.h"
+#include "HodographScene.h"
 
 
 using namespace std;
@@ -44,9 +45,9 @@ private:
 
 	int width = 1200;
 	int height = 800;
-	const char* title = "Physics Simulations in Virtual Environment - Interpolation Movement";
+	const char* title = "Physics Simulations in Virtual Environment - Hydrograph";
 	float backgroundColor[4] = { 0.07f, 0.13f, 0.17f, 1.0f };
-	glm::vec3 initTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 initTarget = glm::vec3(2.0f, 0.0f, 0.0f);
 	float initDistance = 10.0f;
 	float initNearPlane = 1.0f;
 	float initFarPlane = 100.0f;
@@ -61,5 +62,6 @@ private:
 	shared_ptr<InterpolationScene> interpolation_scene;
 	shared_ptr<KinematicChainScene> kinematic_chain_scene;
 	shared_ptr<PumaScene> puma_scene;
+	shared_ptr<HodographScene> hodograph_scene;
 	SpringSimulator ss = SpringSimulator();
 };
