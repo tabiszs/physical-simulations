@@ -36,10 +36,13 @@ Application::Application()
 	//puma_scene->UpdateViewFrustum(window->m_Width, window->m_Height);
 	//window->ImportScene(puma_scene);
 
-	hodograph_scene = std::make_shared<HodographScene>(camera, light, viewFrustum, device);
-	window->ImportScene(hodograph_scene);
+	//hodograph_scene = std::make_shared<HodographScene>(camera, light, viewFrustum, device);
+	//window->ImportScene(hodograph_scene);
 
-	selected_scene = hodograph_scene;
+	black_hole_scene = std::make_shared<BlackHoleScene>(camera, light, viewFrustum, device);
+	window->ImportScene(black_hole_scene);
+
+	selected_scene = black_hole_scene;
 
 	ImGuiBuilder::ImGuiBuilder(window->getWindow());
 }

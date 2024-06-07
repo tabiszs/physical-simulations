@@ -22,8 +22,10 @@
     <ClCompile Include="application.cpp" />
     <ClCompile Include="Arm.cpp" />
     <ClCompile Include="BezierCube.cpp" />
+    <ClCompile Include="BlackHoleScene.cpp" />
     <ClCompile Include="Chain.cpp" />
     <ClCompile Include="Circle.cpp" />
+    <ClCompile Include="Cubemap.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="Duck.cpp" />
     <ClCompile Include="Grid.cpp" />
@@ -78,8 +80,10 @@
     <ClInclude Include="application.h" />
     <ClInclude Include="Arm.h" />
     <ClInclude Include="BezierCube.h" />
+    <ClInclude Include="BlackHoleScene.h" />
     <ClInclude Include="Chain.h" />
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="Cubemap.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="Duck.h" />
     <ClInclude Include="Grid.h" />
@@ -97,6 +101,7 @@
     <ClInclude Include="PumaEffector.h" />
     <ClInclude Include="PumaScene.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="stb_image.h" />
     <ClInclude Include="WhirligigCube.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="device.h" />
@@ -129,6 +134,7 @@
     <ClInclude Include="window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="Shaders\bezier_cubeFS.glsl" />
     <None Include="Shaders\bezier_cubeTCS.glsl" />
     <None Include="Shaders\bezier_cubeTES.glsl" />
@@ -136,6 +142,8 @@
     <None Include="Shaders\bicubicFS.glsl" />
     <None Include="Shaders\bicubicTCS.glsl" />
     <None Include="Shaders\bicubicVS.glsl" />
+    <None Include="Shaders\black_holeFS.glsl" />
+    <None Include="Shaders\black_holeVS.glsl" />
     <None Include="Shaders\cursorFS.glsl" />
     <None Include="Shaders\cursorVS.glsl" />
     <None Include="Shaders\deCasteljauTES.glsl" />

@@ -1,5 +1,7 @@
 #include "device.h"
 #include "shader.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 void Device::RenderToTheScreen()
 {
@@ -115,6 +117,64 @@ void Device::LoadUniformBufferObject(int index, int size, void* data)
 void Device::LoadPositionsAndNormals(Object* model)
 {
 	LoadPositionsAndColor(model);
+}
+
+unsigned int Device::LoadCubemap(Object* model, std::vector<std::string> faces)
+{
+	//VAO Information
+	glGenVertexArrays(1, &model->VAO);
+	glBindVertexArray(model->VAO);
+
+	//VBO Information
+	glGenBuffers(1, &model->VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, model->VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * model->vertices.size(), model->vertices.data(), GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// binding cubemap texture
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+	int width, height, nrChannels;
+	for (unsigned int i = 0; i < faces.size(); i++)
+	{
+		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			GLenum format = GL_RGB;
+			if (nrChannels == 3)
+				format = GL_RGB;
+			else if (nrChannels == 4)
+				format = GL_RGBA;
+
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data
+			);
+			stbi_image_free(data);
+			std::cout << "Format: " << nrChannels << std::endl;
+		}
+		else
+		{
+			std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	// Unbinding
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	return textureID;
 }
 
 void Device::UpdateMesh(Object* model)
@@ -260,6 +320,20 @@ void Device::DrawPatches(int points, Object* model, int count, int offset, bool 
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
+}
+
+void Device::DrawCubemap(Object* model, int cubemapTexture)
+{
+	// draw cubemap as last
+	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+	glDepthMask(GL_FALSE);
+	glBindVertexArray(model->VAO);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS); // set depth function back to default
 }
 
 void Device::CleanColor(float color[4])

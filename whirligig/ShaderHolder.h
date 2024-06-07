@@ -40,6 +40,8 @@ public:
 	std::shared_ptr<Shader> surfaceC2Shader;
 	std::shared_ptr<Shader> gregoryShader;
 
+	std::shared_ptr<Shader> blackHoleShader;
+
 	std::vector<std::shared_ptr<Shader>> shaders{};
 
 protected:
