@@ -51,7 +51,9 @@ void Scene::ProcessKeyCallback(GLFWwindow* m_Window)
 void Scene::UpdateProjViewMtx()
 {
     const auto viewMtx = camera->ViewMatrix();
-	m_viewProjMtx = viewFrustrum->getProjectionMatrix() * viewMtx;
+	const auto projectionMtx = viewFrustrum->getProjectionMatrix();
+	m_viewProjMtx = projectionMtx * viewMtx;
+    m_invProjViewMtx = glm::inverse(m_viewProjMtx);
     m_invViewMtx = glm::inverse(viewMtx);
 }
 
@@ -65,6 +67,12 @@ void Scene::SetInvViewMtx(const std::shared_ptr<Shader> shader)
 {
     shader->use();
     shader->setMatrix4F("invViewMtx", m_invViewMtx);
+}
+
+void Scene::SetInvProjViewMtx(const std::shared_ptr<Shader> shader)
+{
+    shader->use();
+    shader->setMatrix4F("invProjViewMtx", m_invProjViewMtx);
 }
 
 glm::vec4 Scene::ClipToWorldSpace(glm::vec4 clipPos)

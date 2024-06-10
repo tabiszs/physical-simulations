@@ -5,14 +5,14 @@
 class Plane : public Object
 {
 public:
-	Plane()
+	Plane(std::shared_ptr<Shader> shader = ShaderHolder::Get().planeShader)
 	{
 		vertices = {
 			// positions          
 			 1.0f, 0.0f, -1.0f, // top right
 			 1.0f, 0.0f,  1.0f, // bottom right
 			-1.0f, 0.0f,  1.0f, // bottom left 
-			-1.0f, 0.0f, -1.0f, // top left			
+			-1.0f, 0.0f, -1.0f, // top left		
 		};
 
 		indices = {
@@ -20,7 +20,7 @@ public:
 			1, 2, 3
 		};
 
-		shader = ShaderHolder::Get().planeShader;
+		this->shader = shader;
 	}
 
 	void LoadMeshTo(std::shared_ptr<Device> device);

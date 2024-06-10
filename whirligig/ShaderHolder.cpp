@@ -40,6 +40,8 @@ void ShaderHolder::Init()
 	stereoscopyShader = std::shared_ptr<Shader>(new Shader("shaders/stereoscopyVS.glsl", "shaders/stereoscopyFS.glsl"));
 	surfaceC2Shader = std::make_shared<Shader>("shaders/bicubicVS.glsl", "shaders/bicubicFS.glsl", "shaders/bicubicTCS.glsl", "shaders/deBoorTES.glsl");
 	gregoryShader = std::make_shared<Shader>("shaders/bicubicVS.glsl", "shaders/bicubicFS.glsl", "shaders/gregoryTCS.glsl", "shaders/gregoryTES.glsl");
+
+	blackHoleShader = std::make_shared<Shader>("shaders/black_holeVS.glsl", "shaders/black_holeFS.glsl");
 }
 
 std::shared_ptr<Shader> ShaderHolder::NewSimpleShader()
@@ -83,6 +85,8 @@ void ShaderHolder::Delete()
 	if (surfaceC0Shader != nullptr)	glDeleteProgram(surfaceC0Shader->ID);
 	if (surfaceC2Shader != nullptr) glDeleteProgram(surfaceC2Shader->ID);
 	if (gregoryShader != nullptr) glDeleteProgram(gregoryShader->ID);
+
+	if (blackHoleShader != nullptr) glDeleteProgram(blackHoleShader->ID);
 
 	for (const auto& shader : shaders)
 	{

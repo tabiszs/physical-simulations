@@ -8,7 +8,7 @@
 #include <vector>
 
 static constexpr float OBJECT_ROTATION_SPEED = 0.6f;
-static constexpr float ROTATION_SPEED = 0.01f;
+static constexpr float ROTATION_SPEED = 0.0015f;
 static constexpr float ZOOM_SPEED = 0.5f;
 static constexpr float MOVEMENT_SPEED = 1.0f;
 
@@ -68,7 +68,7 @@ public:
 
     void SetTarget(glm::vec3 target) noexcept;
     void MoveTarget(glm::vec3 delta_target) noexcept;
-    void ObjectRotation(float d_ax, float d_ay) noexcept;
+    void ObjectRotation(float dyaw, float dpitch) noexcept;
     constexpr void Zoom(float d_distance) noexcept
     {
         distance -= d_distance; // Zoom in mean getting smaller distance 
@@ -101,6 +101,9 @@ private:
         else if (distance > d_max)
             distance = d_max;
     }
+
+	void UpdateCameraVectors() noexcept;
+
 };
 
 class FpsCamera : public OrbitCamera
