@@ -40,6 +40,7 @@ public:
 	void CleanColor(float color[4]);
 	void CreateTexture(GLuint& image_texture);
 	void UpdateTexture(GLuint& image_texture, int width, int height, const void* data);
+	void BindCubemapTexture(int textureUnit);
 private:
 
 };

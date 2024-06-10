@@ -61,7 +61,7 @@ public:
 	void DrawModelOn(std::shared_ptr<Device> device);
 	unsigned int GetTextureId() { return textureId; }
 
-	glm::mat4 ModelMatrix() { return Mat::scale({ 10,10,10 }) * Mat::identity(); }
+	glm::mat4 ModelMatrix() { return Mat::identity(); }
 
 	float color[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 	bool visible = true;

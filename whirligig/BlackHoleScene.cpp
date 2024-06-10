@@ -4,18 +4,42 @@
 
 void BlackHoleScene::DrawOn(std::shared_ptr<Device> device)
 {
-	device->DrawCubemap(cubemap.get(), cubemap->GetTextureId());
+	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+	glDepthMask(GL_FALSE);
+
+	device->BindCubemapTexture(cubemap->GetTextureId());
+	plane->DrawModelOn(device);
+
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS); // set depth function back to default
 }
 
 void BlackHoleScene::Update()
 {
 	if (camera->NeedUpdate() || viewFrustrum->NeedUpdate())
 	{
-		const auto viewMtx = glm::mat4(glm::mat3(camera->ViewMatrix()));
-		m_viewProjMtx = viewFrustrum->getProjectionMatrix() * viewMtx;
-		m_invViewMtx = glm::inverse(viewMtx);
-		//UpdateProjViewMtx();
-		SetProjViewMtx(cubemap->shader);
+		const auto& viewport = viewFrustrum->viewportSize();
+		plane->shader->use();
+		plane->shader->setVec2("resolution", viewport.cx, viewport.cy);
+
+		UpdateProjViewMtx();
+		SetInvProjViewMtx(plane->shader);
+
+		camera->Updated();
+		viewFrustrum->Updated();
+	}
+
+	if (distance_changed)
+	{
+		blackHolePosition.z = distance * distance_coefficient;
+		plane->shader->use();
+		plane->shader->set3Float("blackHolePosition", blackHolePosition);
+	}
+
+	if (mass_changed)
+	{
+		plane->shader->use();
+		plane->shader->setFloat("mass", mass());
 	}
 }
 
@@ -26,8 +50,14 @@ void BlackHoleScene::Menu()
 	ImGui::Begin("Black Hole", nullptr,
 		ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoSavedSettings);
-	ImGui::SliderFloat("Distance", &distance, min_distance, max_distance);
-	ImGui::SliderFloat("Mass", &mass, min_mass, max_mass);
-
+	ImGui::PushItemWidth(100);
+	distance_changed = ImGui::SliderFloat("Distance", &distance, min_distance, max_distance);
+	ImGui::PopItemWidth();
+	ImGui::SameLine(); ImGui::Text("x 1000 km");
+	ImGui::PushItemWidth(100);
+	mass_changed = ImGui::SliderInt("Mass", &mass_coefficient, min_mass_coefficient, max_mass_coefficient);
+	ImGui::PopItemWidth();
+	ImGui::SameLine(); ImGui::Text("x Being747");
+	ImGui::Text("Being 747 mass: 200 ton");
 	ImGui::End();
 }

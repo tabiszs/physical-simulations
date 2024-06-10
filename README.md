@@ -3,14 +3,17 @@
 ## Czarna dziura
 Projekt na przedmiot Modelowanie Geometryczne 2
 
-GRAWITACJA str. 235
+Inspiracja: GitHub - tomasz-herman/BlackHole
+Źródło: James B. Hartle - GRAWITACJA str. 235
 
-Z analizy zachowania promieni nadlatujacych z nieskonczoności z du- ´
-zym parametrem zderzenia jasno wynika, ˙ ze wszystkie ciała powoduj ˛a ˙
-pewne ugi˛ecie promieni swietlnych. Efekt ten ma du ´ ze znaczenie, po- ˙
-niewaz ugi˛ecie promieni ˙ swietlnych przebiegaj ˛acych w pobli ´ zu Sło ˙ nca ´
-jest jednym z najwazniejszych eksperymentalnych testów ogólnej teo- ˙
-rii wzgl˛ednosci. Ugi˛ecie promieni przez galaktyki jest podstaw ˛a dzia- ´
-łania soczewek grawitacyjnych, które omówimy w nast˛epnym rozdziale. Wielkosci ˛a, która nas interesuje, jest k ˛at ugi˛ecia ´ δφu, zdefiniowany
-tak, jak na rys. 9.10. K ˛at ugi˛ecia jest okreslony przez kształt trajektorii ´
-promienia swietlnego. Kształt trajektorii promienia ´ swietlnego mo ´ zna
+Z analizy zachowania promieni nadlatujących z nieskonczoności z dużym parametrem zderzenia jasno wynika, 
+że wszystkie ciała powodują pewne ugięcie promieni świetlnych. Efekt ten ma duże znaczenie, 
+ponieważ ugięcie promieni świetlnych przebiegających w pobliżu Słońca 
+jest jednym z najważniejszych eksperymentalnych testów ogólnej teorii względności. 
+Ugięcie promieni przez galaktyki jest podstawą działania soczewek grawitacyjnych, 
+które omówimy w następnym rozdziale. Wielkoscią, która nas interesuje, 
+jest kąt ugięcia δφu. Można go wyznaczyć obliczając całkę, gdzie 
+- M to masa ciała, 
+- b to odgległość promienia od ciała
+
+

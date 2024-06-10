@@ -364,3 +364,9 @@ void Device::UpdateTexture(GLuint& image_texture, int width, int height, const v
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+void Device::BindCubemapTexture(int textureUnit)
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureUnit);
+}

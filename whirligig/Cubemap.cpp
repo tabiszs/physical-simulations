@@ -16,6 +16,5 @@ void Cubemap::UpdateMeshTo(std::shared_ptr<Device> device)
 void Cubemap::DrawModelOn(std::shared_ptr<Device> device)
 {
 	shader->use();
-	device->DrawTriangles((Object*)this);
-
+	device->DrawCubemap((Object*)this, textureId);
 }

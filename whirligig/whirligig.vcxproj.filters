@@ -228,6 +228,9 @@
     <ClCompile Include="Cubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenPlane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h">
@@ -395,70 +398,13 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ScreenPlane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\bezier_cubeFS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\bezier_cubeTCS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\bezier_cubeTES.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\bezier_cubeVS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\bicubicFS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\bicubicTCS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\bicubicVS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\cursorFS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\cursorVS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\deCasteljauTES.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\jellyCS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\point.fs">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\point.vs">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\pointFS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\pointSizeVS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\pointVS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\simple.fs">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\simple.vs">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="..\README.md">
       <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Shaders\black_holeVS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="Shaders\black_holeFS.glsl">
-      <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -470,5 +416,67 @@
     <Image Include="Textures\ducktex.jpg">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Shaders\bezier_cubeFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\bezier_cubeTCS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\bezier_cubeTES.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\bezier_cubeVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\bicubicFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\bicubicTCS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\bicubicVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\black_holeFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\black_holeVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\cursorFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\cursorVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\deCasteljauTES.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\jellyCS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\point.fs">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\point.vs">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\pointFS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\pointSizeVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\pointVS.glsl">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\simple.fs">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="Shaders\simple.vs">
+      <Filter>Resource Files\Shaders</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

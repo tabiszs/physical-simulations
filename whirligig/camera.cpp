@@ -35,18 +35,25 @@ void OrbitCamera::MoveTarget(glm::vec3 delta_target) noexcept
     needUpdate = true;
 }
 
-void OrbitCamera::ObjectRotation(float d_ax, float d_ay) noexcept
+void OrbitCamera::ObjectRotation(float dyaw, float dpitch) noexcept
 {
-    yaw = ScalarModAngle(yaw + d_ax);
-    pitch = ScalarModAngle(pitch + d_ay);
+    yaw += dyaw;
+    pitch += dpitch;
+	pitch = glm::clamp(pitch, -glm::half_pi<float>() * 0.99f, glm::half_pi<float>() * 0.99f);
+    UpdateCameraVectors();
+    needUpdate = true;
+}
+
+void OrbitCamera::UpdateCameraVectors() noexcept
+{
     direction = {
-        cos(yaw) * cos(pitch),
+        cos(pitch) * cos(yaw),
         sin(pitch),
-        sin(yaw) * cos(pitch),
+        cos(pitch) * sin(yaw),
     };
+    direction = glm::normalize(direction);
     right = glm::normalize(glm::cross(worldUp, direction));
     up = glm::normalize(glm::cross(direction, right));
-    needUpdate = true;
 }
 
 void FpsCamera::MoveTarget(Camera_Movement action, float deltaTime) noexcept

@@ -1,14 +1,7 @@
 #version 400 core
 layout (location = 0) in vec3 aPos;
 
-out vec3 TexCoords;
-
-uniform mat4 modelMtx;
-uniform mat4 projViewMtx;
-
 void main()
 {
-    TexCoords = aPos;
-    vec4 pos = projViewMtx * modelMtx * vec4(aPos, 1.0);
-    gl_Position = pos.xyww;
+    gl_Position = vec4(aPos, 1.0);
 }  

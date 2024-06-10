@@ -49,6 +49,7 @@ protected:
 	void UpdateProjViewMtx();
 	void SetProjViewMtx(const std::shared_ptr<Shader> shader);
 	void SetInvViewMtx(const std::shared_ptr<Shader> shader);
+	void SetInvProjViewMtx(const std::shared_ptr<Shader> shader);
 	glm::vec4 ClipToWorldSpace(glm::vec4 clipPos);
 	glm::vec4 WorldToClipSpace(glm::vec4 worldPos);
 	glm::vec4 ScreenToClipSpace(float x_sceen_pos, float y_screen_pos, float z_clip_pos);
@@ -60,6 +61,7 @@ protected:
 	shared_ptr<Device> device;
 
 	glm::mat4 m_viewProjMtx;
+	glm::mat4 m_invProjViewMtx;
 	glm::mat4 m_invViewMtx;
 
 	//mouse parameters
