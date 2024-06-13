@@ -55,6 +55,7 @@ void Scene::UpdateProjViewMtx()
 	m_viewProjMtx = projectionMtx * viewMtx;
     m_invProjViewMtx = glm::inverse(m_viewProjMtx);
     m_invViewMtx = glm::inverse(viewMtx);
+	m_invProjMtx = glm::inverse(projectionMtx);
 }
 
 void Scene::SetProjViewMtx(const std::shared_ptr<Shader> shader)
@@ -67,6 +68,12 @@ void Scene::SetInvViewMtx(const std::shared_ptr<Shader> shader)
 {
     shader->use();
     shader->setMatrix4F("invViewMtx", m_invViewMtx);
+}
+
+void Scene::SetInvProjMtx(const std::shared_ptr<Shader> shader)
+{
+	shader->use();
+	shader->setMatrix4F("invProjMtx", m_invProjMtx);
 }
 
 void Scene::SetInvProjViewMtx(const std::shared_ptr<Shader> shader)

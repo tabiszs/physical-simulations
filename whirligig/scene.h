@@ -49,6 +49,7 @@ protected:
 	void UpdateProjViewMtx();
 	void SetProjViewMtx(const std::shared_ptr<Shader> shader);
 	void SetInvViewMtx(const std::shared_ptr<Shader> shader);
+	void SetInvProjMtx(const std::shared_ptr<Shader> shader);
 	void SetInvProjViewMtx(const std::shared_ptr<Shader> shader);
 	glm::vec4 ClipToWorldSpace(glm::vec4 clipPos);
 	glm::vec4 WorldToClipSpace(glm::vec4 worldPos);
@@ -63,6 +64,7 @@ protected:
 	glm::mat4 m_viewProjMtx;
 	glm::mat4 m_invProjViewMtx;
 	glm::mat4 m_invViewMtx;
+	glm::mat4 m_invProjMtx;
 
 	//mouse parameters
 	float lastX;

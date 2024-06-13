@@ -58,6 +58,9 @@
     <Filter Include="Source Files\BlackHole">
       <UniqueIdentifier>{a72c89d7-8039-4267-afdb-b48cd9e89d3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Hodograph">
+      <UniqueIdentifier>{1dbae1c6-54bc-44e7-ad7c-50a7afa7c099}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp">
@@ -210,12 +213,6 @@
     <ClCompile Include="PumaEffector.cpp">
       <Filter>Source Files\Puma</Filter>
     </ClCompile>
-    <ClCompile Include="HodographScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Hodograph.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -230,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="ScreenPlane.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hodograph.cpp">
+      <Filter>Source Files\Hodograph</Filter>
+    </ClCompile>
+    <ClCompile Include="HodographScene.cpp">
+      <Filter>Source Files\Hodograph</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -414,6 +417,24 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\ducktex.jpg">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\tex_negativeX.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\tex_negativeY.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\tex_negativeZ.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\tex_positiveX.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\tex_positiveY.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Textures\tex_positiveZ.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

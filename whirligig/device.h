@@ -16,6 +16,7 @@ public:
 	void LoadUniformBufferObject(int index, int size, void* data);
 	void LoadPositionsAndNormals(Object* model);
 	unsigned int LoadCubemap(Object* model, std::vector<std::string> faces);
+	unsigned int LoadCubemap(std::vector<std::string> faces);
 	void UpdateMesh(Object* model);
 	void DrawTriangles(Object* model);
 	void DrawTriangles(Object* model, int count, int offset);

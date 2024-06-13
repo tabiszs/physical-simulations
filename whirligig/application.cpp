@@ -50,10 +50,10 @@ Application::Application()
 void Application::MainLoop()
 {
 	while (!glfwWindowShouldClose(window->getWindow()))
-	{		
-		Menu();
+	{
 		Update();
 		Render();
+		Menu();
 		Swap();
 	}
 }
@@ -64,6 +64,8 @@ void Application::Menu()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	selected_scene->Menu();
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Application::Update()
@@ -74,9 +76,7 @@ void Application::Update()
 
 void Application::Render()
 {
-	selected_scene->DrawOn(device);
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	selected_scene->DrawOn(device);	
 }
 
 void Application::Swap()

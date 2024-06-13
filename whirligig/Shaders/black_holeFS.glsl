@@ -8,6 +8,8 @@ uniform samplerCube cubemap;
 
 uniform float mass;
 uniform vec3 blackHolePosition;
+uniform float blackHoleDistance;
+uniform bool cameraOrbitAroundBlackHole;
 
 out vec4 FragColor;
 
@@ -32,6 +34,33 @@ Ray GenerateCameraRay()
     ray.dir = normalize(to.xyz - from.xyz);
 
     return ray;
+}
+
+Ray GenerateMiddleCameraRay()
+{
+    Ray ray;
+
+    vec2 xy = vec2(0,0);
+
+    vec4 from = invProjViewMtx * vec4(xy, -1, 1);
+    vec4 to = invProjViewMtx * vec4(xy, 1, 1);
+    from /= from.w;
+    to /= to.w;
+
+    ray.origin = from.xyz;
+    ray.dir = normalize(to.xyz - from.xyz);
+
+    return ray;
+}
+
+vec3 GetBlackHolePosition()
+{
+	if(cameraOrbitAroundBlackHole){
+        Ray middleRay = GenerateMiddleCameraRay();   
+        return middleRay.dir * blackHoleDistance; 
+    } else {
+        return blackHolePosition;
+	}	
 }
 
 float PointToRayDistance(vec3 point, Ray ray) 
@@ -107,8 +136,10 @@ vec3 RotateVectorAroundAxisByAngle(vec3 vec, vec3 axis, float angle)
 void main()
 {   
     Ray ray = GenerateCameraRay();
-    float b = PointToRayDistance(blackHolePosition, ray);   
-        // FragColor = vec4(b, b/1000, b/1000000, 1.0); return;             // DEBUG
+        // FragColor = texture(cubemap, ray.dir); return;                   // DEBUG
+    vec3 bhp = GetBlackHolePosition();
+    float b = PointToRayDistance(bhp, ray);   
+        //FragColor = vec4(b, b/1000, b/1000000, 1.0); return;              // DEBUG
     float upper = RootSearch(mass, b);
         //FragColor = vec4(upper, upper/1000, upper/1000000, 1.0); return;  // DEBUG
     if(upper < 0) {
@@ -119,7 +150,7 @@ void main()
     if(abs(angle) > PI || isnan(angle) || isinf(angle)) {
         FragColor = vec4(0, 0, 0, 1);
     } else {
-        vec3 axis = cross(normalize(blackHolePosition), normalize(ray.dir));
+        vec3 axis = cross(normalize(bhp), normalize(ray.dir));
         vec3 dir = normalize(RotateVectorAroundAxisByAngle(ray.dir, axis, angle));
         FragColor = texture(cubemap, dir);
     }

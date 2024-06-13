@@ -80,7 +80,12 @@ public:
     [[nodiscard]] constexpr float Angle_x() const noexcept { return pitch; }
     [[nodiscard]] constexpr float Distance() const noexcept { return distance; }
     [[nodiscard]] constexpr glm::vec3 Center() const noexcept { return center; }
-
+    void UpdateDistance(float distance) noexcept
+    {
+        this->distance = distance;
+        ClampDistance();
+        needUpdate = true;
+    }
 
 private:
     float yaw;   // equivalent of angleY in world space
@@ -103,7 +108,6 @@ private:
     }
 
 	void UpdateCameraVectors() noexcept;
-
 };
 
 class FpsCamera : public OrbitCamera

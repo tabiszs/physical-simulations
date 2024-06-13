@@ -7,7 +7,6 @@ void BlackHoleScene::DrawOn(std::shared_ptr<Device> device)
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	glDepthMask(GL_FALSE);
 
-	device->BindCubemapTexture(cubemap->GetTextureId());
 	plane->DrawModelOn(device);
 
 	glDepthMask(GL_TRUE);
@@ -34,12 +33,27 @@ void BlackHoleScene::Update()
 		blackHolePosition.z = distance * distance_coefficient;
 		plane->shader->use();
 		plane->shader->set3Float("blackHolePosition", blackHolePosition);
+		plane->shader->setFloat("blackHoleDistance", blackHolePosition.z);
 	}
 
 	if (mass_changed)
 	{
 		plane->shader->use();
 		plane->shader->setFloat("mass", mass());
+	}
+
+	if (texture_changed)
+	{
+		if(show_debug_texture)
+			device->BindCubemapTexture(debug_texture_id);
+		else
+			device->BindCubemapTexture(space_texture_id);
+	}
+
+	if (orbiting_camera_changed)
+	{
+		plane->shader->use();
+		plane->shader->setBool("cameraOrbitAroundBlackHole", orbiting_camera);
 	}
 }
 
@@ -59,5 +73,7 @@ void BlackHoleScene::Menu()
 	ImGui::PopItemWidth();
 	ImGui::SameLine(); ImGui::Text("x Being747");
 	ImGui::Text("Being 747 mass: 200 ton");
+	orbiting_camera_changed = ImGui::Checkbox("Orbiting Camera", &orbiting_camera);
+	texture_changed = ImGui::Checkbox("Debug Texture", &show_debug_texture);
 	ImGui::End();
 }

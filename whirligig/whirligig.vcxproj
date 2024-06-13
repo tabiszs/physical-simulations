@@ -363,6 +363,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Textures\ducktex.jpg" />
+    <Image Include="Textures\tex_negativeX.png" />
+    <Image Include="Textures\tex_negativeY.png" />
+    <Image Include="Textures\tex_negativeZ.png" />
+    <Image Include="Textures\tex_positiveX.png" />
+    <Image Include="Textures\tex_positiveY.png" />
+    <Image Include="Textures\tex_positiveZ.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
