@@ -3,8 +3,10 @@
 ## Czarna dziura
 Projekt na przedmiot Modelowanie Geometryczne 2
 
-- Inspiracja: GitHub - tomasz-herman/BlackHole
-- Źródło: James B. Hartle - GRAWITACJA str. 235
+### Opis
+
+Celem projektu jest stworzenie modelu czarnej dziury poprzez zastosowanie efektu soczewki grawitacyjnej. 
+Efekt ten realizowano wyznaczając promień Schwarzschilda i ugięcie promieni wokół punktowej masy.
 
 Z analizy zachowania promieni nadlatujących z nieskonczoności z dużym parametrem zderzenia jasno wynika, 
 że wszystkie ciała powodują pewne ugięcie promieni świetlnych. Efekt ten ma duże znaczenie, 
@@ -21,6 +23,17 @@ jest kąt ugięcia δφu. Można go wyznaczyć obliczając całkę, gdzie
 
 ![angle](https://github.com/tabiszs/whirligig/assets/92331225/44d4f17b-7e64-4686-b271-5750ee5ae04a)
 
+### Algorytm
 
+1. Raycasting
+2. Wyznaczenie odległości między rzuconym promieniem a czarną dziurą
+3. Wyznaczenie przedziału całkowania kąta ugięcia
+4. Obliczenie kąta ugięcia
+5. Wyznaczenie nowego kierunku promienia po obrocie o wyznaczony kąt wokół osi prostopadłem do rzucango promienia
+
+
+### Linki
+- Inspiracja: GitHub - tomasz-herman/BlackHole
+- Źródło: James B. Hartle - GRAWITACJA str. 235
 
 
