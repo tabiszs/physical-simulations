@@ -26,9 +26,9 @@ jest kąt ugięcia δφu. Można go wyznaczyć obliczając całkę, gdzie
 ### Algorytm
 
 1. Raycasting
-2. Wyznaczenie odległości między rzuconym promieniem a czarną dziurą
-3. Wyznaczenie przedziału całkowania kąta ugięcia
-4. Obliczenie kąta ugięcia
+2. Wyznaczenie odległości między rzuconym promieniem a czarną dziurą - geometryczna meteoda wyznaczania odgległości punktu od prostej
+3. Wyznaczenie przedziału całkowania kąta ugięcia - metoda Newtona szukania f = 0
+4. Obliczenie kąta ugięcia - całkowanie metodą trapezów
 5. Wyznaczenie nowego kierunku promienia po obrocie o wyznaczony kąt wokół osi prostopadłem do rzucango promienia
 
 
