@@ -28,6 +28,10 @@ where
 - **W(t)** — angular velocity, 
 - **Q(t)** — quaternion of rotation. 
 
+![Whirligig Simulation 1](contents/whirligig-1.jpg)
+
+![Whirligig Simulation 2](contents/whirligig-2.jpg)
+
 ## Physics Simulation: Dynamic Deformation Simulation (Jelly)
 
 This project focused on simulating the dynamic deformation of a 3D structure made of a Bezier cube, designed to behave like a "jelly." The project was completed as part of a laboratory exercise.
@@ -42,6 +46,8 @@ The project involved simulating the movement and deformation of a flexible syste
 - Provided user interaction for moving, rotating, and scaling the entire scene.
 - Implemented collision detection and responses with boundary constraints.
 
+[![Jelly Simulation Video](contents/jelly-1.jpg)](contents/jelly-1.mp4)
+
 ## PUSN: Motion Interpolation
 
 Comparison different methods of motion interpolation. Linear interpolation was used for position, while both Euler angles and quaternion interpolation was for rotation.
@@ -55,6 +61,8 @@ Comparison different methods of motion interpolation. Linear interpolation was u
 6. **Simultaneous Animations:** Both position and rotation interpolations were animated concurrently.
 7. **Quaternion Interpolation:** The program allowed switching between linear and spherical quaternion interpolation.
 8. **Frame Display Option:** Option to displayed all animation frames simultaneously, with the number of intermediate frames configurable by the user.
+
+![Motion Interpolation](contents/interpolation-1.jpg)
 
 ## PUSN: Pathfinding for a Planar Kinematic Chain
 
@@ -76,6 +84,8 @@ Implemented a simple algorithm for pathfinding in a 2D kinematic chain with two 
    - Used the flood-fill algorithm to find a path in the configuration space.
    - Presented the result as an animation and a gradient-colored path in the configuration space.
 
+![Kinematic Chain](contents/kinematic-chain-1.jpg)
+
 ## PUSN: Simulation of a Puma Robot
 
 Implemented a method for solving the inverse kinematics problem for a Puma robot and visualize its movement from an initial to a final configuration.
@@ -92,6 +102,8 @@ Implemented a method for solving the inverse kinematics problem for a Puma robot
 7. **Scene Rotation:** Allowed users to rotate the scene.
 8. **Real-time Animation:** Animation length was configurable and independent of computer performance.
 
+![Puma Robot](contents/puma-1.jpg)
+
 ## PUSN: Hodograph
 
 Implemented a program to visualize the hodograph of a planar kinematic chain with two arms.
@@ -105,6 +117,8 @@ Investigated the impact of small disturbances on the operation of a simple dynam
 5. **Program Window:** The window was divided into five parts: the animation view and four described plots.
 6. **Plot Scaling:** The x(t), x'(t), and x''(t) plots could be rescaled along the Y-axis, while the x'(x) plot could be scaled along both the X and Y axes.
 7. **Error Handling:** The program included an error ϵ(t) with a normal distribution, mean zero, and standard deviation ϵ0, where ϵ0 is a user-defined parameter. The error determines the variation in arm length, so L at any time t is L := L + ϵ(t).
+
+![Hodograph](contents/hodograf-1.jpg)
 
 ## Geometric Modelling 2: Black Hole Simulation
 
@@ -125,6 +139,10 @@ From the analysis of rays arriving from infinity with a large collision paramete
 3. Determine the integration interval of the deflection angle using Newton's method to find f = 0.
 4. Calculate the deflection angle by integrating using the trapezoidal method.
 5. Determine the new direction of the ray after rotating by the calculated angle around the axis perpendicular to the cast ray.
+
+![Black Hole 1](contents/black-hole-1.jpg)
+
+![Black Hole 1](contents/black-hole-2.jpg)
 
 **Links:**
 - Inspiration: GitHub - tomasz-herman/BlackHole
