@@ -9,7 +9,7 @@
 #include "Cursor.h"
 #include "Arm.h"
 
-#define MODE 7
+#define MODE 1
 // 1 - Whirligig
 // 2 - Jelly
 // 3 - Quaternion Interpolation
