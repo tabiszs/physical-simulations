@@ -46,12 +46,7 @@ The project involved simulating the movement and deformation of a flexible syste
 - Provided user interaction for moving, rotating, and scaling the entire scene.
 - Implemented collision detection and responses with boundary constraints.
 
-[Jelly Simulation Video](contents/jelly-1.mp4)
-
-
-https://github.com/user-attachments/assets/9a4e40e8-f88b-4bed-952a-f1316b8e4bb4
-
-
+[Jelly Simulation Video](https://github.com/user-attachments/assets/9a4e40e8-f88b-4bed-952a-f1316b8e4bb4)
 
 ## PUSN: Motion Interpolation
 
