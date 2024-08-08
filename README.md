@@ -11,7 +11,7 @@
 8. [Geometric Modelling 2: Black Hole Simulation](#geometric-modelling-2-black-hole-simulation)
 
 ## Overview
-This repository contains a collection of projects designed for Physics Simulation, Numerical Control Programming, and Modelowanie Geometryczne 2 courses. Each project focuses on different aspects of physics simulation, numerical control programming, and geometric modeling. Below are detailed descriptions of each project, including their features. 
+This repository contains a collection of projects designed for Physics Simulation, Numerical Control Programming, and Geometric Modeling 2 courses. Each project focuses on different aspects of physics simulation, numerical control programming, and geometric modeling. Below are detailed descriptions of each project, including their features. 
 
 ## Physics Simulation: Whirligig
 
